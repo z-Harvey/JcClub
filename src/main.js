@@ -8,9 +8,13 @@ import wx from 'wx'
 
 import Toast from './components/assembly/Toast'
 import ModalInfo from './components/assembly/ModalInfo'
+import Check from './components/assembly/Check'
+import linkage from './components/assembly/linkage'
 import Global from './components/Global'
 Vue.component('Toast', Toast)
 Vue.component('ModalInfo', ModalInfo)
+Vue.component('Check', Check)
+Vue.component('linkage', linkage)
 Vue.component('Global', Global)
 
 axios.defaults.baseURL = 'http://192.168.0.160:8008'

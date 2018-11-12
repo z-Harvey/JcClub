@@ -8,15 +8,57 @@
         <button class="srceBtn">搜索</button>
     </div>
     <div class="sort">
-        <div>
+        <div @click="sorts(0)">
             <span>客户关系/线索</span>
-            <img v-if="true" src="@/assets/bot1.png" alt="">
+            <img v-if="sort[0]" src="@/assets/bot1.png" alt="">
             <img v-else src="@/assets/bot2.png" alt="">
         </div>
-        <div>
+        <div @click="sorts(1)">
             <span>默认排序</span>
-            <img v-if="true" class="pai" src="@/assets/pai1.png" alt="">
+            <img v-if="sort[1]" class="pai" src="@/assets/pai1.png" alt="">
             <img v-else class="pai" src="@/assets/pai2.png" alt="">
+        </div>
+    </div>
+    <div class="Screening" v-if="sort[0]||sort[1]">
+        <div class="s1" v-if="sort[0]">
+            <div class="s1-tit">客户关系</div>
+            <div class="s1-btnbox">
+                <div>有过合作</div>
+                <div>正在合作</div>
+                <div>有过跟进</div>
+                <div>正在跟进</div>
+            </div>
+            <div class="s1-tit">决策链线索</div>
+            <div class="s1-btnbox">
+                <div>有</div>
+                <div>无</div>
+            </div>
+            <div class="s1-btnlist">
+                <button class="cz">重置</button>
+                <button class="qd">确定</button>
+            </div>
+        </div>
+        <div class="s2" v-if="sort[1]">
+            <div>
+                <p>默认排序</p>
+                <img src="@/assets/yes.png" alt="">
+            </div>
+            <div>
+                <p>按跟进人数由高到低排序</p>
+                <img src="@/assets/yes.png" alt="">
+            </div>
+            <div>
+                <p>按跟进人数由低到高排序</p>
+                <img src="@/assets/yes.png" alt="">
+            </div>
+            <div>
+                <p>按牛币价格由高到低排序</p>
+                <img src="@/assets/yes.png" alt="">
+            </div>
+            <div>
+                <p>按牛币价格由低到高排序</p>
+                <img src="@/assets/yes.png" alt="">
+            </div>
         </div>
     </div>
     <div style="height:5.25rem;"></div>
@@ -54,11 +96,20 @@ export default {
   name: 'home_content',
   data () {
     return {
+      sort: [false, false]
     }
   },
   methods: {
+    sorts: function (num) {
+      let arr = [false, false]
+      if (this.sort[num]) {
+        this.sort = arr
+        return
+      }
+      arr[num] = true
+      this.sort = arr
+    },
     path: function () {
-      console.log(1)
       this.$router.push('/cardInfo')
     }
   },
@@ -235,7 +286,7 @@ export default {
     width:4rem;
     height: 1.5rem;
     border-radius:.75rem;
-    font-size: .6rem
+    font-size: .6rem;
 }
 .fooRight>button::after{
     border:0;
@@ -249,5 +300,72 @@ export default {
     background: rgba(241, 241, 241, 1);
     color:#888;
     border:0;
+}
+
+.Screening{
+    position: fixed;
+    top:4.75rem;
+    left:0;
+    height:100%;
+    width:100%;
+    background:rgba(0,0,0,.2);
+}
+.s1{
+    background:#fff;
+    padding:.5rem .75rem;
+}
+.s1-tit{
+    font-size: .7rem;
+    line-height: 2rem;
+}
+.s1-btnbox>div{
+    padding:.25rem .4rem;
+    font-size: .7rem;
+    display: inline-block;
+    background:rgba(241, 241, 241, 1);
+    color:#101010;
+    border-radius: .15rem;
+    line-height: .7rem;
+}
+.s1-btnlist{
+    padding:.5rem 0 0 0;
+    border-top: 1px solid #ececed;
+    margin-top:.5rem;
+}
+.s1-btnlist>button{
+    border:0;
+    border-radius: .2rem;
+}
+.s1-btnlist>button::after{
+    border:0;
+}
+.cz{
+    width:4rem;
+    height:2rem;
+    background:#bbb;
+    color:#fff;
+}
+.qd{
+    width:12.75rem;
+    height:2rem;
+    background:rgba(255, 152, 0, 1);
+    color:#fff;
+}
+.s2{
+    background:#fff;
+    padding:.5rem .75rem;
+    font-size: .7rem;
+    text-align: left;
+    line-height: 2rem;
+}
+.s2>div{
+    position: relative;
+}
+.s2>div>img{
+    width:.7rem;
+    height:.7rem;
+    position: absolute;
+    top:.65rem;
+    right:1rem;
 }
 </style>

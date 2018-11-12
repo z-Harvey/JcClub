@@ -10,6 +10,11 @@
     </div>
     <div class="meContent">
         <p>您已成功申请加入北京酷牛仔俱乐部</p>
+        <p>请联系您的<span class="font-col">邀请者</span></p>
+        <p>在“我-我邀请的会员”对您的邀请进行确认</p>
+    </div>
+    <div class="meContent">
+        <p>您已成功申请加入北京酷牛仔俱乐部</p>
         <p>我们将在48小时内给您反馈</p>
         <p>请您留意<span class="font-sty">微信服务号</span>或<span class="font-sty">短信</span>的通知</p>
         <p>如有任何疑问您可以</p>

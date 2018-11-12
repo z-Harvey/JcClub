@@ -1,6 +1,8 @@
 <template>
   <div class="submitAdd">
-      <Toast title='标题' @confirm="test"></Toast>
+      <Toast ref="Toast" @confirm="test"/>
+      <Check ref="Check"/>
+      <linkage ref="linkage"/>
       <div class="memTitle">
           北京酷牛仔俱乐部
       </div>
@@ -30,6 +32,9 @@
         <div class="subContent">
             <div class="contImg">
                 <img src="@/assets/touxiang.jpg" alt="">
+                <div class="contImgmol">
+                    <img src="@/assets/camera.png" alt="">
+                </div>
             </div>
             <div class="contList">
                 <span>姓名</span>
@@ -48,7 +53,25 @@
             </div>
             <div class="contList">
                 <span>所在地</span>
-                <input type="text" placeholder="请选择地区">
+                <div class="seleBox">
+                    <select v-model="city.sel1" @change="selText('1')">
+                        <option value="0">省</option>
+                        <option value="北京">北京</option>
+                        <option value="吉林">吉林</option>
+                    </select>
+                    <span>/</span>
+                    <select v-model="city.sel2" @change="selText('2')">
+                        <option value="0">市</option>
+                        <option value="长春">长春</option>
+                        <option value="吉林">吉林</option>
+                    </select>
+                    <span>/</span>
+                    <select v-model="city.sel3" @change="selText('3')">
+                        <option value="0">区</option>
+                        <option value="丰满区">丰满区</option>
+                        <option value="船营区">船营区</option>
+                    </select>
+                </div>
             </div>
             <div class="contList">
                 <span>邮件</span>
@@ -60,11 +83,22 @@
             </div>
             <div class="contList">
                 <span>生日</span>
-                <input type="text" placeholder="请选择出生年月">
+                <input type="date" v-model="date"/>
             </div>
             <div class="contList">
                 <span>学历</span>
-                <input type="text" placeholder="请选择学历">
+                <div class="seleBox">
+                    <select v-model="edu" @change="selText">
+                        <option value="0">请选择</option>
+                        <option value="小学">小学</option>
+                        <option value="初中">初中</option>
+                        <option value="高中">高中</option>
+                        <option value="中专">中专</option>
+                        <option value="大专">大专</option>
+                        <option value="本科">本科</option>
+                        <option value="研究生">研究生</option>
+                    </select>
+                </div>
             </div>
         </div>
       </div>
@@ -84,11 +118,11 @@
             </div>
             <div class="contList">
                 <span>擅长领域</span>
-                <input type="text" placeholder="擅长的行业领域（多选）">
+                <div @click="check" class="checkBox">擅长的行业领域（多选、必填）</div>
             </div>
             <div class="contList">
                 <span>对接部门</span>
-                <input type="text" placeholder="开发客户的对接部门（多选）">
+                <div @click="check" class="checkBox">开发客户的对接部门（多选）</div>
             </div>
           </div>
           <div class="subContent">
@@ -138,10 +172,36 @@ export default {
   name: 'submitAdd',
   data () {
     return {
-      cont_one: false
+      CityStr: null,
+      cont_one: false,
+      city: {
+        sel1: 0,
+        sel2: 0,
+        sel3: 0
+      },
+      date: null,
+      edu: 0
     }
   },
   methods: {
+    selText: function (str) {
+      console.log(this.edu)
+      switch (str) {
+        case '1':
+          console.log(this.city.sel1)
+          break
+        case '2':
+          console.log(this.city.sel2)
+          break
+        case '3':
+          console.log(this.city.sel3)
+          break
+      }
+    },
+    check: function () {
+    //   this.$refs.Check.on_display()
+      this.$refs.linkage.on_display()
+    },
     /**
      * 点击'下一步'或'上一步' 时界面切换
      */
@@ -150,11 +210,17 @@ export default {
     },
     test: function () {
       console.log('点击了确认')
-      this.$children[0].close()
+      this.$refs.Toast.close()
       this.$router.push('applySuccess')
     },
     submit: function () {
-      console.log(this.$children[0].on_display())
+      let obj = {
+        Title: '是否确认提交？',
+        Content: '请您确保您填写的信息准确无误，否则可能会影响审核结果',
+        type: 1,
+        btn: 2
+      }
+      this.$refs.Toast.on_display(obj)
     }
   },
   mounted () {
@@ -228,6 +294,7 @@ export default {
     overflow: hidden;
     margin: -.5rem auto .5rem;
     display: flex;
+    position: relative;
 }
 .contImg>img{
     width:2.5rem;
@@ -247,6 +314,56 @@ export default {
     margin-top:.3rem;
     text-align: right;
     border: none;
+    font-size: .7rem;
+}
+.contList>.checkBox{
+    height:1.5rem;
+    width:10.7rem;
+    float: right;
+    margin-top:.3rem;
+    text-align: right;
+    border: none;
+    font-size: .7rem;
+    line-height: 1.5rem;
+    color:#ccc;
+}
+.contList>input::placeholder{
+    color:#ccc;
+}
+.contList>button{
+    height:1.5rem;
+    width:10.7rem;
+    float: right;
+    margin-top:.3rem;
+    text-align: right;
+    border: none;
+    color:#ccc;
+    background: rgba(0,0,0,0);
+    font-size: .7rem;
+}
+
+.contList>.seleBox{
+    height:1.5rem;
+    width:10.7rem;
+    float: right;
+    margin-top:.3rem;
+    text-align: right;
+    border: none;
+    color:#ccc;
+    background: rgba(0,0,0,0);
+    font-size: .7rem;
+}
+.contList>.seleBox>select{
+    height:1.5rem;
+    vertical-align: top;
+    border:0;
+    font-size: .7rem;
+}
+.contList>.seleBox>span{
+    display: inline-block;
+    vertical-align: top;
+    line-height: 1.5rem;
+    font-size: .7rem;
 }
 .sex>div{
     height:1.5rem;
@@ -363,5 +480,20 @@ export default {
     height:1.2rem;
     text-align: left;
     margin-top:.9rem;
+}
+.contImgmol{
+    position: absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(16, 16, 16, 0.3);
+    display: flex;
+}
+.contImgmol>img{
+    width:1.1rem;
+    height:1.1rem;
+    align-self: center;
+    margin:0 auto;
 }
 </style>

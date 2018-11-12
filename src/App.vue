@@ -15,7 +15,6 @@ export default {
   },
   mounted () {
     // this.$router.push('/editInfo')
-    console.log(1)
     // this.$axios.get('https://open.weixin.qq.com/connect/qrconnect?appid=wx96f67a9a1e73712d&redirect_uri=REDIRECT_URI&response_type=code&scope=["http://localhost:8080"]&state=STATE#wechat_redirect').then(function (res) {
     //   console.log(res)
     // })
