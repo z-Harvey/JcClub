@@ -14,10 +14,16 @@ export default {
     }
   },
   mounted () {
-    // this.$router.push('/editInfo')
-    // this.$axios.get('https://open.weixin.qq.com/connect/qrconnect?appid=wx96f67a9a1e73712d&redirect_uri=REDIRECT_URI&response_type=code&scope=["http://localhost:8080"]&state=STATE#wechat_redirect').then(function (res) {
-    //   console.log(res)
-    // })
+    let _this = this
+    _this.$axios.post('/api/public_login/', {code: '1'}).then(function (res) {
+      _this.Global.userInfo = res.data
+      console.log(_this.Global)
+      switch (res.data.is_user) {
+        case 0:
+          _this.$router.push('/login')
+          break
+      }
+    })
     // wx.config({
     //   debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
     //   appId: 'wx96f67a9a1e73712d', // 必填，公众号的唯一标识

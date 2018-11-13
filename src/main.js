@@ -17,7 +17,7 @@ Vue.component('Check', Check)
 Vue.component('linkage', linkage)
 Vue.component('Global', Global)
 
-axios.defaults.baseURL = 'http://192.168.0.160:8008'
+// axios.defaults.baseURL = 'http://192.168.0.160:8000'
 Vue.prototype.$axios = axios
 Vue.prototype.$wx = wx
 Vue.prototype.Global = Global
