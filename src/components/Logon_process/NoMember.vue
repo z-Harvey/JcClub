@@ -7,12 +7,14 @@
         <div class="mCtit">感谢您的关注！</div>
         <div class="mCtit">您还未成为酷牛仔会员~</div>
         <div class="mCtit">请先进行入会申请</div>
-        <input class="inviCode" type="text" placeholder="请输入邀请者手机号">
+        <input class="inviCode" type="number" v-model="phone" placeholder="请输入邀请者手机号" @blur="phonezz">
+        <div class="res" :class="res?'reshei':''">手机号码错误</div>
     </div>
     <div class="nani">什么是酷牛仔？</div>
     <div class="wayCj"></div>
     <div class="sqBtnBox">
-        <button class="sqBtn" @click="sqBtn">申请</button>
+        <button v-if="btn" class="sqBtn" @click="sqBtn">申请</button>
+        <button v-else class="sqBtns" disabled>申请</button>
     </div>
   </div>
 </template>
@@ -21,12 +23,39 @@
 export default {
   name: 'NoMember',
   data () {
-    return { }
+    return {
+      phone: null,
+      btn: false,
+      res: true
+    }
   },
   methods: {
     sqBtn: function () {
       console.log('开始 入会申请')
-      this.$router.push('membershipApp')
+      let _this = this
+      _this.$axios({
+        method: 'post',
+        url: '/api/apply_club/',
+        data: {
+          mobile: _this.phone
+        }
+      }).then((res) => {
+        console.log(res)
+        this.$router.push('/membershipApp')
+      })
+    },
+    phonezz: function () {
+      let _this = this
+      if (!(/^1(3|4|5|7|8)\d{9}$/.test(_this.phone))) {
+        _this.btn = false
+        _this.res = false
+        setTimeout(() => {
+          _this.res = true
+        }, 2000)
+      } else {
+        _this.btn = true
+        console.log('chenggong')
+      }
     }
   },
   mounted () {
@@ -45,6 +74,16 @@ export default {
     overflow: auto;
     width:100%;
     height:100%;
+}
+.res{
+    color:red;
+    font-size: .6rem;
+    height:1rem;
+    transition: .1s ease;
+}
+.reshei{
+    height:0;
+    overflow: hidden;
 }
 .titleImg{
     height:8.35rem;
@@ -101,6 +140,19 @@ export default {
     color:#fff;
 }
 .sqBtn::after{
+    border:0;
+}
+.sqBtns{
+    width:10rem;
+    height:1.75rem;
+    background: rgba(241, 241, 241, 1);
+    border-radius: 1rem;
+    font-size: .7rem;
+    border:0;
+    margin: .25rem auto;
+    color:#888;
+}
+.sqBtns::after{
     border:0;
 }
 .wayCj{

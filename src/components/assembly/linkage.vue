@@ -6,15 +6,15 @@
             <div class="cont-content">
                 <div>
                     <div v-for="(item,index) in listData" :key="index" @click="onlin(item)">
-                        <p v-text="item.key"></p>
+                        <p v-text="item.name"></p>
                         <div class="imgBox" v-if="item.show">
                             <img src="@/assets/yes.png" alt="">
                         </div>
                     </div>
                 </div>
                 <div>
-                    <div v-for="(item,index) in listDatas" :key="index" @click="linges(item)">
-                        <p v-text="item.key"></p>
+                    <div v-for="(item,index) in listDatas" :key="index" @click="Choices(item)">
+                        <p v-text="item.name"></p>
                         <div class="imgBox" v-if="item.show">
                             <img src="@/assets/yes.png" alt="">
                         </div>
@@ -24,7 +24,8 @@
             <dir style="height:2rem;"></dir>
             <div class="btnbox">
                 <button @click="qx" class="btn">取消</button>
-                <button @click="qx" class="btn qr">确认</button>
+                <button @click="ok1" v-if="Choice === 1" class="btn qr">确认</button>
+                <button @click="ok2" v-if="Choice === 2" class="btn qr">确认</button>
             </div>
         </div>
    </div>
@@ -35,56 +36,67 @@ export default {
   name: 'linkage',
   data () {
     return {
-      show: true,
+      show: false,
       retuStr: [],
       currList: null,
       dataList: [],
-      listData: [
-        {
-          key: '啊啊啊',
-          show: false
-        },
-        {
-          key: 'ooo',
-          show: true
-        }
-      ],
-      listDatas: [
-        {
-          key: '啊啊啊',
-          show: false
-        },
-        {
-          key: 'ooo',
-          show: false
-        },
-        {
-          key: 'ooo',
-          show: false
-        },
-        {
-          key: 'ooo',
-          show: false
-        },
-        {
-          key: 'ooo',
-          show: false
-        }
-      ]
+      listData: [],
+      listDatas: [],
+      Choice: 0 // 选择类型  单选 多选
     }
   },
   methods: {
+    Choices: function (item) {
+      let _this = this
+      if (this.Choice === 1) {
+        _this.check(item)
+      } else if (this.Choice === 2) {
+        _this.linges(item)
+      }
+    },
     onlin: function (ite) {
       let _this = this
+      let arr = []
       _this.listData.map(function (p1, p2) {
         p1.show = false
+        if (ite.id === p1.id) {
+          p1.show = true
+        }
+        arr.push(p1)
       })
-      ite.show = !ite.show
-      _this.currList = ite.key
+      _this.api.getSearchIndustry('pid=' + ite.id, function (res) {
+        _this.listDatas = res.data
+        _this.listDatas.map(function (p1, p2) {
+          p1['show'] = false
+        })
+      }, function (err) {
+        console.log(err)
+      })
+      _this.listData = arr
+      _this.currList = ite.name
+    },
+    check: function (str) {
+      let _this = this
+      let arr = []
+      _this.listDatas.map(function (p1, p2) {
+        p1.show = false
+        if (p1.id === str.id) {
+          p1.show = !str.show
+        }
+        arr.push(p1)
+      })
+      _this.listDatas = arr
     },
     linges: function (str) {
-      str.show = !str.show
       let _this = this
+      let arr = []
+      _this.listDatas.map(function (p1, p2) {
+        if (p1.id === str.id) {
+          p1.show = !str.show
+        }
+        arr.push(p1)
+      })
+      _this.listDatas = arr
       let bur = false
       if (_this.dataList.length === 0) {
         let obj = {
@@ -94,8 +106,10 @@ export default {
         _this.dataList.push(obj)
       } else {
         _this.dataList.map(function (p1, p2) {
-          if (!(p1.key === _this.currList)) {
+          if (p1.key !== _this.currList) {
             bur = true
+          } else {
+            bur = false
           }
         })
         if (bur) {
@@ -112,16 +126,62 @@ export default {
           })
         }
       }
-      console.log(_this.dataList)
     },
     close: function () {
       this.show = false
     },
-    on_display: function () {
+    on_display: function (data) {
       this.show = true
+      this.Choice = data.Choice
+      this.httpQuery(data.type)
     },
     qx: function () {
       this.close()
+    },
+    httpQuery: function (typ) {
+      let _this = this
+      if (typ === 'industry') {
+        let str = 'pid=0'
+        _this.api.getSearchIndustry(str, function (res) {
+          _this.listData = res.data
+          _this.listData.map(function (p1, p2) {
+            p1['show'] = false
+          })
+        }, function (err) {
+          console.log(err)
+        })
+      }
+    },
+    ok1: function () {
+      let _this = this
+      let cllData = null
+      _this.listDatas.map(function (p1, p2) {
+        if (p1.show === true) {
+          cllData = p1
+        }
+      })
+      _this.$emit('ok', cllData)
+      this.close()
+      _this.listDatas = []
+    },
+    ok2: function () {
+      let _this = this
+      let arr = []
+      _this.dataList.map(function (p1, p2) {
+        p1.cont.map(function (f1, f2) {
+          if (f1.show) {
+            arr.push(f1.name)
+          }
+        })
+      })
+      let obj = {
+        name: arr.join('、'),
+        type: 'duo'
+      }
+      _this.$emit('ok', obj)
+      _this.close()
+      _this.listDatas = []
+      _this.dataList = []
     }
   },
   mounted () {

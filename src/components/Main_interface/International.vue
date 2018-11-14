@@ -116,6 +116,10 @@ export default {
   },
   mounted () {
     document.title = '公海'
+    let _this = this
+    _this.$axios.get('/api/companySea/?relation=0&has_decision=0&search=0&ordering=0').then(function (res) {
+      console.log(res)
+    })
   },
   props: ['show']
 }

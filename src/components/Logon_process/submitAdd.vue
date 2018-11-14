@@ -1,10 +1,11 @@
 <template>
   <div class="submitAdd">
       <Toast ref="Toast" @confirm="test"/>
-      <Check ref="Check"/>
-      <linkage ref="linkage"/>
-      <div class="memTitle">
-          北京酷牛仔俱乐部
+      <Check ref="Check" @ok="cllChe"/>
+      <linkage ref="linkage" @ok="cllLink"/>
+      <search ref="search" @ok="cllSrceach"/>
+      <div class="memTitle" v-text="cludData.name">
+          ----
       </div>
       <div class="memTitle2">
           <div class="memtitImg">
@@ -31,72 +32,71 @@
       <div class="subContentBox" v-if="cont_one">
         <div class="subContent">
             <div class="contImg">
-                <img src="@/assets/touxiang.jpg" alt="">
+                <img :src="userInfo.avatarurl" alt="">
                 <div class="contImgmol">
                     <img src="@/assets/camera.png" alt="">
                 </div>
             </div>
             <div class="contList">
                 <span>姓名</span>
-                <input type="text" placeholder="请输入真实姓名（必填）">
+                <input type="text" v-model="userInfo.name" placeholder="请输入真实姓名（必填）">
             </div>
             <div class="contList sex">
                 <span>性别</span>
                 <div>
-                    <button>帅哥</button>
-                    <button>美女</button>
+                    <button @click="sex(1)" :class="userInfo.gender == 1?'navBtn':''">帅哥</button>
+                    <button @click="sex(2)" :class="userInfo.gender == 2?'navBtn':''">美女</button>
                 </div>
             </div>
             <div class="contList">
                 <span>电话</span>
-                <input type="text" placeholder="请输入电话">
+                <input type="text" v-model="userInfo.mobile" placeholder="请输入电话">
             </div>
-            <div class="contList">
+            <div class="contLists">
                 <span>所在地</span>
-                <div class="seleBox">
-                    <select v-model="city.sel1" @change="selText('1')">
-                        <option value="0">省</option>
-                        <option value="北京">北京</option>
-                        <option value="吉林">吉林</option>
+                <div class="xexBox">
+                    <select v-model="city.sel1" @change="selText('0')" >
+                        <option value="0" v-text="sel3text[0]||'--请选择--'"></option>
+                        <option v-for="(item, index) in sList" :key="index" :value="item.id" v-text="item.name">省</option>
                     </select>
-                    <span>/</span>
-                    <select v-model="city.sel2" @change="selText('2')">
-                        <option value="0">市</option>
-                        <option value="长春">长春</option>
-                        <option value="吉林">吉林</option>
+                    <!-- <span>/</span> -->
+                    <select v-model="city.sel2" @change="selText('1')">
+                        <option value="0" v-text="sel3text[1]||'--请选择--'"></option>
+                        <option v-for="(item, index) in sList1" :key="index" :value="item.id" v-text="item.name">市</option>
                     </select>
-                    <span>/</span>
-                    <select v-model="city.sel3" @change="selText('3')">
-                        <option value="0">区</option>
-                        <option value="丰满区">丰满区</option>
-                        <option value="船营区">船营区</option>
+                    <!-- <span>/</span> -->
+                    <select v-model="city.sel3" @change="selText('2')">
+                        <option value="0" v-text="sel3text[2]||'--请选择--'"></option>
+                        <option v-for="(item, index) in sList2" :key="index" :value="item.id" v-text="item.name">区</option>
                     </select>
                 </div>
             </div>
             <div class="contList">
                 <span>邮件</span>
-                <input type="text" placeholder="请输入邮箱">
+                <input type="email" v-model="userInfo.email" placeholder="请输入邮箱">
             </div>
             <div class="contList">
                 <span>微信号</span>
-                <input type="text" placeholder="请输入微信号">
+                <input type="text" v-model="userInfo.wx_no" placeholder="请输入微信号（必填）">
             </div>
             <div class="contList">
                 <span>生日</span>
-                <input type="date" v-model="date"/>
+                <input type="date" v-model="userInfo.birthday"/>
             </div>
-            <div class="contList">
+            <div class="contLists">
                 <span>学历</span>
-                <div class="seleBox">
-                    <select v-model="edu" @change="selText">
-                        <option value="0">请选择</option>
+                <div class="xexBox">
+                    <select v-model="userInfo.edu_background" @change="selText">
+                        <option value="">请选择</option>
                         <option value="小学">小学</option>
                         <option value="初中">初中</option>
-                        <option value="高中">高中</option>
                         <option value="中专">中专</option>
+                        <option value="中技">中技</option>
+                        <option value="高中">高中</option>
                         <option value="大专">大专</option>
                         <option value="本科">本科</option>
-                        <option value="研究生">研究生</option>
+                        <option value="硕士">硕士</option>
+                        <option value="博士">博士</option>
                     </select>
                 </div>
             </div>
@@ -106,59 +106,59 @@
           <div class="subContent">
             <div class="contList">
                 <span>公司</span>
-                <input type="text" placeholder="当前所在公司（必填）">
+                <div @click="check('sea')" v-text="workInfo.comname||'当前所在公司（必填）'" class="checkBox"></div>
             </div>
             <div class="contList">
                 <span>行业</span>
-                <input type="text" placeholder="当前所在行业（必填）">
+                <div @click="check" v-text="workInfo.industry||'当前所在行业（必填）'" class="checkBox"></div>
             </div>
             <div class="contList">
                 <span>职业</span>
-                <input type="text" placeholder="当前的职位（必填）">
+                <input type="text" v-model="workInfo.position" placeholder="当前的职位（必填）">
             </div>
             <div class="contList">
                 <span>擅长领域</span>
-                <div @click="check" class="checkBox">擅长的行业领域（多选、必填）</div>
+                <div @click="check('duo')" v-text="workInfo.scArea||'擅长的行业领域（多选、必填）'" class="checkBox" style="overflow: hidden;"></div>
             </div>
             <div class="contList">
                 <span>对接部门</span>
-                <div @click="check" class="checkBox">开发客户的对接部门（多选）</div>
+                <div @click="check('xuanze')" v-text="workInfo.department||'开发客户的对接部门（多选）'" class="checkBox"></div>
             </div>
           </div>
           <div class="subContent">
             <div class="subcontList">
                 <span>销售产品</span>
-                <input class="width_100inp" type="text" placeholder="请输入产品名称">
-                <img class="plus" src="@/assets/plus.png" alt="">
+                <input class="width_100inp" v-for="(item,index) in workInfo.product" :key="index" v-model="item.key" type="text" placeholder="请输入产品名称">
+                <img class="plus" @click="subjia(1)" src="@/assets/plus.png" alt="">
             </div>
           </div>
           <div class="subContent">
             <div class="contList">
                 <span>工作年限</span>
-                <input type="text" placeholder="参加工作的年限">
+                <input type="date" v-model="workInfo.workyears"/>
             </div>
             <div class="contList">
                 <span>销售年限</span>
-                <input type="text" placeholder="做销售的工作年限">
+                <input type="date" v-model="workInfo.salesyears"/>
             </div>
             <div class="contList">
                 <span>行业年限</span>
-                <input type="text" placeholder="目前所在行业的工作年限">
+                <input type="date" v-model="workInfo.industryyears"/>
             </div>
           </div>
           <div class="subContent">
             <div class="subcontList">
                 <span>销售荣誉</span>
-                <div>
-                    <input class="width_100inp" type="text" placeholder="请输入荣誉名称">
+                <div v-for="(item, index) in workInfo.honors" :key="index">
+                    <input class="width_100inp" v-model="item.key" type="text" placeholder="请输入荣誉名称">
                     <button>上传图片</button>
                 </div>
-                <img class="plus" src="@/assets/plus.png" alt="">
+                <img class="plus" @click="subjia(2)" src="@/assets/plus.png" alt="">
             </div>
           </div>
       </div>
       <div class="flxBut" v-if="cont_one">
-          <button @click="next_step">下一步</button>
+          <button @click="userInfoPush">下一步</button>
       </div>
       <div class="flxBut2" v-else>
           <button @click="next_step">上一步</button>
@@ -168,52 +168,341 @@
 </template>
 
 <script>
+import search from '@/components/Logon_process/srceach'
+
 export default {
   name: 'submitAdd',
   data () {
     return {
+      sel3text: [],
       CityStr: null,
-      cont_one: false,
+      cont_one: true,
+      sList: [],
+      sList1: [],
+      sList2: [],
+      cludData: [
+        {
+          club: '',
+          club__name: ''
+        }
+      ],
       city: {
         sel1: 0,
         sel2: 0,
         sel3: 0
       },
-      date: null,
-      edu: 0
+      queryData: {},
+      edu: '',
+      userInfo: {
+        name: '', // 用户名  *
+        gender: '', // 性别 1男2女 *
+        mobile: '', // 电话 *
+        area: '', // 所在地 *
+        email: '', // 邮箱
+        wx_no: '', // 微信号 *
+        birthday: '', // 生日 *
+        edu_background: '', // 学历 *
+        avatarurl: '', // 头像路径
+        club: '' // 俱乐部   int
+      },
+      workInfo: {
+        comname: null, // 公司名
+        industry: null, // 行业
+        position: null, // 职位
+        scArea: null, // 擅长领域
+        department: null, // 对接部门
+        product: [{key: ''}], // 产品
+        workyears: null, // 工作年限
+        salesyears: null, // 销售年限
+        industryyears: null, // 行业年限
+        honors: [{key: '',img: ''}], // 荣誉
+        club_id: null // 俱乐部ID
+      }
     }
   },
+  components: {
+    search
+  },
   methods: {
-    selText: function (str) {
-      console.log(this.edu)
-      switch (str) {
-        case '1':
-          console.log(this.city.sel1)
-          break
-        case '2':
-          console.log(this.city.sel2)
-          break
-        case '3':
-          console.log(this.city.sel3)
-          break
+    subjia: function (num) {
+      let _this = this
+      if (num === 1) {
+        if (!(_this.workInfo.product[_this.workInfo.product.length-1].key === '')) {
+          _this.workInfo.product.push({key: ''})
+        }
+      } else if (num === 2) {
+        if (!(_this.workInfo.honors[_this.workInfo.honors.length-1].key === '')) {
+          _this.workInfo.honors.push({key: ''})
+        }
       }
     },
-    check: function () {
-    //   this.$refs.Check.on_display()
-      this.$refs.linkage.on_display()
+    /**
+     * 男女按钮
+     */
+    sex: function (num) {
+      let _this = this
+      _this.userInfo.gender = num
     },
     /**
-     * 点击'下一步'或'上一步' 时界面切换
+     * 提交 基本信息
+     */
+    userInfoPush: function () {
+      let _this = this
+      let areaArr = []
+      
+      if (_this.city.sel1 === 0) {
+        areaArr.push(sel3text[0])
+      } else {
+        _this.sList.map(function (p1, p2) {
+          if (p1.id === _this.city.sel1) {
+            areaArr.push(p1.name)
+          }
+        })
+      }
+      if (_this.city.sel2 === 0) {
+        areaArr.push(sel3text[1])
+      } else {
+        _this.sList1.map(function (p1, p2) {
+          if (p1.id === _this.city.sel2) {
+            areaArr.push(p1.name)
+          }
+        })
+      }
+      if (_this.city.sel3 === 0) {
+        areaArr.push(sel3text[2])
+      } else {
+        _this.sList2.map(function (p1, p2) {
+          if (p1.id === _this.city.sel3) {
+            areaArr.push(p1.name)
+          }
+        })
+      }
+      _this.userInfo.area = areaArr.join('|')
+      if (_this.userInfo.name === null || _this.userInfo.name === '') {
+        let obj = {
+          Title: '提示',
+          Content: '请填写真实姓名',
+          type: 1,
+          btn: 0
+        }
+        this.$refs.Toast.on_display(obj)
+        return
+      }
+      if (!(_this.userInfo.gender === 1 || _this.userInfo.gender === 2)) {
+        let obj = {
+          Title: '提示',
+          Content: '请填写性别',
+          type: 1,
+          btn: 0
+        }
+        this.$refs.Toast.on_display(obj)
+        return
+      }
+      if (_this.userInfo.mobile === null || _this.userInfo.mobile === '') {
+        let obj = {
+          Title: '提示',
+          Content: '请填写电话号码',
+          type: 1,
+          btn: 0
+        }
+        this.$refs.Toast.on_display(obj)
+        return
+      }
+      if (_this.userInfo.area === null || _this.userInfo.area === '') {
+        let obj = {
+          Title: '提示',
+          Content: '请选择所在地',
+          type: 1,
+          btn: 0
+        }
+        this.$refs.Toast.on_display(obj)
+        return
+      }
+      if (_this.userInfo.wx_no === null || _this.userInfo.wx_no === '') {
+        let obj = {
+          Title: '提示',
+          Content: '请填写微信号',
+          type: 1,
+          btn: 0
+        }
+        this.$refs.Toast.on_display(obj)
+        return
+      }
+      if (_this.userInfo.edu_background === null || _this.userInfo.edu_background === '') {
+        let obj = {
+          Title: '提示',
+          Content: '请选择学历',
+          type: 1,
+          btn: 0
+        }
+        this.$refs.Toast.on_display(obj)
+        return
+      }
+      let re = /^(\w-*\.*)+@(\w-?)+(\.\w{2,})+$/
+      if (!(re.test(_this.userInfo.email))) {
+        let obj = {
+          Title: '提示',
+          Content: '请填写正确邮箱',
+          type: 1,
+          btn: 0
+        }
+        this.$refs.Toast.on_display(obj)
+        return
+      }
+      _this.userInfo.club = _this.cludData.id
+      console.log(_this.userInfo)
+      _this.api.postUserInfo(_this.userInfo, function (res) {
+        if (res.data.step === 2) {
+          _this.cont_one = !_this.cont_one
+        }
+      }, function (err) {
+        console.log(err)
+      })
+    },
+    selText: function (str, data) {
+      let _this = this
+      let num = null
+      if (str === '0') {
+        _this.sel3text = ['', '', '']
+        num = _this.city.sel1
+      } else if (str === '1') {
+        _this.sel3text[2] = ''
+        num = _this.city.sel2
+      }
+      _this.api.getAreaList('pid=' + num, function (res) {
+        console.log(res)
+        switch (str) {
+          case '0':
+            _this.sList1 = res.data
+            break
+          case '1':
+            _this.sList2 = res.data
+            break
+        }
+      }, function (err) {
+        console.log(err)
+      })
+    },
+    check: function (typ) {
+      let _this = this
+      if (typ === 'sea') {
+        _this.$refs.search.on_display()
+        return
+      } else if (typ === 'duo') {
+        this.$refs.linkage.on_display({type: 'industry', Choice: 2})
+        return
+      } else if (typ === 'xuanze') {
+        this.$refs.Check.on_display({type: 'submitAdd'})
+        return
+      }
+      this.$refs.linkage.on_display({type: 'industry', Choice: 1})
+    },
+    /**
+     * 点击 '上一步' 时界面切换
      */
     next_step: function (res) {
       this.cont_one = !this.cont_one
     },
+    /**
+     * 提交经验信息
+     */
     test: function () {
-      console.log('点击了确认')
+      let _this = this
       this.$refs.Toast.close()
+      console.log(_this.cludData.id)
+      _this.workInfo.club_id = _this.cludData.id
+      _this.api.postWorkInfo(JSON.stringify(_this.workInfo), function (res) {
+        console.log(res)
+      }, function (err) {
+        console.log(err)
+      })
       this.$router.push('applySuccess')
     },
+    /**
+     * 点击提交
+     */
     submit: function () {
+      let _this = this
+      if (_this.workInfo.comname === null || _this.workInfo.comname === '') {
+        let obj = {
+          Title: '提示',
+          Content: '请选择公司',
+          type: 1,
+          btn: 0
+        }
+        this.$refs.Toast.on_display(obj)
+        return
+      }
+      if (_this.workInfo.industry === null || _this.workInfo.industry === '') {
+        let obj = {
+          Title: '提示',
+          Content: '请选择行业',
+          type: 1,
+          btn: 0
+        }
+        this.$refs.Toast.on_display(obj)
+        return
+      }
+      if (_this.workInfo.position === null || _this.workInfo.position === '') {
+        let obj = {
+          Title: '提示',
+          Content: '请填写职业',
+          type: 1,
+          btn: 0
+        }
+        this.$refs.Toast.on_display(obj)
+        return
+      }
+      if (_this.workInfo.scArea === null || _this.workInfo.scArea === '') {
+        let obj = {
+          Title: '提示',
+          Content: '请选择擅长领域',
+          type: 1,
+          btn: 0
+        }
+        this.$refs.Toast.on_display(obj)
+        return
+      }
+      if (_this.workInfo.department === null || _this.workInfo.department === '') {
+        let obj = {
+          Title: '提示',
+          Content: '请选择对接部门',
+          type: 1,
+          btn: 0
+        }
+        this.$refs.Toast.on_display(obj)
+        return
+      }
+      if (_this.workInfo.workyears === null || _this.workInfo.workyears === '') {
+        let obj = {
+          Title: '提示',
+          Content: '请选择工作年限',
+          type: 1,
+          btn: 0
+        }
+        this.$refs.Toast.on_display(obj)
+        return
+      }
+      if (_this.workInfo.department === null || _this.workInfo.department === '') {
+        let obj = {
+          Title: '提示',
+          Content: '请选择销售年限',
+          type: 1,
+          btn: 0
+        }
+        this.$refs.Toast.on_display(obj)
+        return
+      }
+      if (_this.workInfo.industryyears === null || _this.workInfo.industryyears === '') {
+        let obj = {
+          Title: '提示',
+          Content: '请选择行业年限',
+          type: 1,
+          btn: 0
+        }
+        this.$refs.Toast.on_display(obj)
+        return
+      }
       let obj = {
         Title: '是否确认提交？',
         Content: '请您确保您填写的信息准确无误，否则可能会影响审核结果',
@@ -221,10 +510,58 @@ export default {
         btn: 2
       }
       this.$refs.Toast.on_display(obj)
+    },
+    cllSrceach: function (data) {
+      let _this = this
+      _this.workInfo.comname = data.name
+    },
+    cllLink: function (res) {
+      let _this = this
+      if (res.type === 'duo') {
+        _this.workInfo.scArea = res.name
+        console.log(res.name)
+        return
+      }
+      _this.workInfo.industry = res.name
+    },
+    cllChe: function (res) {
+      console.log(res)
+      let _this = this
+      _this.workInfo.department = res
     }
   },
   mounted () {
     document.title = '入会申请'
+    let _this = this
+    console.log(_this.queryData)
+    this.api.getUserNum(function (res) { // 未完成的基本信息
+      _this.cludData = res.data.club
+      if (_this.$route.query.step === 2) {
+        let obj = {
+          id: res.data.club[0].club,
+          name: res.data.club[0].club__name
+        }
+        _this.cludData = obj
+        _this.cont_one = false
+      } else {
+        _this.cludData = _this.$route.query
+      }
+      _this.sel3text = res.data.area.split('|')
+      _this.userInfo = res.data
+    }, function (err) {
+      console.log(err)
+    })
+    this.api.getWorkNum(function (res) { // 未完成的经验信息
+      console.log(res)
+    }, function (err) {
+      console.log(err)
+    })
+    _this.api.getAreaList('pid=0', function (res) {
+      console.log('地址')
+      _this.sList = res.data
+    }, function (err) {
+      console.log(err)
+    })
   }
 }
 </script>
@@ -241,6 +578,7 @@ export default {
     position: fixed;
     top:0;
     left:0;
+    z-index: 9;
 }
 .memTitle2{
     width:100%;
@@ -250,9 +588,10 @@ export default {
     position: fixed;
     top:2rem;
     left:0;
+    z-index: 9;
 }
 .memtitImg{
-    margin-top: .5rem
+    margin-top: .5rem;
 }
 .memtitImg>div{
     width:3rem;
@@ -357,7 +696,7 @@ export default {
     height:1.5rem;
     vertical-align: top;
     border:0;
-    font-size: .7rem;
+    font-size: .5rem;
 }
 .contList>.seleBox>span{
     display: inline-block;
@@ -495,5 +834,34 @@ export default {
     height:1.1rem;
     align-self: center;
     margin:0 auto;
+}
+.sex>div>.navBtn{
+    background:rgba(255, 152, 0, 1);
+    color:#fff;
+}
+
+.subContent>.contLists{
+    text-align: left;
+    padding:0rem .5rem;
+    font-size: .7rem;
+    line-height: 2.25rem;
+}
+.contLists>.xexBox{
+    margin-top:.3rem;
+    text-align: right;
+    border: none;
+    width: calc(100% - 1rem);
+    padding:0 0 0 1rem;
+    color:#ccc;
+    background: #fff;
+    font-size: .7rem;
+}
+.contLists>.xexBox>select{
+    width:100%;
+    height:1.5rem;
+    vertical-align: top;
+    border:0;
+    font-size: .7rem;
+    color:#888;
 }
 </style>

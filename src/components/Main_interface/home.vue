@@ -74,7 +74,16 @@ export default {
   },
   mounted () {
     document.title = '酷牛仔'
+    let _this = this
     this.nav_list = this.Global.navListType
+    _this.$axios.get({
+      url: '/api/club_user/',
+      headers: {
+        Authorization: 'JWT ' + _this.Global.userInfo.token
+      }
+    }).then(function (res) {
+      console.log(res)
+    })
     // let obj = {
     //   Title: '提示',
     //   Content: '您尚未开通查客户权限，是否立即申请开通？',

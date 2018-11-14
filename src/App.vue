@@ -15,27 +15,46 @@ export default {
   },
   mounted () {
     let _this = this
-    _this.$axios.post('/api/public_login/', {code: '1'}).then(function (res) {
-      _this.Global.userInfo = res.data
-      console.log(_this.Global)
-      switch (res.data.is_user) {
-        case 0:
-          _this.$router.push('/login')
-          break
+    let obj = {
+      code: '1'
+    }
+    _this.api.getToken(obj, function (res) {
+      if (res.data.is_user === 1) {
+        switch (res.data.step) {
+          case 0:
+            _this.$router.push('/NoMember')
+            break
+          case 1:
+            _this.$router.push('/membershipApp')
+            break
+          case 2:
+            _this.$router.push({
+              path: '/submitAdd',
+              query: {step: 2}
+            })
+            break
+        }
+      } else {
       }
+    }, function (err) {
+      console.log(err)
     })
-    // wx.config({
-    //   debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-    //   appId: 'wx96f67a9a1e73712d', // 必填，公众号的唯一标识
-    //   timestamp: new Date().getTime(), // 必填，生成签名的时间戳
-    //   nonceStr: 'adfasdf32avsdfc23', // 必填，生成签名的随机串
-    //   signature: 'bxLdikRXVbTPdHSM05e5u5sUoXNKd8-41ZO3MhKoyN5OfkWITDGgnr2fwJ0m9E8NYzWKVZvdVtaUgWvsdshFKA', // 必填，签名
-    //   jsApiList: ['onMenuShareTimeline'], // 必填，需要使用的JS接口列表
-    //   success: (res) => {
-    //     console.log(res)
+    // return
+    //   _this.Global.userInfo = res.data
+    //   _this.$axios.defaults.headers.Authorization = 'JWT ' + _this.Global.userInfo.token
+    //   console.log(_this.$axios.defaults)
+    //   if (res.data.is_user === 1) {
+    //     switch (res.data.step) {
+    //       case 0:
+    //         _this.$router.push('/NoMember')
+    //         break
+    //       case 1:
+    //         _this.$router.push('/membershipApp')
+    //         break
+    //     }
+    //   } else {
+
     //   }
-    // })
-    // console.log(wx)
   },
   methods: {
     clicks: function () {}

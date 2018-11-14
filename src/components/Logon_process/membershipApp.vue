@@ -4,20 +4,20 @@
           请选择您想要加入的俱乐部
       </div>
       <div style="height:2rem;margin-bottom: .5rem;"></div>
-      <div class="listFor">
+      <div class="listFor" v-for="(item,index) in listData" :key="index">
           <img class="shu" src="@/assets/membershipApp_shu.png" alt="">
-          <div class="memName">北京酷牛仔俱乐部</div>
+          <div class="memName" v-text="item.name">北京酷牛仔俱乐部</div>
           <div class="address">
               <img src="@/assets/location.png" alt="">
-              <div>北京</div>
+              <div v-text="item.area">北京</div>
           </div>
-          <div class="introduce">北京第一家俱乐部</div>
+          <div class="introduce" v-text="item.desc">北京第一家俱乐部</div>
           <div class="btnBox">
               <div class="btnBox_left">
                   <img src="@/assets/friend(3).png" alt="">
-                  <div>60/500</div>
+                  <div v-text="item.now_people + '/' + item.max_people">60/500</div>
               </div>
-              <button @click="mberApp">加入</button>
+              <button @click="mberApp(item)">加入</button>
           </div>
       </div>
   </div>
@@ -27,16 +27,27 @@
 export default {
   name: 'membershipApp',
   data () {
-    return { }
+    return {
+      listData: null
+    }
   },
   methods: {
-    mberApp: function () {
-      console.log('开始 申请')
-      this.$router.push('submitAdd')
+    mberApp: function (data) {
+      console.log(data)
+      this.$router.push({
+        path: '/submitAdd',
+        query: data
+      })
     }
   },
   mounted () {
     document.title = '入会申请'
+    let _this = this
+    _this.api.getClubList(function (res) {
+      _this.listData = res.data
+    }, function (err) {
+      console.log(err)
+    })
   }
 }
 </script>

@@ -3,7 +3,6 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
-import axios from 'axios'
 import wx from 'wx'
 
 import Toast from './components/assembly/Toast'
@@ -11,16 +10,17 @@ import ModalInfo from './components/assembly/ModalInfo'
 import Check from './components/assembly/Check'
 import linkage from './components/assembly/linkage'
 import Global from './components/Global'
+import api from './components/api'
+
 Vue.component('Toast', Toast)
 Vue.component('ModalInfo', ModalInfo)
 Vue.component('Check', Check)
 Vue.component('linkage', linkage)
-Vue.component('Global', Global)
 
 // axios.defaults.baseURL = 'http://192.168.0.160:8000'
-Vue.prototype.$axios = axios
 Vue.prototype.$wx = wx
 Vue.prototype.Global = Global
+Vue.prototype.api = api
 
 Vue.config.productionTip = false
 

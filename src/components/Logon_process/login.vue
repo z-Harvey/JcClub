@@ -10,7 +10,7 @@
         <div class="inpListInp3Box">
             <input type="number" maxlength="6" v-model="hehe" placeholder="请输入短信验证码">
             <button v-if="yzBtn" @click="getyzm" v-text="btnText">获取验证码</button>
-            <button v-else disabled v-text="btnText">获取验证码</button>
+            <button v-else disabled v-text="btnText" class="bukedianji">获取验证码</button>
         </div>
         <div class="asc yzm_ts" :class="yzm_yz?'hei1':''">验证码错误</div>
     </div>
@@ -48,6 +48,7 @@ export default {
           if (s === 0) {
             _this.btnText = '获取验证码'
             clearInterval(index)
+            _this.yzBtn = true
             return
           }
           _this.btnText = s + 's'
@@ -66,21 +67,31 @@ export default {
         _this.ph_ts = false
       }
     },
+    /**
+     * 登录按钮 触发 的事件
+     */
     loginBtn: function () {
       let _this = this
-      if (_this.yzm === null) {
+      // _this.$router.push('/NoMember')
+      if (_this.hehe === null) {
         return
       }
-      console.log(_this.yzm)
-      console.log(_this.hehe)
-      if (_this.yzm + '' === _this.hehe) {
-        _this.$router.push('/NoMember')
-      } else {
-        _this.yzm_yz = false
-        setTimeout(() => {
-          _this.yzm_yz = true
-        }, 1000)
+      let obj = {
+        mobile: _this.phone + '',
+        client_type: '2',
+        token: _this.Global.userInfo.token,
+        verify_code: _this.hehe
       }
+      _this.$axios.post('/api/regist/', obj).then(function (res) {
+        console.log(res)
+        _this.Global.userInfo['avatarurl'] = res.data.avatarurl
+        _this.Global.userInfo['nickname'] = res.data.nickname
+        _this.Global.userInfo['token'] = res.data.token
+        _this.Global.userInfo['userSig'] = res.data.userSig
+        _this.$router.push('/NoMember')
+      }, function (err) {
+        console.log(err)
+      })
     }
   },
   mounted () {
@@ -106,7 +117,6 @@ export default {
     margin-top:1.24rem;
 }
 .inpList>input,.inpListInp3Box>input{
-    /* margin-bottom:1rem; */
     width: 84%;
     height: 2.25rem;
     font-size: .7rem;
@@ -151,11 +161,14 @@ export default {
     padding-left:2.4rem;
     text-align: left;
     margin-bottom:1rem;
-    transition: .2s ease;
+    transition: .1s ease;
     height:0rem;
     overflow: hidden;
 }
 .hei1{
     height:1rem;
+}
+.inpListInp3Box>.bukedianji{
+  color:#888;
 }
 </style>

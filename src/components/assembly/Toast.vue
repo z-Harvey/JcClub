@@ -35,7 +35,10 @@
             </div>
         </div>
         <div style="height:2.5rem;"></div>
-        <div class="butList" v-if="content.btn === 1">
+        <div class="butList" v-if="content.btn === 0">
+            <button @click="close" v-text="content.No? content.No:'取消'" class="btnOne qx"></button>
+        </div>
+        <div class="butList" v-else-if="content.btn === 1">
             <button @click="_click" v-text="content.Yes? content.Yes:'确认'" class="btnOne"></button>
         </div>
         <div class="butList" v-else>

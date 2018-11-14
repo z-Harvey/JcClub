@@ -18,6 +18,11 @@
           <div>备注</div>
           <textarea placeholder="输入备注信息"></textarea>
       </div>
+      <div class="benBox">
+          <button v-if="false" @click="ok">提交</button>
+          <button v-else class="dis">提交</button>
+      </div>
+      <Toast ref="Toast"/>
   </div>
 </template>
 
@@ -31,6 +36,9 @@ export default {
   components: {
   },
   methods: {
+    ok: function () {
+
+    }
   },
   mounted () {
     document.title = '创建俱乐部'
@@ -96,5 +104,27 @@ export default {
 }
 .con1>textarea::after{
     border:0;
+}
+.benBox{
+    width:100%;
+    height:2.25rem;
+    position: fixed;
+    bottom: 0rem;
+    left:0rem;
+}
+.benBox>button{
+    width:10rem;
+    height:1.75rem;
+    background: rgba(255, 152, 0, 1);
+    color:#fff;
+    border-radius: 1rem;
+    border: 0;
+}
+.benBox>button::after{
+    border:0;
+}
+.benBox>.dis{
+    background: rgba(241, 241, 241, 1);
+    color:#888;
 }
 </style>

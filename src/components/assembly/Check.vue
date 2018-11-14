@@ -2,9 +2,9 @@
   <div class="Check" v-if="show">
         <div class="contBox">
             <div class="checkBox">
-                <div v-for="(item,index) in arr" :key="index">
-                    <p v-text="item.keys">选择1</p>
-                    <div><img src="@/assets/yes.png" alt=""></div>
+                <div v-for="(item,index) in arr" :key="index" @click="btn(item)">
+                    <p v-text="item.name"></p>
+                    <div v-if="item.show"><img src="@/assets/yes.png" alt=""></div>
                 </div>
                 <p style="height:2rem;"></p>
             </div>
@@ -18,19 +18,55 @@ export default {
   name: 'Check',
   data () {
     return {
-      arr: [{'keys': '1'}, {'keys': '2'}, {'keys': '3'}, {'keys': '4'}],
+      arr: [],
       show: false
     }
   },
   methods: {
-    on_display: function () {
+    on_display: function (obj) {
+      let _this = this
+      if (obj.type === 'submitAdd') {
+        _this.httpQuery(1)
+      }
       this.show = true
     },
     close: function () {
       this.show = false
     },
     OK: function () {
-      this.close()
+      let _this = this
+      let arr = []
+      _this.arr.map(function (p1, p2) {
+        if (p1.show) {
+          arr.push(p1.name)
+        }
+      })
+      _this.$emit('ok', arr.join('、'))
+      _this.close()
+    },
+    httpQuery: function (num) {
+      let _this = this
+      if (num === 1) {
+        _this.api.getDepartmentList(function (res) {
+          _this.arr = res.data
+          _this.arr.map(function (p1, p2) {
+            p1['show'] = false
+          })
+        }, function (err) {
+          console.log(err)
+        })
+      }
+    },
+    btn: function (item) {
+      let _this = this
+      let arrs = []
+      _this.arr.map(function (p1, p2) {
+        if (p1.id === item.id) {
+          p1.show = !p1.show
+        }
+        arrs.push(p1)
+      })
+      _this.arr = arrs
     }
   },
   mounted () {
