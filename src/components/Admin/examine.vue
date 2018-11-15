@@ -1,5 +1,5 @@
 <template>
-  <div class="homePage">
+  <div class="examine">
       <div class="navBtn">
             <nav>
                 <div>全部</div>
@@ -19,7 +19,7 @@
 import ToBeAudited from '@/components/Admin/ToBeAudited'
 
 export default {
-  name: 'homePage',
+  name: 'examine',
   data () {
     return {
     }

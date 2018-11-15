@@ -2,19 +2,19 @@
   <div class="NoMember">
     <div class="titleImg">
         <div class="titBox">
-            <img src="@/assets/touxiang.jpg" alt="">
+            <img :src="msg.avatarurl" alt="">
         </div>
-        <p>李晓沫</p>
-        <p class="hehe">于 yyyy/mm/dd hh:mm 申请加入</p>
-        <p>北京酷牛仔俱乐部</p>
+        <p v-text="msg.name">李晓沫</p>
+        <p class="hehe">于 <span v-text="msg.add_time"></span> 申请加入</p>
+        <p v-text="msg.club_name">北京酷牛仔俱乐部</p>
     </div>
-    <div class="meContent">
-        <p>您已成功申请加入北京酷牛仔俱乐部</p>
+    <div class="meContent" v-if="msg.status === 4">
+        <p>您已成功申请加入<span v-text="msg.club_name"></span></p>
         <p>请联系您的<span class="font-col">邀请者</span></p>
         <p>在“我-我邀请的会员”对您的邀请进行确认</p>
     </div>
-    <div class="meContent">
-        <p>您已成功申请加入北京酷牛仔俱乐部</p>
+    <div class="meContent" v-if="msg.status === 5">
+        <p>您已成功申请加入<span v-text="msg.club_name"></span></p>
         <p>我们将在48小时内给您反馈</p>
         <p>请您留意<span class="font-sty">微信服务号</span>或<span class="font-sty">短信</span>的通知</p>
         <p>如有任何疑问您可以</p>
@@ -28,7 +28,11 @@
 export default {
   name: 'NoMember',
   data () {
-    return { }
+    return {
+      msg: {
+        avatarurl: ''
+      }
+    }
   },
   methods: {
     sqBtn: function () {
@@ -38,6 +42,12 @@ export default {
   },
   mounted () {
     document.title = '酷牛仔'
+    let _this = this
+    _this.api.getApplyStatus(function (res) {
+      _this.msg = res.data[0]
+    }, function (err) {
+      console.log(err)
+    })
   }
 }
 </script>

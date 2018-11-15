@@ -4,8 +4,10 @@
       <Check ref="Check" @ok="cllChe"/>
       <linkage ref="linkage" @ok="cllLink"/>
       <search ref="search" @ok="cllSrceach"/>
-      <div class="memTitle" v-text="cludData.name">
-          ----
+      <div class="memTitle">
+          <img src="@/assets/membershipApp_shu1.png" alt="">
+          <span class="clubName" v-text="userInfo.club[0].club__name"></span>
+          <span class="genghuan" @click="genghuan">更换</span>
       </div>
       <div class="memTitle2">
           <div class="memtitImg">
@@ -180,18 +182,11 @@ export default {
       sList: [],
       sList1: [],
       sList2: [],
-      cludData: [
-        {
-          club: '',
-          club__name: ''
-        }
-      ],
       city: {
         sel1: 0,
         sel2: 0,
         sel3: 0
       },
-      queryData: {},
       edu: '',
       userInfo: {
         name: '', // 用户名  *
@@ -203,7 +198,7 @@ export default {
         birthday: '', // 生日 *
         edu_background: '', // 学历 *
         avatarurl: '', // 头像路径
-        club: '' // 俱乐部   int
+        club: [{club__name: ''}] // 俱乐部   int
       },
       workInfo: {
         comname: null, // 公司名
@@ -215,7 +210,7 @@ export default {
         workyears: null, // 工作年限
         salesyears: null, // 销售年限
         industryyears: null, // 行业年限
-        honors: [{key: '',img: ''}], // 荣誉
+        honors: [{key: '', img: ''}], // 荣誉
         club_id: null // 俱乐部ID
       }
     }
@@ -227,11 +222,11 @@ export default {
     subjia: function (num) {
       let _this = this
       if (num === 1) {
-        if (!(_this.workInfo.product[_this.workInfo.product.length-1].key === '')) {
+        if (!(_this.workInfo.product[_this.workInfo.product.length - 1].key === '')) {
           _this.workInfo.product.push({key: ''})
         }
       } else if (num === 2) {
-        if (!(_this.workInfo.honors[_this.workInfo.honors.length-1].key === '')) {
+        if (!(_this.workInfo.honors[_this.workInfo.honors.length - 1].key === '')) {
           _this.workInfo.honors.push({key: ''})
         }
       }
@@ -249,10 +244,20 @@ export default {
     userInfoPush: function () {
       let _this = this
       let areaArr = []
-      
+      console.log(_this.city.sel1)
       if (_this.city.sel1 === 0) {
-        areaArr.push(sel3text[0])
-      } else {
+        areaArr.push(_this.sel3text[0])
+        if (_this.sel3text[0] === '--请选择--') {
+          let obj = {
+            Title: '提示',
+            Content: '请选择完整所在地',
+            type: 1,
+            btn: 0
+          }
+          this.$refs.Toast.on_display(obj)
+          return
+        }
+      } else if (_this.city.sel1 > 0) {
         _this.sList.map(function (p1, p2) {
           if (p1.id === _this.city.sel1) {
             areaArr.push(p1.name)
@@ -260,8 +265,18 @@ export default {
         })
       }
       if (_this.city.sel2 === 0) {
-        areaArr.push(sel3text[1])
-      } else {
+        areaArr.push(_this.sel3text[1])
+        if (_this.sel3text[1] === '--请选择--') {
+          let obj = {
+            Title: '提示',
+            Content: '请选择完整所在地',
+            type: 1,
+            btn: 0
+          }
+          this.$refs.Toast.on_display(obj)
+          return
+        }
+      } else if (_this.city.sel2 > 0) {
         _this.sList1.map(function (p1, p2) {
           if (p1.id === _this.city.sel2) {
             areaArr.push(p1.name)
@@ -269,8 +284,19 @@ export default {
         })
       }
       if (_this.city.sel3 === 0) {
-        areaArr.push(sel3text[2])
-      } else {
+        areaArr.push(_this.sel3text[2])
+        console.log(_this.sel3text[2])
+        if (_this.sel3text[2] === '--请选择--') {
+          let obj = {
+            Title: '提示',
+            Content: '请选择完整所在地',
+            type: 1,
+            btn: 0
+          }
+          this.$refs.Toast.on_display(obj)
+          return
+        }
+      } else if (_this.city.sel3 > 0) {
         _this.sList2.map(function (p1, p2) {
           if (p1.id === _this.city.sel3) {
             areaArr.push(p1.name)
@@ -349,9 +375,9 @@ export default {
         this.$refs.Toast.on_display(obj)
         return
       }
-      _this.userInfo.club = _this.cludData.id
-      console.log(_this.userInfo)
-      _this.api.postUserInfo(_this.userInfo, function (res) {
+      let datas = JSON.parse(JSON.stringify(_this.userInfo))
+      delete datas.club
+      _this.api.postUserInfo(datas, function (res) {
         if (res.data.step === 2) {
           _this.cont_one = !_this.cont_one
         }
@@ -363,11 +389,14 @@ export default {
       let _this = this
       let num = null
       if (str === '0') {
-        _this.sel3text = ['', '', '']
+        _this.sel3text = ['--请选择--', '--请选择--', '--请选择--']
         num = _this.city.sel1
+        _this.city.sel2 = 0
+        _this.city.sel3 = 0
       } else if (str === '1') {
-        _this.sel3text[2] = ''
+        _this.sel3text[2] = '--请选择--'
         num = _this.city.sel2
+        _this.city.sel3 = 0
       }
       _this.api.getAreaList('pid=' + num, function (res) {
         console.log(res)
@@ -409,14 +438,18 @@ export default {
     test: function () {
       let _this = this
       this.$refs.Toast.close()
-      console.log(_this.cludData.id)
-      _this.workInfo.club_id = _this.cludData.id
-      _this.api.postWorkInfo(JSON.stringify(_this.workInfo), function (res) {
+      let data = JSON.parse(JSON.stringify(_this.workInfo))
+      data.product = JSON.stringify(_this.workInfo.product)
+      data.honors = JSON.stringify(_this.workInfo.honors)
+      _this.api.postWorkInfo(data, function (res) {
         console.log(res)
+        _this.$router.push({
+          path: '/applySuccess',
+          query: res.data
+        })
       }, function (err) {
         console.log(err)
       })
-      this.$router.push('applySuccess')
     },
     /**
      * 点击提交
@@ -528,40 +561,33 @@ export default {
       console.log(res)
       let _this = this
       _this.workInfo.department = res
+    },
+    genghuan: function () {
+      this.$router.push('/membershipApp')
     }
   },
   mounted () {
     document.title = '入会申请'
     let _this = this
-    console.log(_this.queryData)
-    this.api.getUserNum(function (res) { // 未完成的基本信息
-      _this.cludData = res.data.club
-      if (_this.$route.query.step === 2) {
-        let obj = {
-          id: res.data.club[0].club,
-          name: res.data.club[0].club__name
-        }
-        _this.cludData = obj
-        _this.cont_one = false
-      } else {
-        _this.cludData = _this.$route.query
-      }
-      _this.sel3text = res.data.area.split('|')
+    _this.api.getUserNum(function (res) { // 未完成的基本信息
+      _this.sel3text = res.data.area ? res.data.area.split('|') : ['', '', '']
       _this.userInfo = res.data
     }, function (err) {
       console.log(err)
     })
-    this.api.getWorkNum(function (res) { // 未完成的经验信息
+    _this.api.getWorkNum(function (res) { // 未完成的经验信息
       console.log(res)
     }, function (err) {
       console.log(err)
     })
     _this.api.getAreaList('pid=0', function (res) {
-      console.log('地址')
       _this.sList = res.data
     }, function (err) {
       console.log(err)
     })
+    if (_this.$route.query.step === '2' || _this.$route.query.step === 2) {
+      _this.cont_one = false
+    }
   }
 }
 </script>
@@ -569,9 +595,10 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .memTitle{
-    width:100%;
+    width:calc(100% - 1.5rem);
     height:2rem;
     background:rgba(255, 152, 0, 1);
+    padding:0 .75rem;
     color:#fff;
     font-size: .7rem;
     line-height: 2rem;
@@ -579,6 +606,14 @@ export default {
     top:0;
     left:0;
     z-index: 9;
+    text-align: left;
+}
+.memTitle>img{
+  width:.7rem;
+  height:.7rem;
+}
+.genghuan{
+  float: right;
 }
 .memTitle2{
     width:100%;

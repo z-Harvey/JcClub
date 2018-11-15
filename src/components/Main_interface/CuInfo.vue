@@ -95,27 +95,27 @@
             <div class="contcon">
                 <div>
                     <div>姓名</div>
-                    <div>袁邦阳</div>
+                    <div v-text="msg.name">袁邦阳</div>
                 </div>
                 <div>
                     <div>公司</div>
-                    <div>北京聚牛天下网络科技有限公司</div>
+                    <div v-text="msg.comname">北京聚牛天下网络科技有限公司</div>
                 </div>
                 <div>
                     <div>职位</div>
-                    <div>CEO</div>
+                    <div v-text="msg.position">CEO</div>
                 </div>
                 <div>
                     <div>年龄</div>
-                    <div>24</div>
+                    <div v-text="msg.age">24</div>
                 </div>
                 <div>
                     <div>学历</div>
-                    <div>博士后</div>
+                    <div v-text="msg.edu_background">博士后</div>
                 </div>
                 <div>
                     <div>所在地</div>
-                    <div>北京·昌平</div>
+                    <div v-text="msg.area">北京·昌平</div>
                 </div>
             </div>
         </div>
@@ -127,15 +127,15 @@
             <div class="contcon">
                 <div>
                     <div>手机号</div>
-                    <div>188 8888 8888</div>
+                    <div v-text="msg.mobile">188 8888 8888</div>
                 </div>
                 <div>
                     <div>邮箱</div>
-                    <div>yby@xiaoshouniu.cn</div>
+                    <div v-text="msg.email">yby@xiaoshouniu.cn</div>
                 </div>
                 <div>
                     <div>微信号</div>
-                    <div>yuanbangyang</div>
+                    <div v-text="msg.wx_no">yuanbangyang</div>
                 </div>
             </div>
         </div>
@@ -233,12 +233,22 @@ export default {
   name: 'CuInfo',
   data () {
     return {
-      tapBur: true
+      tapBur: true,
+      msg: {}
     }
   },
   methods: {
     mol: function () {
       this.$emit('mol')
+    },
+    cardInfoInit: function (data) {
+      let _this = this
+      _this.api.getUserCard(data, function (res) {
+        console.log(res)
+        _this.msg = res.data
+      }, function (err) {
+        console.log(err)
+      })
     }
   },
   mounted (options) {

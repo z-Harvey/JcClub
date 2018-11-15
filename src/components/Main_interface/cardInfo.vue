@@ -3,28 +3,28 @@
     <div class="titleImg">
         <div class="title">
             <div class="imgBox">
-                <img src="@/assets/touxiang.jpg" alt="">
+                <img :src="listData.avatarurl" alt="">
             </div>
-            <div class="tag">互联网</div>
+            <div class="tag" v-text="listData.industry">互联网</div>
             <div class="nameBox">
                 <div class="name">
-                    <img v-if="true" src="@/assets/man.png" alt="">
+                    <img v-if="listData.gender === 1" src="@/assets/man.png" alt="">
                     <img v-else src="@/assets/woman.png" alt="">
-                    <div>云端飞扬</div>
+                    <div v-text="listData.nickname">云端飞扬</div>
                 </div>
-                <div class="cikeName">北京酷牛仔俱乐部</div>
+                <div class="cikeName" v-text="listData.club_name">北京酷牛仔俱乐部</div>
             </div>
             <div class="listNav">
                 <div @click="navPath(2)">
-                    <div>99</div>
+                    <div v-text="listData.collect_count">99</div>
                     <div>关注</div>
                 </div>
                 <div @click="navPath(3)">
-                    <div>99</div>
+                    <div v-text="listData.fans_count">99</div>
                     <div>粉丝</div>
                 </div>
                 <div @click="navPath(4)">
-                    <div>99</div>
+                    <div v-text="listData.mate_num">99</div>
                     <div>客户</div>
                 </div>
             </div>
@@ -34,8 +34,8 @@
             <button @click="navPath(1)" :class="!navBtn?'navBtn':''">工作经验</button>
         </nav>
         <!-- <router-view :type="'cardInfo'"></router-view> -->
-        <CuInfo :show='navBtn' :type="'cardInfo'"/>
-        <workEx :show='!navBtn' :type="'cardInfo'"/>
+        <CuInfo ref="CuInfo" :show='navBtn' :type="'cardInfo'"/>
+        <workEx ref="workEx" :show='!navBtn' :type="'cardInfo'"/>
         <div style="height:2.25rem;"></div>
         <div v-if="source === 'my'" class="footer">
             <button v-if="navBtn" class="myCard" @click="navPath(5)">编辑个人信息</button>
@@ -43,48 +43,95 @@
         </div>
         <div v-else class="footer">
             <button @click="myCard">查看我的名片</button>
-            <button>关注Ta</button>
+            <button v-if="listData.is_collect === 0" @click="MyCollect(0)">关注Ta</button>
+            <button v-else @click="MyCollect(1)">取消关注</button>
         </div>
     </div>
   </div>
 </template>
 
 <script>
-import CuInfo from '@/components/Main_interface/CuInfo' // 客户信息
+import CuInfo from '@/components/Main_interface/CuInfo' // 个人信息
 import workEx from '@/components/Main_interface/workEx' // 工作经验
 
 export default {
   name: 'cardInfo',
   components: {
     CuInfo,
-    workEx
+    workEx,
+    msg: null
   },
   data () {
     return {
       navBtn: true,
-      source: null
+      source: null,
+      dataList: null,
+      listData: {}
     }
   },
   methods: {
+    MyCollect: function (num) {
+      let _this = this
+      if (num === 0) {
+        let obj = {
+          puser: _this.listData.id
+        }
+        _this.api.MyCollect(obj, function (res) {
+          if (res.status === 201) {
+            _this.listData.fans_count += 1
+            _this.listData.is_collect = 1
+          }
+        }, function (err) {
+          console.log(err)
+        })
+      } else if (num === 1) {
+        _this.api.delMyCollect(_this.listData.collect_id, function (res) {
+          if (res.status === 204) {
+            _this.listData.fans_count -= 1
+            _this.listData.is_collect = 0
+          }
+        }, function (err) {
+          console.log(err)
+        })
+      }
+    },
     navPath: function (num) {
       let _this = this
       switch (num) {
         case 0:
-        //   _this.$router.push({name: 'CuInfo1'})
+          _this.$refs.CuInfo.cardInfoInit(_this.Global.flowInfo.carHttpId)
           _this.navBtn = true
           break
         case 1:
-        //   _this.$router.push({name: 'workEx'})
+          _this.$refs.workEx.workInfoInit(_this.Global.flowInfo.carHttpId)
           _this.navBtn = false
           break
         case 2:
-          _this.$router.push('/HisFollow')
+          // 关注
+          _this.$router.push({
+            name: 'HisFollow',
+            params: {
+              id: _this.Global.flowInfo.carHttpId
+            }
+          })
           break
         case 3:
-          _this.$router.push('/HisFans')
+          // 粉丝
+          _this.$router.push({
+            name: 'HisFans',
+            params: {
+              id: _this.Global.flowInfo.carHttpId
+            }
+          })
           break
         case 4:
-          _this.$router.push('/HisCustomer')
+          // 客户
+          _this.$router.push({
+            name: 'HisCustomer',
+            params: {
+              id: _this.Global.flowInfo.carHttpId
+            }
+          })
           break
         case 5:
           _this.$router.push({name: 'editInfo', query: {type: 'personal'}})
@@ -105,6 +152,14 @@ export default {
   mounted () {
     this.source = this.$route.query.source
     document.title = '名片信息'
+    let _this = this
+    _this.$refs.CuInfo.cardInfoInit(_this.Global.flowInfo.carHttpId)
+    _this.api.getUserHeader(_this.Global.flowInfo.carHttpId, function (res) {
+      console.log(res)
+      _this.listData = res.data
+    }, function (err) {
+      console.log(err)
+    })
   }
 }
 </script>
@@ -147,7 +202,6 @@ export default {
     border-radius: 50%;
 }
 .tag{
-    width:2.1rem;
     height:.9rem;
     border-radius: 2rem;
     font-size: .5rem;
@@ -155,6 +209,7 @@ export default {
     background: rgba(255, 152, 0, 1);
     color: #fff;
     position: absolute;
+    padding:0 .3rem;
     right:.5rem;
     top:.5rem;
 }

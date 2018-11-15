@@ -29,10 +29,18 @@ export default {
     }
   },
   mounted (options) {
+    let _this = this
     if (this.$route.query.source === 'my') {
       document.title = '我的粉丝'
     } else {
       document.title = 'Ta的粉丝'
+      console.log(_this.$route.params)
+      let str = 'puser=' + _this.$route.params
+      _this.api.getUserFans(str, function (res) {
+        console.log(res)
+      }, function (err) {
+        console.log(err)
+      })
     }
   }
 }

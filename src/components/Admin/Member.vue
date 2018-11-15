@@ -1,15 +1,5 @@
 <template>
-  <div class="MemberList">
-      <div class="fl1">
-          <div class="fl1l1">
-              <img src="@/assets/membershipApp_shu1.png" alt="">
-              <span>北京酷牛仔俱乐部</span>
-          </div>
-          <div class="fl1l2">
-              <img src="@/assets/friend(4).png" alt="">
-              <span>60/500</span>
-          </div>
-      </div>
+  <div class="Member">
       <div class="fl2">
           <div class="srcInp">
             <div>
@@ -36,8 +26,11 @@
               <img v-else src="@/assets/pai1.png" alt="">
           </div>
       </div>
+      <div class="fl4">
+          <img src="@/assets/structure.png" alt="">
+      </div>
       <div class="content">
-           <div class="forCont">
+           <div class="forCont" @click="path">
                <div class="imgBox">
                    <img src="@/assets/touxiang.jpg" alt="">
                </div>
@@ -66,7 +59,7 @@
 
 <script>
 export default {
-  name: 'MemberList',
+  name: 'Member',
   data () {
     return {
     }
@@ -74,7 +67,9 @@ export default {
   components: {
   },
   methods: {
-
+    path: function () {
+      this.$router.push('/memberInfo')
+    }
   },
   mounted () {
   }
@@ -83,7 +78,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.MemberList{
+.Member{
     position: fixed;
     width:100%;
     height:100%;
@@ -91,27 +86,6 @@ export default {
     overflow: auto;
     top:0;
     left:0;
-}
-.fl1{
-    background:rgba(255, 152, 0, 1);
-    color:#fff;
-    text-align: right;
-    padding:.65rem .75rem;
-    position: fixed;
-    width:calc(100% - 1.5rem);
-    top:0;
-    left:0rem;
-    height:.7rem;
-}
-.fl1l1{
-    float: left;
-    font-size: .7rem;
-    line-height: .7rem;
-}
-.fl1l1>img{
-    width:.7rem;
-    height:.7rem;
-    vertical-align: text-top;
 }
 .fl1l2{
     font-size: .6rem
@@ -123,7 +97,7 @@ export default {
 .fl2{
     position: fixed;
     width:100%;
-    top:2rem;
+    top:0rem;
     left:0;
 }
 .srcInp{
@@ -170,10 +144,10 @@ export default {
     border:0;
 }
 .fl3{
-    width:100%;
+    width:calc(100% - 2.25rem);
     height:2.25rem;
     position: fixed;
-    top:4.25rem;
+    top:2.25rem;
     font-size: .6rem;
     display: flex;
     justify-content: space-around;
@@ -190,8 +164,24 @@ export default {
     height:.75rem;
     vertical-align: text-top;
 }
+.fl4{
+    width:2.25rem;
+    height:2.25rem;
+    position: fixed;
+    right:0rem;
+    top:2.25rem;
+    background:#fff;
+    display: flex;
+    border-left: 2px solid rgba(247, 247, 247, 1);
+}
+.fl4>img{
+    width:.75rem;
+    height:.75rem;
+    align-self: center;
+    margin:  0 auto;
+}
 .content{
-    padding-top:7rem;
+    padding-top:5rem;
 }
 .forCont{
     padding:.75rem .5rem;

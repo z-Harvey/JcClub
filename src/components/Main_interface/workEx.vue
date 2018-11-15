@@ -9,23 +9,23 @@
             <div class="contcon">
                 <div>
                     <div>公司</div>
-                    <div>北京聚牛天下网络科技有限公司</div>
+                    <div v-text="dataList.comname">北京聚牛天下网络科技有限公司</div>
                 </div>
                 <div>
                     <div>职位</div>
-                    <div>CEO</div>
+                    <div v-text="dataList.position">CEO</div>
                 </div>
                 <div>
                     <div>工作年限</div>
-                    <div>17年</div>
+                    <div v-text="dataList.workyears">17年</div>
                 </div>
                 <div>
                     <div>销售年限</div>
-                    <div>10年</div>
+                    <div v-text="dataList.salesyears">10年</div>
                 </div>
                 <div>
                     <div>行业年限</div>
-                    <div>5年</div>
+                    <div v-text="dataList.industryyears">5年</div>
                 </div>
             </div>
         </div>
@@ -115,10 +115,20 @@ export default {
   name: 'CuInfo',
   data () {
     return {
-      tapBur: true
+      tapBur: true,
+      dataList: {}
     }
   },
   methods: {
+    workInfoInit: function (data) {
+      let _this = this
+      _this.api.getUserCardWork(data, function (res) {
+        console.log(res)
+        _this.dataList = res.data
+      }, function (err) {
+        console.log(err)
+      })
+    }
   },
   mounted (options) {
     console.log(this.type)

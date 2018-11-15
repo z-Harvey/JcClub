@@ -1,14 +1,14 @@
 <template>
     <div class="HisFollow">
-      <div class="For" @click="path">
+      <div class="For" v-for="(item, index) in dataList" :key="index" @click="path">
         <div class="forImg">
           <img src="@/assets/touxiang.jpg" alt="">
         </div>
         <div class="forText">
-          <div class="ff1">韩鹏翔</div>
-          <div class="ff2">CEO/北京聚牛天下网络科技有限公司北京聚牛天下网络科技有限公司北京聚牛天下网络科技有限公司北京聚牛天下网络科技有限公司</div>
-          <div class="ff3">188 8888 8888</div>
-          <div class="ff4">北京酷牛仔俱乐部</div>
+          <div class="ff1" v-text="item.name">韩鹏翔</div>
+          <div class="ff2" v-text="item.position">CEO</div>
+          <div class="ff3" v-text="item.mobile">188 8888 8888</div>
+          <div class="ff4" v-text="item.comname">北京酷牛仔俱乐部</div>
         </div>
       </div>
     </div>
@@ -19,7 +19,8 @@ export default {
   name: 'HisFollow',
   data () {
     return {
-      tapBur: true
+      tapBur: true,
+      dataList: []
     }
   },
   methods: {
@@ -29,10 +30,19 @@ export default {
     }
   },
   mounted (options) {
+    let _this = this
     if (this.$route.query.source === 'my') {
       document.title = '我的关注'
     } else {
       document.title = 'Ta的关注'
+      console.log('Ta的关注')
+      let str = 'user=' + _this.$route.params.id
+      _this.api.getUserCollect(str, function (res) {
+        console.log(res)
+        _this.dataList = res.data.results
+      }, function (err) {
+        console.log(err)
+      })
     }
   }
 }
@@ -40,7 +50,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.HisFans{
+.HisFollow{
   position:fixed;
   top:0;
   left:0;

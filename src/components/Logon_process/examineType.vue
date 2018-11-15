@@ -2,21 +2,21 @@
   <div class="NoMember">
     <div class="titleImg">
         <div class="titBox">
-            <img src="@/assets/touxiang.jpg" alt="">
+            <img :src="msg.avatarurl" alt="">
         </div>
-        <p>李晓沫</p>
-        <p class="hehe">于 yyyy/mm/dd hh:mm 申请加入</p>
-        <p>北京酷牛仔俱乐部</p>
+        <p v-text="msg.name">李晓沫</p>
+        <p class="hehe">于 <span v-text="msg.add_time"></span> 申请加入</p>
+        <p v-text="msg.club_name">北京酷牛仔俱乐部</p>
     </div>
-    <div class="meContent" v-if="Success_or_failure">
+    <div class="meContent" v-if="msg.status === 6||msg.status === '6'">
         <div class="mCtit">
             <p>成功通过审核！欢迎加入酷牛仔~</p>
             <p>您的酷牛仔编号为：</p>
             <p>KAA001</p>
         </div>
-        <input class="inviCode" type="text" placeholder="给自己取一个酷酷的江湖称号吧~">
+        <input class="inviCode" v-model="nickname" type="text" placeholder="给自己取一个酷酷的江湖称号吧~">
     </div>
-    <div class="meContent" v-else>
+    <div class="meContent"  v-if="msg.status === 2||msg.status === '2'">
         <div class="mCtit">
             <p class="no_con">很遗憾，您未能通过审核~</p>
             <span class="no_content">原因：此处显示未通过原因此处显示未通过原因此处显示未通过原因此处显示未通过原因此处显示未通过原因此处显示未通过原因此处显示未通过原因</span>
@@ -24,7 +24,7 @@
     </div>
     <p class="Rules" v-if="Success_or_failure">俱乐部准则</p>
     <div class="flxBtn" v-if="Success_or_failure">
-        <button class="sqBtn" @click="sqBtn">申请</button>
+        <button class="sqBtn" @click="sqBtn">进入酷牛仔</button>
     </div>
     <div class="flxBtn" v-else>
         <button class="sqBtn" @click="sqBtn">重新申请</button>
@@ -37,28 +37,39 @@ export default {
   name: 'NoMember',
   data () {
     return {
-      Success_or_failure: true
+      Success_or_failure: true,
+      nickname: null,
+      msg: {
+        avatarurl: '',
+        name: '',
+        add_time: '',
+        club_name: '',
+        status: ''
+      }
     }
   },
   methods: {
     sqBtn: function () {
-    //   wx.chooseImage({
-    //     count: 1, // 默认9
-    //     sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
-    //     sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
-    //     success: function (res) {
-    //       console.log(res)
-    //       var localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
-    //       console.log(localIds)
-    //     }
-    //   });
-    //   return;
-      console.log('开始 入会申请')
-    //   this.$router.push('membershipApp')
+      let _this = this
+      let obj = {
+        nickname: _this.nickname
+      }
+      _this.api.postUserNickname(obj, function (res) {
+        if (res.data.nickname === _this.nickname) {
+          _this.$router.push({
+            path: '/home'
+          })
+        }
+      }, function (err) {
+        console.lod(err)
+      })
     }
   },
   mounted () {
     document.title = '酷牛仔'
+    let _this = this
+    _this.msg = this.$route.params
+    console.log(_this.msg)
   }
 }
 </script>

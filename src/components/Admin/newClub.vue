@@ -111,12 +111,14 @@ export default {
     position: fixed;
     bottom: 0rem;
     left:0rem;
+    background:#fff;
 }
 .benBox>button{
     width:10rem;
     height:1.75rem;
     background: rgba(255, 152, 0, 1);
     color:#fff;
+    margin-top:.25rem;
     border-radius: 1rem;
     border: 0;
 }

@@ -31,7 +31,8 @@ export default {
       yzBtn: true,
       btnText: '获取验证码',
       yzm: null,
-      hehe: null
+      hehe: null,
+      token: null
     }
   },
   methods: {
@@ -40,7 +41,8 @@ export default {
       let obj = {
         mobile: _this.phone
       }
-      _this.$axios.post('/api/verify_code/', obj).then(function (res) {
+      _this.api.getVerifyCode(obj, function (res) {
+        console.log(res)
         _this.yzBtn = false
         let s = 60
         _this.btnText = '正在发送'
@@ -79,10 +81,10 @@ export default {
       let obj = {
         mobile: _this.phone + '',
         client_type: '2',
-        token: _this.Global.userInfo.token,
+        token: _this.token,
         verify_code: _this.hehe
       }
-      _this.$axios.post('/api/regist/', obj).then(function (res) {
+      _this.api.login(obj, function (res) {
         console.log(res)
         _this.Global.userInfo['avatarurl'] = res.data.avatarurl
         _this.Global.userInfo['nickname'] = res.data.nickname
@@ -96,6 +98,7 @@ export default {
   },
   mounted () {
     document.title = '登录'
+    this.token = this.$route.params.token
   }
 }
 </script>

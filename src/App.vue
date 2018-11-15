@@ -14,6 +14,8 @@ export default {
     }
   },
   mounted () {
+    this.$router.push('/memberJournal')
+    return
     let _this = this
     let obj = {
       code: '1'
@@ -33,31 +35,46 @@ export default {
               query: {step: 2}
             })
             break
+          case 3:
+            _this.getApplyStatus()
+            break
         }
       } else {
+        _this.$router.push({
+          name: 'login',
+          params: {token: res.data.token}
+        })
       }
     }, function (err) {
       console.log(err)
     })
-    // return
-    //   _this.Global.userInfo = res.data
-    //   _this.$axios.defaults.headers.Authorization = 'JWT ' + _this.Global.userInfo.token
-    //   console.log(_this.$axios.defaults)
-    //   if (res.data.is_user === 1) {
-    //     switch (res.data.step) {
-    //       case 0:
-    //         _this.$router.push('/NoMember')
-    //         break
-    //       case 1:
-    //         _this.$router.push('/membershipApp')
-    //         break
-    //     }
-    //   } else {
-
-    //   }
   },
   methods: {
-    clicks: function () {}
+    getApplyStatus: function () {
+      let _this = this
+      _this.api.getApplyStatus(function (res) {
+        if (res.data[0].status === 1) {
+          _this.$router.push({ path: '/home' })
+        } else if (res.data[0].status === 4 || res.data[0].status === 5) {
+          _this.$router.push({
+            name: 'applySuccess',
+            params: res.data[0]
+          })
+        } else if (res.data[0].status === 6 || res.data[0].status === 2) {
+          _this.$router.push({
+            name: 'examineType',
+            params: res.data[0]
+          })
+        } else if (res.data[0].status === 3) {
+          _this.$router.push({
+            name: 'NoMember',
+            params: res.data[0]
+          })
+        }
+      }, function (err) {
+        console.log(err)
+      })
+    }
   }
 }
 </script>

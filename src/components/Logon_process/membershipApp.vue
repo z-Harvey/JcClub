@@ -33,11 +33,22 @@ export default {
   },
   methods: {
     mberApp: function (data) {
-      console.log(data)
-      this.$router.push({
-        path: '/submitAdd',
-        query: data
+      let _this = this
+      let obj = {
+        club: data.id
+      }
+      _this.api.getClubChoice(obj, function (res) {
+        console.log(res)
+        _this.$router.push({
+          path: '/submitAdd'
+        })
+      }, function (err) {
+        console.log(err)
       })
+    //   this.$router.push({
+    //     path: '/submitAdd',
+    //     query: data
+    //   })
     }
   },
   mounted () {

@@ -62,27 +62,27 @@
         </div>
     </div>
     <div style="height:5.25rem;"></div>
-    <div class="content">
-        <div class="contImg" @click="path">
-            <img src="@/assets/touxiang.jpg" alt="">
+    <div class="content" v-for="(item, index) in dataList" :key="index">
+        <div class="contImg" @click="path('info', item)">
+            <img :src="item.avatarurl" alt="">
         </div>
-        <div class="cardInfo" @click="path">
-            <p class="name">韩鹏翔</p>
-            <p class="comName">CEO/北京聚牛天下网络科技有限公司</p>
+        <div class="cardInfo" @click="path('info', item)">
+            <p class="name" v-text="item.name">韩鹏翔</p>
+            <p class="comName" v-text="item.position + '/' + item.comname">CEO/北京聚牛天下网络科技有限公司</p>
             <div class="tagBox">
-                <div>IT互联网</div>
-                <div>IT互联网</div>
-                <div>IT互联网</div>
+                <div v-text="item.industry||'未选择行业'"></div>
+                <div v-text="'工作' + item.workyears + '年'">工作N年</div>
+                <div v-text="'客户' + item.mate_num">客户999</div>
             </div>
-            <div class="regular"><span>对接部门</span> 此处显示部门名称、此处显示部门名称、此处显示部门名称</div>
+            <div class="regular">对接部门 <span v-text="item.department">此处显示部门名称</span></div>
         </div>
         <div class="footer">
             <div class="fooLeft">
                 <img src="@/assets/membershipApp_shu.png" alt="">
-                <span>北京酷牛仔俱乐部</span>
+                <span v-text="item.club_name">北京酷牛仔俱乐部</span>
             </div>
             <div class="fooRight">
-                <button class="guanzhu" v-if="true">关注Ta</button>
+                <button class="guanzhu" v-if="item.is_collect === 0" @click="MyCollect(item)">关注Ta</button>
                 <button class="yiguanzhu" v-else>已关注</button>
             </div>
         </div>
@@ -96,10 +96,36 @@ export default {
   name: 'home_content',
   data () {
     return {
-      sort: [false, false]
+      sort: [false, false],
+      dataList: [{
+        club_name: [{
+          club__name: '',
+          club: ''
+        }],
+        comname: null,
+        department: null,
+        is_collect: null,
+        name: null,
+        position: null,
+        user: null,
+        workyears: null
+      }]
     }
   },
   methods: {
+    MyCollect: function (data) {
+      let _this = this
+      let obj = {
+        puser: data.user
+      }
+      _this.api.MyCollect(obj, function (res) {
+        if (res.status === 201) {
+          data.is_collect = 1
+        }
+      }, function (err) {
+        console.log(err)
+      })
+    },
     sorts: function (num) {
       let arr = [false, false]
       if (this.sort[num]) {
@@ -109,12 +135,26 @@ export default {
       arr[num] = true
       this.sort = arr
     },
-    path: function () {
-      this.$router.push('/cardInfo')
+    path: function (str, data) {
+      let _this = this
+      switch (str) {
+        case 'info':
+          _this.Global.flowInfo.carHttpId = data.user
+          this.$router.push('/cardInfo')
+          break
+      }
+    //   this.$router.push('/cardInfo')
     }
   },
   mounted () {
-    document.title = '酷牛仔'
+    document.title = '会员'
+    let _this = this
+    _this.api.getClubUser('', function (res) {
+      console.log(res)
+      _this.dataList = res.data.results
+    }, function (err) {
+      console.log(err)
+    })
   },
   props: ['show']
 }
@@ -258,11 +298,14 @@ export default {
 .regular{
     font-size: .7rem;
     line-height: 1rem;
+    font-weight: 600;
     margin-bottom:.5rem;
+    color:#101010;
+    font-weight: 600;
 }
 .regular>span{
-    font-weight: 600;
-    color:#101010;
+    font-weight: 100;
+    color:#888;
 }
 .footer{
     height:1.5rem;

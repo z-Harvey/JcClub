@@ -33,15 +33,13 @@ export default {
     sqBtn: function () {
       console.log('开始 入会申请')
       let _this = this
-      _this.$axios({
-        method: 'post',
-        url: '/api/apply_club/',
-        data: {
-          mobile: _this.phone
-        }
-      }).then((res) => {
-        console.log(res)
-        this.$router.push('/membershipApp')
+      let obj = {
+        mobile: _this.phone
+      }
+      _this.api.getApplyClub(obj, function (res) {
+        _this.$router.push('/membershipApp')
+      }, function (err) {
+        console.log(err)
       })
     },
     phonezz: function () {
@@ -60,6 +58,8 @@ export default {
   },
   mounted () {
     document.title = '酷牛仔'
+    let _this = this
+    console.log(_this.$route)
   }
 }
 </script>

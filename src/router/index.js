@@ -42,6 +42,8 @@ import editInfo from '@/components/Main_interface/editInfo' //  编辑信息  �
 import nav from '@/components/Admin/nav' //  管理员首页导航
 import MemberList from '@/components/Admin/MemberList' //  会员列表
 import newClub from '@/components/Admin/newClub' //  会员列表
+import memberInfo from '@/components/Admin/memberInfo' //  会员列表
+import memberJournal from '@/components/Admin/memberJournal' //  会员列表
 
 Vue.use(Router)
 
@@ -78,6 +80,8 @@ export default new Router({
      */
     { path: '/nav', name: 'nav', component: nav },
     { path: '/MemberList', name: 'MemberList', component: MemberList },
-    { path: '/newClub', name: 'newClub', component: newClub }
+    { path: '/newClub', name: 'newClub', component: newClub },
+    { path: '/memberInfo', name: 'memberInfo', component: memberInfo },
+    { path: '/memberJournal', name: 'memberJournal', component: memberJournal }
   ]
 })

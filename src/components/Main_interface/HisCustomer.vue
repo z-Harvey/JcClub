@@ -10,28 +10,32 @@
                 <img src="@/assets/pai2.png" alt="">
             </div>
         </div>
-        <div class="contBox">
+        <div class="contBox" v-for="(item, index) in dataList" :key="index">
             <div class="contTitle">
                 <div class="titImg">
                     <img src="@/assets/qi.png" alt="">
                 </div>
-                <div class="titName">北京聚牛天下网络科技有限公司</div>
+                <div class="titName" v-text="item.comname">北京聚牛天下网络科技有限公司</div>
                 <div class="location">
                     <img src="@/assets/location.png" alt="">
-                    <div>北京</div>
+                    <div v-text="item.area">北京</div>
                 </div>
             </div>
             <div class="contcont">
                 <div class="cc1">
-                    <span>#有决策链线索#</span>
-                    <span>#有决策链线索#</span>
+                    <span v-if="item.relation === 0">#有过合作#</span>
+                    <span v-if="item.relation === 1">#正在合作#</span>
+                    <span v-if="item.relation === 2">#有过跟进#</span>
+                    <span v-if="item.relation === 3">#正在跟进#</span>
+                    <span v-if="item.has_decision === 0">#有决策链线索#</span>
+                    <span v-if="item.has_decision === 1">#无决策链线索#</span>
                 </div>
                 <div class="cc2">
-                    <span>线索部门</span> 此处显示部门名称、此处显示部门名称、此处显示部门名称
+                    线索部门 <span v-text="item.department||'暂无'">此处显示部门名称、此处显示部门名称、此处显示部门名称</span>
                 </div>
             </div>
             <div class="footer">
-                <span>1天前标记</span>
+                <span  v-text="item.add_time + '天前标记'"></span>
                 <button @click="path(0)">客户主页</button>
             </div>
         </div>
@@ -43,7 +47,8 @@ export default {
   name: 'HisCustomer',
   data () {
     return {
-      tapBur: true
+      tapBur: true,
+      dataList: []
     }
   },
   methods: {
@@ -57,7 +62,18 @@ export default {
   },
   mounted (options) {
     console.log(this.type)
+    let _this = this
     document.title = 'Ta的客户'
+    let str = 'user=' + _this.$route.params.id
+    _this.api.getUserCustomer(str, function (res) {
+      console.log(res)
+      res.data.map(function (p1, p2) {
+        p1.add_time = Math.floor(Math.abs(Date.now() - new Date(p1.add_time).getTime()) / (3600 * 24 * 1e3))
+      })
+      _this.dataList = res.data
+    }, function (err) {
+      console.log(err)
+    })
   }
 }
 </script>
@@ -80,6 +96,7 @@ export default {
     justify-content: space-around;
     line-height: 2.25rem;
     border-bottom: 1px solid #f7f7f7;
+    background:#fff;
 }
 .screen>div{
     width:50%;
@@ -158,10 +175,12 @@ export default {
 .cc2{
     font-size: .7rem;
     color:#101010;
+    font-weight: 600;
     margin-top:.4rem;
 }
 .cc2>span{
-    font-weight: 600;
+    color:#888;
+    font-weight: 100;
     line-height: 1rem;
 }
 .footer{
@@ -170,6 +189,7 @@ export default {
     color:#888;
     line-height: 1.5rem;
     text-align: left;
+    height:1.5rem;
 }
 .footer>button{
     border:0;
