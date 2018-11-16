@@ -1,5 +1,5 @@
 <template>
-    <div class="srceach">
+    <div class="srceach" v-if="show">
         <div class="srcInp">
             <div>
                 <img src="@/assets/srceach_1.png" alt="">
@@ -24,21 +24,32 @@ export default {
   name: 'srceach',
   data () {
     return {
+      show: false,
       inpVal: null,
       dataList: [],
       meiyou: false
     }
   },
   methods: {
+    close: function () {
+      this.show = false
+    },
+    on_display: function (obj) {
+      console.log(obj)
+      this.show = true
+    },
+    getParams: function () {
+      let routerParams = this.$route.params.dataobj
+      console.log(routerParams)
+    },
     srceach: function () {
       let _this = this
       let str = 'search=' + _this.inpVal
       _this.api.getSearchCompany(str, function (res) {
+        console.log(res)
         _this.dataList = res.data.results
         if (res.data.count === 0) {
           _this.meiyou = true
-        } else {
-          _this.meiyou = false
         }
       }, function (err) {
         console.log(err)
@@ -46,10 +57,7 @@ export default {
     },
     path: function (data) {
       let _this = this
-      _this.$router.push({
-        name: 'MarkupCu',
-        query: data
-      })
+      _this.$router.push()
     }
   },
   mounted (options) {

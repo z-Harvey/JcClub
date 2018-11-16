@@ -1,12 +1,12 @@
 <template>
     <div class="HisFollow">
-      <div class="For" v-for="(item, index) in dataList" :key="index" @click="path">
+      <div class="For" v-for="(item, index) in dataList" :key="index" @click="path(item)">
         <div class="forImg">
-          <img src="@/assets/touxiang.jpg" alt="">
+          <img :src="item.avatarurl" alt="">
         </div>
         <div class="forText">
-          <div class="ff1" v-text="item.name">韩鹏翔</div>
-          <div class="ff2" v-text="item.position">CEO</div>
+          <div class="ff1" v-text="item.nickname">韩鹏翔</div>
+          <div class="ff2" v-text="item.position + '/' + item.club_name">CEO</div>
           <div class="ff3" v-text="item.mobile">188 8888 8888</div>
           <div class="ff4" v-text="item.comname">北京酷牛仔俱乐部</div>
         </div>
@@ -24,9 +24,17 @@ export default {
     }
   },
   methods: {
-    path: function () {
+    path: function (data) {
+      console.log(data.user)
+      console.log(data)
+      // return
       let _this = this
-      _this.$router.push('/cardInfo')
+      _this.$router.push({
+        name: 'cardInfo',
+        query: {
+          user_id: data.puser
+        }
+      })
     }
   },
   mounted (options) {
@@ -36,7 +44,8 @@ export default {
     } else {
       document.title = 'Ta的关注'
       console.log('Ta的关注')
-      let str = 'user=' + _this.$route.params.id
+      _this.user_id = _this.$route.query.user_id
+      let str = 'user=' + _this.user_id
       _this.api.getUserCollect(str, function (res) {
         console.log(res)
         _this.dataList = res.data.results

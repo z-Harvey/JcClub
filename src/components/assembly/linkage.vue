@@ -26,6 +26,7 @@
                 <button @click="qx" class="btn">取消</button>
                 <button @click="ok1" v-if="Choice === 1" class="btn qr">确认</button>
                 <button @click="ok2" v-if="Choice === 2" class="btn qr">确认</button>
+                <button @click="ok3" v-if="Choice === 3" class="btn qr">确认</button>
             </div>
         </div>
    </div>
@@ -42,6 +43,7 @@ export default {
       dataList: [],
       listData: [],
       listDatas: [],
+      msg: {},
       Choice: 0 // 选择类型  单选 多选
     }
   },
@@ -51,6 +53,8 @@ export default {
       if (this.Choice === 1) {
         _this.check(item)
       } else if (this.Choice === 2) {
+        _this.linges(item)
+      } else if (this.Choice === 3) {
         _this.linges(item)
       }
     },
@@ -73,7 +77,7 @@ export default {
         console.log(err)
       })
       _this.listData = arr
-      _this.currList = ite.name
+      _this.currList = ite.id
     },
     check: function (str) {
       let _this = this
@@ -90,6 +94,21 @@ export default {
     linges: function (str) {
       let _this = this
       let arr = []
+      let jishu = 0
+      console.log(str)
+      console.log(_this.dataList)
+      if (!str.show) {
+        _this.dataList.map(function (p1, p2) {
+          p1.cont.map(function (n1, n2) {
+            if (n1.show) {
+              jishu += 1
+            }
+          })
+        })
+        if (jishu === 3) {
+          return
+        }
+      }
       _this.listDatas.map(function (p1, p2) {
         if (p1.id === str.id) {
           p1.show = !str.show
@@ -132,6 +151,7 @@ export default {
     },
     on_display: function (data) {
       this.show = true
+      this.msg = data
       this.Choice = data.Choice
       this.httpQuery(data.type)
     },
@@ -179,6 +199,25 @@ export default {
         type: 'duo'
       }
       _this.$emit('ok', obj)
+      _this.close()
+      _this.listDatas = []
+      _this.dataList = []
+    },
+    ok3: function () {
+      let _this = this
+      let arr = []
+      _this.dataList.map(function (p1, p2) {
+        p1.cont.map(function (f1, f2) {
+          if (f1.show) {
+            arr.push(f1.name)
+          }
+        })
+      })
+      let obj = {
+        name: arr.join('、'),
+        type: 'duo'
+      }
+      _this.$emit('ok1', obj)
       _this.close()
       _this.listDatas = []
       _this.dataList = []

@@ -14,8 +14,8 @@ export default {
     }
   },
   mounted () {
-    this.$router.push('/memberJournal')
-    return
+    // this.$router.push('/memberCustomer')
+    // return
     let _this = this
     let obj = {
       code: '1'

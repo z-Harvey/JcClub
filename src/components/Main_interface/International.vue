@@ -1,5 +1,6 @@
 <template>
-  <div class="home_content" v-if="show">
+  <div class="international" v-if="show">
+    <Toast ref="Toast"/>
     <div class="srceach">
         <div class="inpBox">
             <img src="@/assets/srceach.png" alt="">
@@ -62,16 +63,16 @@
         </div>
     </div>
     <div class="content">
-        <div class="contFor">
+        <div class="contFor" v-for="(item, index) in dataList" :key="index">
             <div class="tapBox">
                 <img src="@/assets/qi.png" alt="">
             </div>
             <div class="forRight">
                 <div class="riCikename">
-                    <div class="cikeName">北京聚牛天下网络科技有限公司</div>
+                    <div class="cikeName" v-text="item.name">北京聚牛天下网络科技有限公司</div>
                     <div class="cikeposition">
                         <img src="@/assets/location.png" alt="">
-                        北京
+                        <span>地址</span>
                     </div>
                 </div>
                 <div class="ricTag">
@@ -80,10 +81,10 @@
                     <div>有钱任性</div>
                 </div>
                 <div class="forFuterr">
-                    <div>内部跟进 999</div>
-                    <div>内部跟进 999</div>
-                    <button @click="path" v-if="false">客户主页</button>
-                    <button @click="path" v-else>解锁查看</button>
+                    <div>内部跟进 <span v-text="item.club_mark_count"></span></div>
+                    <div>外部跟进 <span v-text="item.out_mark_count"></span></div>
+                    <button @click="path(0, item)" v-if="item.is_unlock === 0">客户主页</button>
+                    <button @click="path(1)" v-else>解锁查看</button>
                 </div>
             </div>
         </div>
@@ -94,13 +95,22 @@
 
 <script>
 export default {
-  name: 'home_content',
+  name: 'international',
   data () {
     return {
-      sort: [false, false]
+      sort: [false, false],
+      dataList: []
     }
   },
   methods: {
+    /**
+     * 跳转到标记客户
+     */
+    callMoldOk: function (data) {
+      this.$router.push({
+        name: 'ApplyOpen'
+      })
+    },
     sorts: function (num) {
       let arr = [false, false]
       if (this.sort[num]) {
@@ -110,13 +120,88 @@ export default {
       arr[num] = true
       this.sort = arr
     },
-    path: function () {
-      this.$router.push('/CuHome')
+    path: function (typ, item) {
+      let _this = this
+      if (typ === 0) {
+        this.$router.push({
+          path: '/CuHome',
+          query: {
+            com_id: item.id
+          }
+        })
+      } else if (typ === 1) {
+        // this.$router.push('/CuHome')
+        let obj = {
+          Title: '解锁客户数据',
+          type: 2,
+          btn: 3,
+          No: '放弃解锁',
+          Yes: '立即解锁'
+        }
+        _this.$refs.Toast.on_display(obj)
+      }
+    },
+    /**
+     * 审核失败情况下跳转到我的客户
+     */
+    fail: function () {
+    },
+    init: function () {
+      let _this = this
+      let str = ''
+      _this.api.getCompanySeaList(str, function (res) {
+        console.log(res)
+        _this.dataList = res.data.results
+      }, function (err) {
+        console.log(err)
+      })
+      _this.api.CompanySeaStatus(str, function (res) {
+        console.log(res)
+        let obj = {}
+        switch (res.data.status) {
+          case 0:
+            obj = {
+              Title: '提示',
+              Content: '您尚未开通查客户权限，是否立即申请开通？',
+              type: 1,
+              btn: 3,
+              No: '放弃申请',
+              Yes: '立即申请',
+              success: _this.callMoldOk
+            }
+            _this.$refs.Toast.on_display(obj)
+            break
+          case 2:
+            obj = {
+              Title: '提示',
+              Content: '审核中',
+              type: 1,
+              btn: 0,
+              No: '确认'
+            }
+            _this.$refs.Toast.on_display(obj)
+            break
+          case 3:
+            obj = {
+              Title: '提示',
+              Content: '原因：此处显示未通过原因',
+              type: 1,
+              btn: 3,
+              No: '我的客户',
+              Yes: '申请开通',
+              success: _this.callMoldOk,
+              fail: _this.fail
+            }
+            _this.$refs.Toast.on_display(obj)
+            break
+        }
+      }, function (err) {
+        console.log(err)
+      })
     }
   },
   mounted () {
     document.title = '公海'
-    // let _this = this
   },
   props: ['show']
 }
@@ -275,7 +360,7 @@ export default {
 .ricTag>div{
     padding:.1rem .5rem;
     background:rgba(236, 236, 237, 1);
-    line-height: .7rem;
+    line-height: .8rem;
     display: inline-block;
 }
 .forFuterr{

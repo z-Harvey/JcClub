@@ -2,10 +2,10 @@
   <div class="home">
     <Toast ref="Toast" @confirm="alert_ok"></Toast>
     <!-- <router-view ref="homeContent" @navClick="navClick"/> -->
-    <homeContent ref="c1" :show="nav_list[0]"/>
-    <International ref="c2" :show="nav_list[1]"/>
-    <myCustomer ref="c3" :show="nav_list[2]"/>
-    <my ref="c4" :show="nav_list[3]"/>
+    <homeContent ref="c0" :show="nav_list[0]"/>
+    <International ref="c1" :show="nav_list[1]"/>
+    <myCustomer ref="c2" :show="nav_list[2]"/>
+    <my ref="c3" :show="nav_list[3]"/>
     <nav>
         <div @click="navClick(0)" class="link_tou">
             <img v-if="nav_list[0]" src="@/assets/home.png" alt="">
@@ -56,11 +56,25 @@ export default {
   methods: {
     navClick: function (num) {
       let arr = [false, false, false, false]
-      if (num === '4') {
-        this.$router.push('/MarkupCu')
-        arr[0] = true
-        this.nav_list = arr
-        return
+      let _this = this
+      switch (num) {
+        case 0:
+          _this.$refs.c0.init()
+          break
+        case 1:
+          _this.$refs.c1.init()
+          break
+        case 2:
+          _this.$refs.c2.init()
+          break
+        case 3:
+          _this.$refs.c3.init()
+          break
+        case 4:
+          this.$router.push('/MarkupCu')
+          arr[0] = true
+          this.nav_list = arr
+          return
       }
       arr[parseInt(num)] = true
       this.nav_list = arr
@@ -75,7 +89,17 @@ export default {
   mounted () {
     document.title = '酷牛仔'
     let _this = this
-    this.nav_list = _this.Global.navListType
+    _this.nav_list = _this.Global.navListType
+    _this.nav_list.map(function (p1, p2) {
+      if (p1) {
+        _this.navClick(p2)
+      }
+    })
+    _this.api.getMine(function (res) {
+      _this.Global.userInfo.myId = res.data.id
+    }, function (err) {
+      console.log(err)
+    })
     // let obj = {
     //   Title: '提示',
     //   Content: '您尚未开通查客户权限，是否立即申请开通？',

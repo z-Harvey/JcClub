@@ -1,14 +1,14 @@
 <template>
     <div class="HisFans">
-      <div class="For" @click="path">
+      <div class="For" v-for="(item, index) in dataList" :key="index" @click="path(item)">
         <div class="forImg">
-          <img src="@/assets/touxiang.jpg" alt="">
+          <img :src="item.avatarurl" alt="">
         </div>
         <div class="forText">
-          <div class="ff1">韩鹏翔</div>
-          <div class="ff2">CEO/北京聚牛天下网络科技有限公司北京聚牛天下网络科技有限公司北京聚牛天下网络科技有限公司北京聚牛天下网络科技有限公司</div>
-          <div class="ff3">188 8888 8888</div>
-          <div class="ff4">北京酷牛仔俱乐部</div>
+          <div class="ff1" v-text="item.nickname">韩鹏翔</div>
+          <div class="ff2" v-text="item.position + '/' + item.comname">CEO/北京聚牛天下网络科技有限公司北京聚牛天下网络科技有限公司北京聚牛天下网络科技有限公司北京聚牛天下网络科技有限公司</div>
+          <div class="ff3" v-text="item.mobile">188 8888 8888</div>
+          <div class="ff4" v-text="item.club_name">北京酷牛仔俱乐部</div>
         </div>
       </div>
     </div>
@@ -19,13 +19,19 @@ export default {
   name: 'HisFans',
   data () {
     return {
-      tapBur: true
+      tapBur: true,
+      dataList: []
     }
   },
   methods: {
-    path: function () {
+    path: function (data) {
       let _this = this
-      _this.$router.push('/cardInfo')
+      _this.$router.push({
+        path: 'cardInfo',
+        query: {
+          user_id: data.puser
+        }
+      })
     }
   },
   mounted (options) {
@@ -34,9 +40,10 @@ export default {
       document.title = '我的粉丝'
     } else {
       document.title = 'Ta的粉丝'
-      console.log(_this.$route.params)
-      let str = 'puser=' + _this.$route.params
+      _this.user_id = _this.$route.query.user_id
+      let str = 'puser=' + _this.user_id
       _this.api.getUserFans(str, function (res) {
+        _this.dataList = res.data.results
         console.log(res)
       }, function (err) {
         console.log(err)

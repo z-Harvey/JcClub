@@ -2,36 +2,67 @@
   <div class="ApplyOpen">
     <div class="title">
         <p>开通条件</p>
-        <p>标记50家有决策链线索的客户</p>
+        <p>标记<span v-text="dataList.need_count"></span>家有决策链线索的客户</p>
     </div>
     <div class="cont">
         <div>
             <span>当前已标记</span>
-            <span>10家</span>
+            <span v-text="dataList.mark_count + '家'"></span>
         </div>
         <div>
             <span>还需要标记</span>
-            <span>40家</span>
+            <span v-text="dataList.also_need_count + '家'"></span>
         </div>
     </div>
-    <button class="btn">去标记</button>
+    <button class="btn" @click="path(0)">去标记</button>
     <div class="flxBom">
-        <button>申请开通</button>
+        <button @click="path(1)">申请开通</button>
     </div>
+    <srceachMol ref="srcea"/>
   </div>
 </template>
 
 <script>
+import srceachMol from '@/components/assembly/srceachKehu'
+
 export default {
   name: 'ApplyOpen',
   data () {
     return {
+      dataList: {}
     }
   },
+  components: {
+    srceachMol
+  },
   methods: {
+    path: function (num) {
+      let _this = this
+      if (num === 0) {
+        // _this.$refs.srcea.on_display()
+        _this.$router.push('/srceach')
+      } else if (num === 1) {
+        _this.api.PostCompanyPerm(function (res) {
+          if (res.status === 201) {
+            console.log('申请成功')
+          }
+        }, function (err) {
+          if (err.status === 400) {
+            console.log('正在申请，请勿重复提交')
+          }
+        })
+      }
+    }
   },
   mounted () {
     document.title = '酷牛仔'
+    let _this = this
+    _this.api.CompanyPerm(function (res) {
+      _this.dataList = res.data
+      console.log(res)
+    }, function (err) {
+      console.log(err)
+    })
   }
 }
 </script>

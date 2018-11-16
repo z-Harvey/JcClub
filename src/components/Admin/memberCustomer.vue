@@ -1,5 +1,18 @@
 <template>
-    <div class="HisCustomer">
+    <div class="memberCustomer">
+        <div class="userInfo">
+            <div class="infoImgBox">
+                <img src="@/assets/touxiang.jpg" alt="">
+            </div>
+            <div class="infoText">
+                <div class="f0">
+                    <img v-if="true" src="@/assets/man.png" alt="">
+                    <img v-else src="@/assets/woman.png" alt="">
+                    <span>李晓沫</span>
+                </div>
+                <div class="f1">北京酷牛仔俱乐部（已加入n天）</div>
+            </div>
+        </div>
         <div class="screen">
             <div>
                 <div>客户关系/线索</div>
@@ -44,7 +57,7 @@
 
 <script>
 export default {
-  name: 'HisCustomer',
+  name: 'memberCustomer',
   data () {
     return {
       tapBur: true,
@@ -53,19 +66,14 @@ export default {
   },
   methods: {
     path: function (num) {
-      let _this = this
-      switch (num) {
-        case 0:
-          _this.$router.push('/CuHome')
-      }
     }
   },
   mounted (options) {
-    console.log(this.type)
     let _this = this
     document.title = 'Ta的客户'
     _this.user_id = _this.$route.query.user_id
-    let str = 'user=' + _this.user_id
+    // let str = 'user=' + _this.user_id
+    let str = 'user=1'
     _this.api.getUserCustomer(str, function (res) {
       res.data.map(function (p1, p2) {
         p1.add_time = Math.floor(Math.abs(Date.now() - new Date(p1.add_time).getTime()) / (3600 * 24 * 1e3))
@@ -80,7 +88,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.HisCustomer{
+.memberCustomer{
     position: fixed;
     top:0rem;
     left: 0rem;
@@ -203,5 +211,35 @@ export default {
     line-height: 1.5rem;
     border:0;
     float: right;
+}
+.userInfo{
+    padding:.5rem .75rem;
+    background: #fff;
+}
+.infoImgBox{
+    width:2.5rem;
+    height:2.5rem;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    float: left;
+}
+.infoImgBox>img{
+    width:2.5rem;
+    align-self: center;
+}
+.infoText{
+    padding:.4rem 0 0 3rem;
+    text-align: left;
+}
+.f0{
+    font-size: .7rem;
+}
+.f0>img{
+    width:.7rem;
+    height:.7rem;
+}
+.f1{
+    font-size: .6rem;
 }
 </style>

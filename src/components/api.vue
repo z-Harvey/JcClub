@@ -46,6 +46,17 @@ let getApplyClub = function (data, success, error) {
   })
 }
 /**
+ * 获取个人信息
+ */
+let getMine = function (success, error) {
+  axios.get(path + '/mine/' + (Date.parse(new Date()) + 3) + '/').then(function (res) {
+    success(res)
+  }).catch(function (err) {
+    error(err.response)
+  })
+}
+
+/**
  * 提交 想要加入的俱乐部ID
  */
 let getClubChoice = function (data, success, error) {
@@ -107,6 +118,7 @@ let postWorkInfo = function (data, success, error) {
 }
 /**
  * 获取城市列表
+ * pid=****
  */
 let getAreaList = function (data, success, error) {
   axios.get(path + '/area/?' + data).then(function (res) {
@@ -116,7 +128,8 @@ let getAreaList = function (data, success, error) {
   })
 }
 /**
- * 查询公司
+ * 查询公司 搜索
+ * search=****
  */
 let getSearchCompany = function (data, success, error) {
   axios.get(path + '/company/?' + data).then(function (res) {
@@ -242,7 +255,6 @@ let getUserCustomer = function (data, success, error) {
 let MyCollect = function (data, success, error) {
   axios.post(path + '/my_collect/?link=' + Date.parse(new Date()), data).then(function (res) {
     success(res)
-    console.log(res)
   }, function (err) {
     error(err.response)
   })
@@ -257,10 +269,130 @@ let delMyCollect = function (data, success, error) {
     error(err.response)
   })
 }
+/**
+ * 公海List
+ */
+let getCompanySeaList = function (data, success, error) {
+  axios.get(path + '/companySea/?link=' + Date.parse(new Date()) + '&' + data).then(function (res) {
+    success(res)
+  }, function (err) {
+    error(err.response)
+  })
+}
+/**
+ * 我的客户List
+ */
+let getMyCustomer = function (data, success, error) {
+  axios.get(path + '/my_customer/?link=' + Date.parse(new Date()) + '&' + data).then(function (res) {
+    success(res)
+  }, function (err) {
+    error(err.response)
+  })
+}
+/**
+ * 是否有权限查看客户
+ * status_choices  0: 未开通  1: 已开通  2: 审核中  3: 审核失败
+ */
+let CompanySeaStatus = function (data, success, error) {
+  axios.get(path + '/companysea_status/?link=' + Date.parse(new Date()) + '&' + data).then(function (res) {
+    success(res)
+  }, function (err) {
+    error(err.response)
+  })
+}
+/**
+ * 获取当前标记了多少客户
+ * need_count : 需要标记  mark_count : 当前标记  also_need_count : 还需标记
+ */
+let CompanyPerm = function (success, error) {
+  axios.get(path + '/company_perm/?link=' + Date.parse(new Date())).then(function (res) {
+    success(res)
+  }, function (err) {
+    error(err.response)
+  })
+}
+/**
+ * 申请开通权限
+ */
+let PostCompanyPerm = function (success, error) {
+  axios.post(path + '/company_perm/?link=' + Date.parse(new Date())).then(function (res) {
+    success(res)
+  }, function (err) {
+    error(err.response)
+  })
+}
+/**
+ * 标记客户 提交标记信息
+ * relation : 合作关系*
+ * has_decision : 决策连*
+ * department : 线索部门
+ * simple_name : 简称
+ * industry : 行业
+ * type : 类型
+ * net_url : 网址
+ * province : 省份
+ * city : 城市
+ * area : 地区
+ * address : 详细地址
+ * people_num : 人数
+ * fzjg_num : 分支机构数
+ * turnover : 营业额
+ * contact_list : 联系人列表
+ * company : 公司
+ */
+let PostMyCustomer = function (data, success, error) {
+  axios.post(path + '/my_customer/?link=' + Date.parse(new Date()), data).then(function (res) {
+    success(res)
+  }, function (err) {
+    error(err.response)
+  })
+}
+/**
+ * 企业类型列表
+ */
+let getCompanytype = function (success, error) {
+  axios.get(path + '/company_type/?link=' + Date.parse(new Date())).then(function (res) {
+    success(res)
+  }, function (err) {
+    error(err.response)
+  })
+}
+/**
+ * 客户信息 头部
+ */
+let getCompanyHeader = function (data, success, error) {
+  axios.get(path + '/company_header/?link=' + Date.parse(new Date()) + '&' + data).then(function (res) {
+    success(res)
+  }, function (err) {
+    error(err.response)
+  })
+}
+/**
+ * 客户信息
+ */
+let getCompanyInfo = function (data, success, error) {
+  axios.get(path + '/company_info/?link=' + Date.parse(new Date()) + '&' + data).then(function (res) {
+    success(res)
+  }, function (err) {
+    error(err.response)
+  })
+}
+/**
+ * 客户 的跟进会员
+ */
+let getCompanyMark = function (data, success, error) {
+  axios.get(path + '/company_mark/?link=' + Date.parse(new Date()) + '&' + data).then(function (res) {
+    success(res)
+  }, function (err) {
+    error(err.response)
+  })
+}
+
 export default{
   login,
   getVerifyCode,
   getToken,
+  getMine,
   getApplyClub,
   getClubList,
   getWorkNum,
@@ -282,6 +414,16 @@ export default{
   getUserCustomer,
   getUserFans,
   MyCollect,
-  delMyCollect
+  delMyCollect,
+  getCompanySeaList,
+  getMyCustomer,
+  CompanySeaStatus,
+  CompanyPerm,
+  PostCompanyPerm,
+  PostMyCustomer,
+  getCompanytype,
+  getCompanyHeader,
+  getCompanyInfo,
+  getCompanyMark
 }
 </script>

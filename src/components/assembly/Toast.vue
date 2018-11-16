@@ -76,7 +76,8 @@ export default {
       this.show = false
     },
     _click: function () {
-      this.$emit('confirm')
+      this.content.success(1)
+      this.show = false
     },
     on_display: function (res) {
       this.content = res

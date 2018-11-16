@@ -3,30 +3,30 @@
     <div class="myBody">
         <div class="titleImg">
         <div class="titBox">
-            <img src="@/assets/touxiang.jpg" alt="">
+            <img :src="msg.avatarurl" alt="">
         </div>
-        <p>李晓沫</p>
-        <p class="hehe">XXXXXXX俱乐部</p>
-        <button class="code">邀请码</button>
+        <p v-text="msg.nickname">李晓沫</p>
+        <p class="hehe" v-text="msg.club_name">XXXXXXX俱乐部</p>
+        <p class="hehe" v-text="'ID:' + msg.club_num">ID</p>
     </div>
     <div class="codeMy">
         <div>
-            <div>@袁邦阳</div>
+            <div v-text="'@' + msg.inviter">袁邦阳</div>
             <div>我的邀请者</div>
         </div>
         <div @click="path(1)">
-            <div>99</div>
+            <div v-text="msg.fans_count">99</div>
             <div>粉丝</div>
         </div>
         <div @click="path(0)">
-            <div>99</div>
+            <div v-text="msg.collect_count">99</div>
             <div>关注</div>
         </div>
     </div>
     <div class="btnList">
         <div class="listLi" @click="path(2)">
             <div class="listLiLeft"><img src="@/assets/choiceness.png" alt=""><span>我的牛钻</span></div>
-            <div class="listLiRight"><span>400颗</span><img src="@/assets/right.png" alt=""></div>
+            <div class="listLiRight"><span v-text="msg.niuz">400颗</span><img src="@/assets/right.png" alt=""></div>
         </div>
         <div class="listLi" @click="path(3)">
             <div class="listLiLeft"><img src="@/assets/profile.png" alt=""><span>我的名片</span></div>
@@ -34,7 +34,7 @@
         </div>
         <div class="listLi" @click="path(4)">
             <div class="listLiLeft"><img src="@/assets/group.png" alt=""><span>我邀请的会员</span></div>
-            <div class="listLiRight"><span>2/10</span><img src="@/assets/right.png" alt=""></div>
+            <div class="listLiRight"><span v-text="msg.collect_count + '/10'"></span><img src="@/assets/right.png" alt=""></div>
         </div>
     </div>
     </div>
@@ -50,12 +50,23 @@ export default {
   name: 'my',
   data () {
     return {
-      Success_or_failure: true
+      msg: {
+        avatarurl: '',
+        club_name: '',
+        club_num: '',
+        collect_count: '',
+        fans_count: '',
+        id: '',
+        invited_count: '',
+        nickname: '',
+        niuz: ''
+      }
     }
   },
   methods: {
     path: function (num) {
       let _this = this
+      console.log(_this.Global.userInfo)
       switch (num) {
         case 0:
           _this.$router.push({ path: '/HisFollow', query: {source: 'my'} })
@@ -67,12 +78,27 @@ export default {
           _this.$router.push({ path: '/myNiuzuan' })
           break
         case 3:
-          _this.$router.push({ path: '/cardInfo', query: {source: 'my'} })
+          _this.$router.push({
+            path: '/cardInfo',
+            query: {
+              source: 'my',
+              user_id: _this.Global.userInfo.myId
+            }
+          })
           break
         case 4:
           _this.$router.push({ path: '/myInvitation' })
           break
       }
+    },
+    init: function () {
+      let _this = this
+      _this.api.getMine(function (res) {
+        console.log(res)
+        _this.msg = res.data
+      }, function (err) {
+        console.log(err)
+      })
     }
   },
   mounted () {
@@ -148,18 +174,6 @@ export default {
 }
 .titleImg>.hehe{
     margin:.4rem auto;
-}
-.code{
-    width:3.5rem;
-    height:1.25rem;
-    border-radius:.75rem;
-    color:rgba(255, 152, 0, 1);
-    background: #fff;
-    border:0;
-    font-size: .6rem;
-}
-.code::after{
-    border:0;
 }
 .codeMy{
     padding:0 .75rem;

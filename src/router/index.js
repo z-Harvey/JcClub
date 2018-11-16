@@ -41,9 +41,11 @@ import editInfo from '@/components/Main_interface/editInfo' //  编辑信息  �
  */
 import nav from '@/components/Admin/nav' //  管理员首页导航
 import MemberList from '@/components/Admin/MemberList' //  会员列表
-import newClub from '@/components/Admin/newClub' //  会员列表
-import memberInfo from '@/components/Admin/memberInfo' //  会员列表
-import memberJournal from '@/components/Admin/memberJournal' //  会员列表
+import newClub from '@/components/Admin/newClub' //  创建俱乐部
+import memberInfo from '@/components/Admin/memberInfo' //  会员信息
+import memberJournal from '@/components/Admin/memberJournal' //  会员日志
+import CustomerInfo from '@/components/Admin/CustomerInfo' //  客户信息
+import memberCustomer from '@/components/Admin/memberCustomer' //  会员客户
 
 Vue.use(Router)
 
@@ -82,6 +84,8 @@ export default new Router({
     { path: '/MemberList', name: 'MemberList', component: MemberList },
     { path: '/newClub', name: 'newClub', component: newClub },
     { path: '/memberInfo', name: 'memberInfo', component: memberInfo },
-    { path: '/memberJournal', name: 'memberJournal', component: memberJournal }
+    { path: '/memberJournal', name: 'memberJournal', component: memberJournal },
+    { path: '/CustomerInfo', name: 'CustomerInfo', component: CustomerInfo },
+    { path: '/memberCustomer', name: 'memberCustomer', component: memberCustomer }
   ]
 })

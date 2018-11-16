@@ -225,6 +225,112 @@
                 </div>
             </div>
         </div>
+        <div v-if="type === 'CustomerInfo'" class="contBox">
+            <div class="contTitle">
+                <div>客户关系</div>
+                <div></div>
+            </div>
+            <div class="contcon">
+                <div>
+                    <div>合作关系</div>
+                    <div>已合作</div>
+                </div>
+                <div>
+                    <div>是否有线索</div>
+                    <div>有</div>
+                </div>
+                <div>
+                    <div>线索部门</div>
+                    <div>技术部门</div>
+                </div>
+            </div>
+        </div>
+        <div v-if="type === 'CustomerInfo'" class="contBox">
+            <div class="contTitle">
+                <div>基本信息</div>
+                <div></div>
+            </div>
+            <div class="contcon">
+                <div>
+                    <div>行业</div>
+                    <div>人力资源</div>
+                </div>
+                <div>
+                    <div>官网地址</div>
+                    <div>Http://www.xiaoshouniu.cn</div>
+                </div>
+                <div>
+                    <div>公司地址</div>
+                    <div>北京市昌平区龙锦苑东五区</div>
+                </div>
+                <div>
+                    <div>企业类型</div>
+                    <div>民营企业</div>
+                </div>
+            </div>
+        </div>
+        <div v-if="type === 'CustomerInfo'" class="contBox">
+            <div class="contTitle">
+                <div>企业规模</div>
+                <div @click="mol">更多</div>
+            </div>
+            <div class="contcon">
+                <div>
+                    <div>人数</div>
+                    <div>8</div>
+                </div>
+                <div>
+                    <div>分支机构数</div>
+                    <div>0</div>
+                </div>
+                <div>
+                    <div>营业额</div>
+                    <div>1亿</div>
+                </div>
+            </div>
+        </div>
+        <div v-if="type === 'CustomerInfo'" class="contBox">
+            <div class="contTitle">
+                <div>联系人</div>
+                <div @click="mol">更多</div>
+            </div>
+            <div class="contcon">
+                <div>
+                    <div>姓名</div>
+                    <div>王**</div>
+                </div>
+                <div>
+                    <div>职务</div>
+                    <div>CEO</div>
+                </div>
+                <div>
+                    <div>电话</div>
+                    <div>18*********</div>
+                </div>
+                <div>
+                    <div>邮件</div>
+                    <div>***@***.***</div>
+                </div>
+            </div>
+            <div class="contcon">
+                <div>
+                    <div>姓名</div>
+                    <div>王**</div>
+                </div>
+                <div>
+                    <div>职务</div>
+                    <div>CEO</div>
+                </div>
+                <div>
+                    <div>电话</div>
+                    <div>18*********</div>
+                </div>
+                <div>
+                    <div>邮件</div>
+                    <div>***@***.***</div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 

@@ -72,6 +72,15 @@ export default {
           _this.$router.push('/SalesNotes')
           break
       }
+    },
+    init: function () {
+      let _this = this
+      let str = ''
+      _this.api.getMyCustomer(str, function (res) {
+        console.log(res)
+      }, function (err) {
+        console.log(err)
+      })
     }
   },
   mounted () {

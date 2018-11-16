@@ -66,7 +66,8 @@ export default {
       navBtn: true,
       source: null,
       dataList: null,
-      listData: {}
+      listData: {},
+      user_id: null
     }
   },
   methods: {
@@ -78,6 +79,7 @@ export default {
         }
         _this.api.MyCollect(obj, function (res) {
           if (res.status === 201) {
+            _this.listData.collect_id = res.data.collect_id
             _this.listData.fans_count += 1
             _this.listData.is_collect = 1
           }
@@ -99,19 +101,19 @@ export default {
       let _this = this
       switch (num) {
         case 0:
-          _this.$refs.CuInfo.cardInfoInit(_this.Global.flowInfo.carHttpId)
+          _this.$refs.CuInfo.cardInfoInit(_this.user_id)
           _this.navBtn = true
           break
         case 1:
-          _this.$refs.workEx.workInfoInit(_this.Global.flowInfo.carHttpId)
+          _this.$refs.workEx.workInfoInit(_this.user_id)
           _this.navBtn = false
           break
         case 2:
           // 关注
           _this.$router.push({
             name: 'HisFollow',
-            params: {
-              id: _this.Global.flowInfo.carHttpId
+            query: {
+              user_id: _this.user_id
             }
           })
           break
@@ -119,8 +121,8 @@ export default {
           // 粉丝
           _this.$router.push({
             name: 'HisFans',
-            params: {
-              id: _this.Global.flowInfo.carHttpId
+            query: {
+              user_id: _this.user_id
             }
           })
           break
@@ -128,8 +130,8 @@ export default {
           // 客户
           _this.$router.push({
             name: 'HisCustomer',
-            params: {
-              id: _this.Global.flowInfo.carHttpId
+            query: {
+              user_id: _this.user_id
             }
           })
           break
@@ -150,11 +152,16 @@ export default {
     }
   },
   mounted () {
-    this.source = this.$route.query.source
     document.title = '名片信息'
     let _this = this
-    _this.$refs.CuInfo.cardInfoInit(_this.Global.flowInfo.carHttpId)
-    _this.api.getUserHeader(_this.Global.flowInfo.carHttpId, function (res) {
+    let gl = _this.Global.userInfo
+    let que = _this.$route.query
+    if (que.user_id === gl.myId) {
+      _this.source = 'my'
+    }
+    _this.user_id = que.user_id
+    _this.$refs.CuInfo.cardInfoInit(_this.user_id)
+    _this.api.getUserHeader(_this.user_id, function (res) {
       console.log(res)
       _this.listData = res.data
     }, function (err) {

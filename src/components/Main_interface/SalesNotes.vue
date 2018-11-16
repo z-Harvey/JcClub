@@ -86,7 +86,7 @@ export default {
   },
   mounted () {
     document.title = '销售笔记'
-    this.new_foot()
+    // this.new_foot()
   }
 }
 </script>

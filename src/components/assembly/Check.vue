@@ -19,14 +19,18 @@ export default {
   data () {
     return {
       arr: [],
-      show: false
+      show: false,
+      que: {}
     }
   },
   methods: {
     on_display: function (obj) {
       let _this = this
+      _this.que = obj
       if (obj.type === 'submitAdd') {
         _this.httpQuery(1)
+      } else {
+        _this.httpQuery(2)
       }
       this.show = true
     },
@@ -55,14 +59,27 @@ export default {
         }, function (err) {
           console.log(err)
         })
+      } else if (num === 2) {
+        _this.api.getCompanytype(function (res) {
+          console.log(res)
+          _this.arr = res.data
+          _this.arr.map(function (p1, p2) {
+            p1['show'] = false
+          })
+        }, function (err) {
+          console.log(err)
+        })
       }
     },
     btn: function (item) {
       let _this = this
       let arrs = []
+      console.log(_this.que.Pattern)
       _this.arr.map(function (p1, p2) {
         if (p1.id === item.id) {
           p1.show = !p1.show
+        } else if (_this.que.Pattern === 1) {
+          p1.show = false
         }
         arrs.push(p1)
       })

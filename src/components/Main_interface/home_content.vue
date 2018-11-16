@@ -67,8 +67,8 @@
             <img :src="item.avatarurl" alt="">
         </div>
         <div class="cardInfo" @click="path('info', item)">
-            <p class="name" v-text="item.name">韩鹏翔</p>
-            <p class="comName" v-text="item.position + '/' + item.comname">CEO/北京聚牛天下网络科技有限公司</p>
+            <p class="name" v-text="item.nickname">昵称</p>
+            <p class="comName" v-text="item.position + '/' + item.comname">职位/公司</p>
             <div class="tagBox">
                 <div v-text="item.industry||'未选择行业'"></div>
                 <div v-text="'工作' + item.workyears + '年'">工作N年</div>
@@ -82,8 +82,8 @@
                 <span v-text="item.club_name">北京酷牛仔俱乐部</span>
             </div>
             <div class="fooRight">
-                <button class="guanzhu" v-if="item.is_collect === 0" @click="MyCollect(item)">关注Ta</button>
-                <button class="yiguanzhu" v-else>已关注</button>
+                <button class="guanzhu" v-if="item.is_collect === 0&&myId !== item.user" @click="MyCollect(item)">关注Ta</button>
+                <button class="yiguanzhu" v-else-if="item.is_collect === 1&&myId !== item.user">已关注</button>
             </div>
         </div>
     </div>
@@ -97,6 +97,7 @@ export default {
   data () {
     return {
       sort: [false, false],
+      myId: '',
       dataList: [{
         club_name: [{
           club__name: '',
@@ -139,22 +140,28 @@ export default {
       let _this = this
       switch (str) {
         case 'info':
-          _this.Global.flowInfo.carHttpId = data.user
-          this.$router.push('/cardInfo')
+          _this.$router.push({
+            path: 'cardInfo',
+            query: {
+              user_id: data.user
+            }
+          })
           break
       }
     //   this.$router.push('/cardInfo')
+    },
+    init: function () {
+      let _this = this
+      _this.api.getClubUser('', function (res) {
+        _this.myId = _this.Global.userInfo.myId
+        _this.dataList = res.data.results
+      }, function (err) {
+        console.log(err)
+      })
     }
   },
   mounted () {
     document.title = '会员'
-    let _this = this
-    _this.api.getClubUser('', function (res) {
-      console.log(res)
-      _this.dataList = res.data.results
-    }, function (err) {
-      console.log(err)
-    })
   },
   props: ['show']
 }
