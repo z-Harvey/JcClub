@@ -250,7 +250,7 @@ let getUserCustomer = function (data, success, error) {
 }
 
 /**
- * 关注Ta
+ * 关注Ta   ( p=id )
  */
 let MyCollect = function (data, success, error) {
   axios.post(path + '/my_collect/?link=' + Date.parse(new Date()), data).then(function (res) {
@@ -260,7 +260,7 @@ let MyCollect = function (data, success, error) {
   })
 }
 /**
- * 取消关注
+ * 取消关注   (id)
  */
 let delMyCollect = function (data, success, error) {
   axios.delete(path + '/my_collect/' + data + '/?link=' + Date.parse(new Date())).then(function (res) {
@@ -379,9 +379,134 @@ let getCompanyInfo = function (data, success, error) {
 }
 /**
  * 客户 的跟进会员
+ * user: 用户
+ * relation: 关系枚举
+ * mark_num: 跟进数
+ * has_decision: 决策线索枚举
+ * department: 部门
+ * add_time: 创建时间
+ * company: 公司id
+ * avatarurl: 头像
+ * collect_num: 关注数
+ * is_collect: 是否关注
  */
 let getCompanyMark = function (data, success, error) {
   axios.get(path + '/company_mark/?link=' + Date.parse(new Date()) + '&' + data).then(function (res) {
+    success(res)
+  }, function (err) {
+    error(err.response)
+  })
+}
+/**
+ * 客户 的 基本信息   ( company = id )
+ */
+let getCompanyBasic = function (data, success, error) {
+  axios.get(path + '/company_basic/?link=' + Date.parse(new Date()) + '&' + data).then(function (res) {
+    success(res)
+  }, function (err) {
+    error(err.response)
+  })
+}
+/**
+ * 客户 的 规模信息   ( company = id )
+ */
+let getCompanyScale = function (data, success, error) {
+  axios.get(path + '/company_scale/?link=' + Date.parse(new Date()) + '&' + data).then(function (res) {
+    success(res)
+  }, function (err) {
+    error(err.response)
+  })
+}
+/**
+ * 客户 的 企业联系人   ( company = id )
+ */
+let getCompanyContact = function (data, success, error) {
+  axios.get(path + '/company_contact/?link=' + Date.parse(new Date()) + '&' + data).then(function (res) {
+    success(res)
+  }, function (err) {
+    error(err.response)
+  })
+}
+/**
+ * 获取解锁需要的牛钻数   ( company = id )
+ * out_mark_count: 外部跟进数
+ * out_unlock_niuz: 外部解锁牛钻
+ * club_mark_count: 内部跟进
+ * club_unlock_niuz: 内部解锁牛钻
+ * user_niuz: 用户牛钻
+ */
+let getCompanyUnlock = function (data, success, error) {
+  axios.get(path + '/company_unlock/?link=' + Date.parse(new Date()) + '&' + data).then(function (res) {
+    success(res)
+  }, function (err) {
+    error(err.response)
+  })
+}
+/**
+ * 解锁这家公司   ( company : id is_deepunlock: 1-解锁内部 2-解锁外部 3-全部 )
+ */
+let postCompanyUnlock = function (data, success, error) {
+  axios.post(path + '/company_unlock/?link=' + Date.parse(new Date()), data).then(function (res) {
+    success(res)
+  }, function (err) {
+    error(err.response)
+  })
+}
+/**
+ * 销售笔记 头部   ( id=** )
+ */
+let getNotesHeader = function (data, success, error) {
+  axios.get(path + '/notes_header/?link=' + Date.parse(new Date()) + '&' + data).then(function (res) {
+    success(res)
+  }, function (err) {
+    error(err.response)
+  })
+}
+/**
+ * 销售笔记 个人信息   ( company = id )
+ */
+let getMyCustomers = function (data, success, error) {
+  axios.get(path + '/my_customer/' + data + '/?link=' + Date.parse(new Date())).then(function (res) {
+    success(res)
+  }, function (err) {
+    error(err.response)
+  })
+}
+/**
+ * 销售笔记 获取足迹   ( company = id )
+ */
+let getFootPrint = function (data, success, error) {
+  axios.get(path + '/foot_print/?link=' + Date.parse(new Date()) + '&' + data).then(function (res) {
+    success(res)
+  }, function (err) {
+    error(err.response)
+  })
+}
+/**
+ * 销售笔记 新增足迹   ( company = id )
+ */
+let postFootPrint = function (data, success, error) {
+  axios.post(path + '/foot_print/?link=' + Date.parse(new Date()), data).then(function (res) {
+    success(res)
+  }, function (err) {
+    error(err.response)
+  })
+}
+/**
+ * 我的关注   ( p = id )
+ */
+let getMyCollect = function (data, success, error) {
+  axios.get(path + '/my_collect/?link=' + Date.parse(new Date()) + '&' + data).then(function (res) {
+    success(res)
+  }, function (err) {
+    error(err.response)
+  })
+}
+/**
+ * 我的粉丝   ( p = id )
+ */
+let getMyFans = function (data, success, error) {
+  axios.get(path + '/my_fans/?link=' + Date.parse(new Date()) + '&' + data).then(function (res) {
     success(res)
   }, function (err) {
     error(err.response)
@@ -424,6 +549,17 @@ export default{
   getCompanytype,
   getCompanyHeader,
   getCompanyInfo,
-  getCompanyMark
+  getCompanyMark,
+  getCompanyBasic,
+  getCompanyScale,
+  getCompanyContact,
+  getCompanyUnlock,
+  postCompanyUnlock,
+  getMyCustomers,
+  getNotesHeader,
+  getFootPrint,
+  postFootPrint,
+  getMyCollect,
+  getMyFans
 }
 </script>

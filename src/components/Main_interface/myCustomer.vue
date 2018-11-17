@@ -29,27 +29,31 @@
             <img v-else class="pai" src="@/assets/pai2.png" alt="">
         </div>
     <div class="content">
-        <div class="contFor">
+        <div class="contFor" v-for="(item, index) in dataList" :key="index">
             <div class="tapBox">
                 <img src="@/assets/qi.png" alt="">
             </div>
             <div class="forRight">
                 <div class="riCikename">
-                    <div class="cikeName">北京聚牛天下网络科技有限公司</div>
+                    <div class="cikeName" v-text="item.company_name">北京聚牛天下网络科技有限公司</div>
                     <div class="cikeposition">
-                        <img src="@/assets/lock.png" alt="">
+                        <img v-if="item.is_unlock === 0" src="@/assets/lock.png" alt="">
                     </div>
                 </div>
                 <div class="ricTag">
-                    <div>#有钱任性#</div>
-                    <div>#有钱任性#</div>
+                    <span v-if="item.relation === 0">#有过合作#</span>
+                    <span v-if="item.relation === 1">#正在合作#</span>
+                    <span v-if="item.relation === 2">#有过跟进#</span>
+                    <span v-if="item.relation === 3">#正在跟进#</span>
+                    <span v-if="item.has_decision === 0">#有决策链线索#</span>
+                    <span v-if="item.has_decision === 1">#无决策链线索#</span>
                 </div>
                 <div class="forFuterr">
                     <div>
                         <img src="@/assets/foter.png" alt="">
-                        <span>足迹 999</span>
+                        <span>足迹 <span v-text="item.footPrint_count"></span></span>
                     </div>
-                    <button @click="path(0)">销售笔记</button>
+                    <button @click="path(0, item)">销售笔记</button>
                 </div>
             </div>
         </div>
@@ -62,14 +66,21 @@
 export default {
   name: 'home_content',
   data () {
-    return { }
+    return {
+      dataList: []
+    }
   },
   methods: {
-    path: function (num) {
+    path: function (num, item) {
       let _this = this
       switch (num) {
         case 0:
-          _this.$router.push('/SalesNotes')
+          _this.$router.push({
+            path: '/SalesNotes',
+            query: {
+              com_id: item.company
+            }
+          })
           break
       }
     },
@@ -78,6 +89,7 @@ export default {
       let str = ''
       _this.api.getMyCustomer(str, function (res) {
         console.log(res)
+        _this.dataList = res.data.results
       }, function (err) {
         console.log(err)
       })

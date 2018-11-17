@@ -6,9 +6,9 @@
         </div>
         <div class="forText">
           <div class="ff1" v-text="item.nickname">韩鹏翔</div>
-          <div class="ff2" v-text="item.position + '/' + item.club_name">CEO</div>
+          <div class="ff2" v-text="item.position + '/' + item.comname">CEO</div>
           <div class="ff3" v-text="item.mobile">188 8888 8888</div>
-          <div class="ff4" v-text="item.comname">北京酷牛仔俱乐部</div>
+          <div class="ff4" v-text="item.club_name">北京酷牛仔俱乐部</div>
         </div>
       </div>
     </div>
@@ -41,6 +41,13 @@ export default {
     let _this = this
     if (this.$route.query.source === 'my') {
       document.title = '我的关注'
+      let str = ''
+      _this.api.getMyCollect(str, function (res) {
+        console.log(res)
+        _this.dataList = res.data.results
+      }, function (err) {
+        console.log(err)
+      })
     } else {
       document.title = 'Ta的关注'
       console.log('Ta的关注')

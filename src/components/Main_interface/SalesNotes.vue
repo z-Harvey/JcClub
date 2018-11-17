@@ -4,13 +4,13 @@
         <div class="title">
             <div class="cikename">
                 <img src="@/assets/membershipApp_shu.png" alt="">
-                <span>北京聚牛天下网络科技有限公司</span>
+                <span v-text="msgData.name">北京聚牛天下网络科技有限公司</span>
             </div>
             <div class="number">
-                <span>内部跟进 999</span>
-                <span>外部跟进 999</span>
+                <span>内部跟进 <span v-text="msgData.club_mark_count"></span></span>
+                <span>外部跟进 <span v-text="msgData.out_mark_count"></span></span>
             </div>
-            <button>客户主页</button>
+            <button @click="path(0)">客户主页</button>
         </div>
         <div class="tit2">
             <span>有钱任性</span>
@@ -26,8 +26,8 @@
             <button @click="navPath(1)" :class="!navBtn?'navBtn':''">销售足迹99999</button>
         </nav>
         <!-- <router-view :type="'SalesNotes'"></router-view> -->
-        <CuInfo :type="'SalesNotes'" :show="navBtn"/>
-        <saleFootprint :type="'SalesNotes'" :show="!navBtn"/>
+        <CuInfo ref="cuinfo" :type="'SalesNotes'" :show="navBtn"/>
+        <saleFootprint ref="saleFoot" :type="'SalesNotes'" :show="!navBtn"/>
         <div style="height:2.25rem;"></div>
         <div class="footer" v-if="navBtn">
             <button @click="navPath(3)">编辑客户信息</button>
@@ -40,13 +40,14 @@
 
 <script>
 import saleFootprint from '@/components/Main_interface/saleFootprint' // 销售足迹
-import CuInfo from '@/components/Main_interface/CuInfo' // 客户信息  ** 解决复用冲突/重复引用 **
+import CuInfo from '@/components/Main_interface/CuInfo' // 客户信息
 
 export default {
   name: 'SalesNotes',
   data () {
     return {
-      navBtn: true
+      navBtn: true,
+      msgData: {}
     }
   },
   components: {
@@ -54,15 +55,24 @@ export default {
     CuInfo
   },
   methods: {
+    path: function () {
+      let _this = this
+      this.$router.push({
+        path: '/CuHome',
+        query: {
+          com_id: _this.que.com_id
+        }
+      })
+    },
     navPath: function (num) {
       let _this = this
       switch (num) {
         case 0:
-        //   _this.$router.push({name: 'CuInfo2'})
+          _this.$refs.cuinfo.SalesNotesInit(_this.que.com_id)
           _this.navBtn = true
           break
         case 1:
-        //   _this.$router.push({name: 'saleFootprint'})
+          _this.$refs.saleFoot.init(_this.que.com_id)
           _this.navBtn = false
           break
         case 2:
@@ -74,19 +84,40 @@ export default {
       }
     },
     new_foot: function () {
+      let _this = this
       let obj = {
         Title: '新增足迹',
         Yes: '确认',
         No: '取消',
         type: 3,
-        btn: 2
+        btn: 2,
+        success: _this.newFootCall
       }
       this.$refs.Toast.on_display(obj)
+    },
+    newFootCall: function (data) {
+      let _this = this
+      data['company'] = _this.que.com_id
+      _this.api.postFootPrint(data, function (res) {
+        console.log(res)
+      }, function (err) {
+        console.log(err)
+      })
     }
   },
   mounted () {
     document.title = '销售笔记'
     // this.new_foot()
+    let _this = this
+    _this.que = _this.$route.query
+    let str = 'id=' + _this.que.com_id
+    _this.$refs.cuinfo.SalesNotesInit(_this.que.com_id)
+    _this.api.getNotesHeader(str, function (res) {
+      console.log(res)
+      _this.msgData = res.data[0]
+    }, function (err) {
+      console.log(err)
+    })
   }
 }
 </script>

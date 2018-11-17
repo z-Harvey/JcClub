@@ -2,36 +2,47 @@
   <div class="Toast" v-if="show">
     <div class="alert_box">
         <div class="title" v-text="content.Title? content.Title:'标题'">是否确认提交？</div>
-        <div class="content" v-if="content.type === 1" v-text="content.Content? content.Content:'内容'">请您确保您填写的信息准确无误，否则可能会影响审核结果</div>
+        <div class="content" v-if="content.type === 1 || content.type === 4" v-text="content.Content? content.Content:'内容'">请您确保您填写的信息准确无误，否则可能会影响审核结果</div>
         <div class="contents" v-if="content.type === 2">
             <div class="xuanze">
-                <div @click="rioC(0)" :class="rio[0]?'chaRio': 'rio'"><div></div></div>
+                <div @click="rioC('ri1')" :class="rio.ri1?'chaRio': 'rio'"><div></div></div>
                 <div class="tioTex">
-                    <div>10牛钻</div>
-                    <div>查看<span>俱乐部内部</span>999位会员标记的数据</div>
+                    <div><span v-text="mat.club_unlock_niuz"></span>牛钻</div>
+                    <div>查看<span>俱乐部内部</span><span v-text="mat.club_mark_count"></span> 位会员标记的数据</div>
                 </div>
             </div>
             <div class="xuanze">
-                <div @click="rioC(1)" :class="rio[1]?'chaRio': 'rio'"><div></div></div>
+                <div @click="rioC('ri2')" :class="rio.ri2?'chaRio': 'rio'"><div></div></div>
                 <div class="tioTex">
-                    <div>15牛钻</div>
-                    <div>查看<span>俱乐部外部</span>999位会员标记的数据</div>
+                    <div><span v-text="mat.out_unlock_niuz"></span>牛钻</div>
+                    <div>查看<span>俱乐部外部</span><span v-text="mat.out_mark_count"></span>位会员标记的数据</div>
                 </div>
             </div>
-            <div class="shengyu">剩余牛钻 <span>400颗</span></div>
+            <div class="shengyu">剩余牛钻 <span><span v-text="mat.user_niuz"></span>颗</span></div>
         </div>
         <div class="contents" v-if="content.type === 3">
             <div class="t3_content_title">足迹内容为您的隐私，我们不会在任何地方进行展示，请放心填写~</div>
             <div class="t3_content_cont">
                 <span>类型</span>
-                <div class="cc1">电话拜访<img src="@/assets/bottom.png" alt=""></div>
+                <div class="cc1">
+                    <select v-model="typ2.type">
+                        <option value="1">电话拜访</option>
+                        <option value="2">上门拜访</option>
+                        <option value="3">回复</option>
+                        <option value="4">市场活动</option>
+                        <option value="5">邮件</option>
+                    </select>
+                </div>
             </div>
             <div class="t3_content_cont">
                 <span>时间</span>
-                <div class="cc2">请选择</div>
+                <div class="cc2"><input v-model="typ2.time" type="date" name="" id=""></div>
             </div>
             <div class="t3_content_cont">
                 <span>记录</span>
+                <div class="cc3">
+                    <textarea v-model="typ2.experience"></textarea>
+                </div>
             </div>
         </div>
         <div style="height:2.5rem;"></div>
@@ -55,32 +66,72 @@ export default {
     return {
       path: 1,
       show: false,
-      rio: [false, true],
-      content: {}
+      rio: {
+        ri1: false,
+        ri2: false
+      },
+      content: {},
+      mat: {},
+      datas: null,
+      typ2: {
+        type: null,
+        time: null,
+        experience: null
+      }
     }
   },
   mounted (res) {
   },
   methods: {
-    rioC: function (num) {
+    rioC: function (re) {
       let _this = this
-      if (_this.rio[num]) {
-
-      } else {
-        let arr = [false, false]
-        arr[num] = true
-        _this.rio = arr
-      }
+      _this.rio[re] = !_this.rio[re]
     },
     close: function () {
       this.show = false
     },
     _click: function () {
-      this.content.success(1)
+      let data = {}
+      let _this = this
+      if (_this.content.type === 2) {
+        if (_this.rio.ri1 && _this.rio.ri2) {
+          data['is_deepunlock'] = 3
+        } else if (_this.rio.ri1) {
+          data['is_deepunlock'] = 1
+        } else if (_this.rio.ri2) {
+          data['is_deepunlock'] = 2
+        } else {
+          data['is_deepunlock'] = false
+        }
+        data['club_unlock_niuz'] = _this.mat.club_unlock_niuz
+        data['out_unlock_niuz'] = _this.mat.out_unlock_niuz
+        data['user_niuz'] = _this.mat.user_niuz
+        data['id'] = _this.comId
+      } else if (_this.content.type === 4) {
+        data = _this.datas
+      } else if (this.content.type === 3) {
+        data = _this.typ2
+      }
+      this.content.success(data)
       this.show = false
     },
-    on_display: function (res) {
+    on_display: function (res, data) {
+      let _this = this
       this.content = res
+      _this.datas = data
+      this.show = true
+    },
+    isUnlock: function (res, data) {
+      this.content = res
+      let _this = this
+      let str = 'company=' + data.id
+      _this.comId = data.id
+      _this.api.getCompanyUnlock(str, function (res) {
+        console.log(res)
+        _this.mat = res.data
+      }, function (err) {
+        console.log(err)
+      })
       this.show = true
     }
   }
@@ -234,5 +285,20 @@ export default {
     font-size: .7rem;
     color:#ccc;
     display: inline-block
+}
+.cc2>input{
+    border:none;
+    color:#888;
+}
+.cc3{
+    padding-left:1.5rem;
+}
+.cc3>textarea{
+    width:100%;
+    background:#f7f7f7;
+    color:#888;
+    height:6rem;
+    border:none;
+    resize:none
 }
 </style>

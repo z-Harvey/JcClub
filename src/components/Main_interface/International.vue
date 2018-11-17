@@ -83,8 +83,8 @@
                 <div class="forFuterr">
                     <div>内部跟进 <span v-text="item.club_mark_count"></span></div>
                     <div>外部跟进 <span v-text="item.out_mark_count"></span></div>
-                    <button @click="path(0, item)" v-if="item.is_unlock === 0">客户主页</button>
-                    <button @click="path(1)" v-else>解锁查看</button>
+                    <button @click="path(0, item)" v-if="item.is_unlock === 1">客户主页</button>
+                    <button @click="path(1, item)" v-else>解锁查看</button>
                 </div>
             </div>
         </div>
@@ -136,9 +136,53 @@ export default {
           type: 2,
           btn: 3,
           No: '放弃解锁',
-          Yes: '立即解锁'
+          Yes: '立即解锁',
+          success: _this.clltoa
         }
-        _this.$refs.Toast.on_display(obj)
+        _this.$refs.Toast.isUnlock(obj, item)
+      }
+    },
+    clltoa: function (data) {
+      console.log(data)
+      let _this = this
+      let x = 0
+      if (data.is_deepunlock) {
+        switch (data.is_deepunlock) {
+          case 1:
+            x = data.club_unlock_niuz
+            break
+          case 2:
+            x = data.out_unlock_niuz
+            break
+          case 3:
+            x = data.club_unlock_niuz + data.out_unlock_niuz
+            break
+        }
+        if (data.user_niuz - x >= 0) {
+          let obj = {
+            is_deepunlock: data.is_deepunlock,
+            company: data.id
+          }
+          _this.api.postCompanyUnlock(obj, function (res) {
+            if (res.status === 201) {
+              _this.path(0, data)
+            }
+          }, function (err) {
+            console.log(err)
+          })
+        } else {
+          let obj = {
+            Title: '提示',
+            Content: '牛钻不足',
+            type: 1,
+            btn: 0,
+            No: '确定',
+            Yes: '立即解锁'
+          }
+          setTimeout(() => {
+            _this.$refs.Toast.on_display(obj)
+          }, 200)
+        }
       }
     },
     /**

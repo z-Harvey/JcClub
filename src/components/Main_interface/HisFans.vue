@@ -26,8 +26,9 @@ export default {
   methods: {
     path: function (data) {
       let _this = this
+      console.log(data)
       _this.$router.push({
-        path: 'cardInfo',
+        name: 'cardInfo',
         query: {
           user_id: data.puser
         }
@@ -38,13 +39,20 @@ export default {
     let _this = this
     if (this.$route.query.source === 'my') {
       document.title = '我的粉丝'
+      // let str = 'p=' + _this.Global.userInfo.myId
+      let str = ''
+      _this.api.getMyFans(str, function (res) {
+        _this.dataList = res.data.results
+        console.log(res)
+      }, function (err) {
+        console.log(err)
+      })
     } else {
       document.title = 'Ta的粉丝'
       _this.user_id = _this.$route.query.user_id
       let str = 'puser=' + _this.user_id
       _this.api.getUserFans(str, function (res) {
         _this.dataList = res.data.results
-        console.log(res)
       }, function (err) {
         console.log(err)
       })

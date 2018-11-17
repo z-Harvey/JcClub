@@ -1,17 +1,21 @@
 <template>
     <div class="saleFootprint" v-if="show">
         <div class="content">
-            <div class="contTexts">
+            <div class="contTexts" v-for="(item, index) in msgList" :key="index" v-if="item.type > 0">
                 <div class="yuans"></div>
-                <div class="time">yyyy/mm/dd</div>
+                <div class="time" v-text="item.time"></div>
                 <div class="tag">
-                    <span>#电话拜访#</span>
+                    <span v-if="item.type === 1">#电话拜访#</span>
+                    <span v-if="item.type === 2">#上门拜访#</span>
+                    <span v-if="item.type === 3">#回复#</span>
+                    <span v-if="item.type === 4">#市场活动#</span>
+                    <span v-if="item.type === 5">#邮件#</span>
                 </div>
-                <div class="con">首次标记</div>
+                <div class="con" v-text="item.experience">首次标记</div>
             </div>
             <div class="contText">
                 <div class="yuan"></div>
-                <div class="time">yyyy/mm/dd</div>
+                <div class="time" v-text="msg1.time">yyyy/mm/dd</div>
                 <div class="con">首次标记</div>
             </div>
         </div>
@@ -23,9 +27,25 @@ export default {
   name: 'saleFootprint',
   data () {
     return {
+      msgList: [],
+      msg1: {}
     }
   },
   methods: {
+    init: function (id) {
+      let _this = this
+      let str = 'company=' + id
+      _this.api.getFootPrint(str, function (res) {
+        _this.msgList = res.data.results
+        _this.msgList.map(function (p1, p2) {
+          if (p1.type === 0) {
+            _this.msg1 = p1
+          }
+        })
+      }, function (err) {
+        console.log(err)
+      })
+    }
   },
   mounted (options) {
   },
@@ -51,7 +71,7 @@ export default {
     border:.1rem solid rgba(255, 152, 0, 1);
     border-radius: 50%;
     position: absolute;
-    top:0;
+    top:-.2rem;
     left:-.35rem;
     background:rgba(255, 152, 0, 1);
 }

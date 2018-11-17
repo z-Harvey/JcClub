@@ -1,7 +1,7 @@
 <template>
     <div class="CuHome">
-        <Toast @confirm="Unlock"></Toast>
-        <ModalInfo></ModalInfo>
+        <Toast ref="toast" @confirm="Unlock"></Toast>
+        <ModalInfo ref="modal"></ModalInfo>
         <div class="companyInfo">
             <div class="comTopBox">
                 <div class="textInfo">
@@ -14,7 +14,7 @@
                         <span>外部跟进 <span v-text="msg.out_mark_count"></span></span>
                     </div>
                 </div>
-                <button @click="path(2)">我的销售笔记</button>
+                <button @click="path(2, msg.id)">我的销售笔记</button>
             </div>
             <div class="tagBox">
                 <div class="tagBoxs" :class="tapBur?'tagBoxs1':'tagBoxs2'">
@@ -39,8 +39,8 @@
             <button @click="path(1)" :class="!aftBtn?'aftBtn':''">跟进会员999</button>
         </div>
         <!-- <router-view :type="'CuHome'" @alert="alert" @mol="mol_2"/> -->
-        <CuInfo :show="aftBtn" :type="'CuHome'" @alert="alert" @mol="mol_2"/>
-        <FollowNumber :show="!aftBtn" :type="'CuHome'" @alert="alert" @mol="mol_2"/>
+        <CuInfo ref="cuinfo" :show="aftBtn" :type="'CuHome'" @alert="alert" @mol="mol_2"/>
+        <FollowNumber ref="follo" :show="!aftBtn" :type="'CuHome'" @alert="alert" @mol="mol_2"/>
     </div>
 </template>
 
@@ -65,41 +65,61 @@ export default {
   methods: {
     Unlock: function () {
       console.log('解锁')
-      this.$children[0].close()
+      this.$refs.toast.close()
     },
     // 标签下拉
     pullDown: function () {
       this.tapBur = !this.tapBur
     },
     // 弹出
-    alert: function (niubi) {
-      let obj = {
-        Title: '提示',
-        Content: '是否确认花费' + niubi + '牛币解锁？',
-        Yes: '立即解锁',
-        No: '放弃解锁',
-        type: 1,
-        btn: 2
-      }
-      this.$children[0].on_display(obj)
+    alert: function (data) {
+
     },
-    mol_2: function () {
-      this.$children[1].on_display('obj')
+    mol_2: function (num) {
+      let _this = this
+      let str = 'company=' + _this.que.com_id
+      if (num === 0) {
+        _this.api.getCompanyBasic(str, function (res) {
+          res.data['type_num'] = num
+          _this.$refs.modal.on_display(res.data)
+        }, function (err) {
+          console.log(err)
+        })
+      } else if (num === 1) {
+        _this.api.getCompanyScale(str, function (res) {
+          res.data['type_num'] = num
+          _this.$refs.modal.on_display(res.data)
+        }, function (err) {
+          console.log(err)
+        })
+      } else if (num === 2) {
+        _this.api.getCompanyContact(str, function (res) {
+          res.data['type_num'] = num
+          _this.$refs.modal.on_display(res.data)
+        }, function (err) {
+          console.log(err)
+        })
+      }
     },
     // 路由
-    path: function (bum) {
+    path: function (bum, id) {
       let _this = this
       switch (bum) {
         case 0:
-        //   _this.$router.push({name: 'CuInfo'})
+          _this.$refs.cuinfo.cuHomeInit(_this.que.com_id)
           _this.aftBtn = true
           break
         case 1:
-        //   _this.$router.push({name: 'FollowNumber'})
+          _this.$refs.follo.cuHomeInit(_this.que.com_id)
           _this.aftBtn = false
           break
         case 2:
-          _this.$router.push('/SalesNotes')
+          _this.$router.push({
+            path: '/SalesNotes',
+            query: {
+              com_id: id
+            }
+          })
           break
         default:
           console.log('bum:' + bum)
@@ -111,21 +131,11 @@ export default {
     let _this = this
     _this.que = _this.$route.query
     let str = 'id=' + _this.que.com_id
+    _this.$refs.cuinfo.cuHomeInit(_this.que.com_id)
     _this.api.getCompanyHeader(str, function (res) {
       _this.msg = res.data[0]
-      console.log(res)
-    }, function (err) {
-      console.log(err)
-    })
-    str = 'Company=' + _this.que.com_id
-    _this.api.getCompanyInfo(str, function (res) {
-      console.log(res)
-    }, function (err) {
-      console.log(err)
-    })
-    str = 'p=' + _this.que.com_id
-    _this.api.getCompanyMark(str, function (res) {
-      console.log(res)
+      console.log(res.data)
+      _this.Global.temporary = res.data[0].is_deepunlock
     }, function (err) {
       console.log(err)
     })
