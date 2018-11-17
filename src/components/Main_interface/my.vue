@@ -75,7 +75,12 @@ export default {
           _this.$router.push({ path: '/HisFans', query: {source: 'my'} })
           break
         case 2:
-          _this.$router.push({ path: '/myNiuzuan' })
+          _this.$router.push({
+            path: '/myNiuzuan',
+            query: {
+              niuz: _this.msg.niuz
+            }
+          })
           break
         case 3:
           _this.$router.push({

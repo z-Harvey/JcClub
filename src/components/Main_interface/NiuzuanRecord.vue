@@ -1,11 +1,11 @@
 <template>
     <div class="NiuzuanRecord">
-        <div class="content">
+        <div class="content" v-for="(item, index) in dataList" :key="index">
             <div class="box">
-                <div class="tit">新增客户</div>
-                <div class="time">2017-02-30 12:30:20</div>
+                <div class="tit" v-text="item.task_msg"></div>
+                <div class="time" v-text="item.add_time"></div>
             </div>
-            <div class="num">+10</div>
+            <div class="num" v-text="'+' + item.num"></div>
         </div>
     </div>
 </template>
@@ -15,12 +15,18 @@ export default {
   name: 'NiuzuanRecord',
   data () {
     return {
+      dataList: []
     }
   },
   methods: {
   },
   mounted (options) {
     document.title = '牛钻记录'
+    this.api.getNiuzDetail((res) => {
+      this.dataList = res.data
+    }, (err) => {
+      console.log(err)
+    })
   }
 }
 </script>
@@ -32,6 +38,7 @@ export default {
     width:100%;
     height:100%;
     background: #f8f8f8;
+    overflow: auto;
 }
 .content{
     width:calc(92% - 1rem);

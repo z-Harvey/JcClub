@@ -156,7 +156,9 @@ export default {
     let _this = this
     let gl = _this.Global.userInfo
     let que = _this.$route.query
-    if (que.user_id === gl.myId) {
+    console.log(gl.myId)
+    console.log(que.user_id)
+    if (parseInt(que.user_id) === parseInt(gl.myId)) {
       _this.source = 'my'
     }
     _this.user_id = que.user_id

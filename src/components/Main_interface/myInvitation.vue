@@ -1,24 +1,24 @@
 <template>
   <div class="myInvitation">
-      <div class="content">
+      <div class="content" v-for="(item, index) in dataList" :key="index">
           <div class="yhimg">
-              <img src="@/assets/touxiang.jpg" alt="">
+              <img :src="item.avatarurl" alt="">
           </div>
           <div class="contat">
-              <div class="userName">韩鹏翔</div>
-              <div class="cikeName">北京酷牛仔俱乐部</div>
+              <div class="userName" v-text="item.nickname">韩鹏翔</div>
+              <div class="cikeName" v-text="item.club_name">北京酷牛仔俱乐部</div>
               <div class="time">于yyyy/mm/dd hh:mm申请入会</div>
           </div>
           <div class="zhuangtai">
-              <span class="z1">待审核</span>
-              <span class="z1">待确认</span>
-              <span class="z1">已通过</span>
-              <span>未通过</span>
-              <span>已退会</span>
+              <span v-if="item.status === 5" class="z1">待审核</span>
+              <span v-if="item.status === 4" class="z1">待确认</span>
+              <span v-if="item.status === 1 || item.status === 6" class="z1">已通过</span>
+              <span v-if="item.status === 2">未通过</span>
+              <span v-if="item.status === 3">已退会</span>
           </div>
-          <div class="btnList">
-              <button class="b1">拒绝</button>
-              <button class="b2">同意</button>
+          <div class="btnList" v-if="item.status === 4||item.status === 0">
+              <button class="b1" @click="btn(0, item)">拒绝</button>
+              <button class="b2" @click="btn(1, item)">同意</button>
           </div>
       </div>
   </div>
@@ -29,12 +29,34 @@ export default {
   name: 'myInvitation',
   data () {
     return {
+      dataList: []
     }
   },
   methods: {
+    btn: function (num, item) {
+      console.log(item)
+      let obj = {
+        user: item.puser,
+        is_agree: num
+      }
+      this.api.postMyInvited(obj, (res) => {
+        console.log(res)
+        if (res.status === 201) {
+          item.status = res.data.status
+        }
+      }, (err) => {
+        console.log(err)
+      })
+    }
   },
   mounted () {
     document.title = '我邀请的会员'
+    this.api.getMyInvited((res) => {
+      console.log(res)
+      this.dataList = res.data
+    }, (err) => {
+      console.log(err)
+    })
   }
 }
 </script>
@@ -51,7 +73,7 @@ export default {
 .content{
     width:calc(92% - 1rem);
     padding:.75rem .5rem;
-    margin:0 auto;
+    margin:.5rem auto 0;
     border-radius: .25rem;
     background: #fff;
     text-align: left;

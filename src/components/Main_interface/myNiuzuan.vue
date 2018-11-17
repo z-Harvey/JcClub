@@ -4,7 +4,7 @@
             <img src="@/assets/choiceness2.png" alt="">
             <div class="titText">
                 <div class="titText1">当前牛钻</div>
-                <div class="titText2">400</div>
+                <div class="titText2" v-text="que.niuz">400</div>
             </div>
             <div class="titRight" @click="path(0)">
                 牛钻记录
@@ -14,29 +14,17 @@
         <div class="titag">
             获取方式
         </div>
-        <div class="content">
+        <div class="content" v-for="(item, index) in dataList" :key="index">
             <div>
-                <div class="contTitle">每日签到</div>
-                <div class="conttt conttiaojian">条件：每日登录酷牛仔</div>
+                <div class="contTitle" v-text="item.task_msg">每日签到</div>
+                <div class="conttt conttiaojian" v-text="'条件：'+item.task_detail">每日登录酷牛仔</div>
                 <div class="conttt contjiangli">
-                    奖励：牛币
+                    奖励：牛钻
                     <img src="@/assets/choiceness2.png" alt="">
-                    <span>+20</span>
+                    <span v-text="'+' + item.task_niuz"></span>
                 </div>
             </div>
             <button class="conBtn">已领取</button>
-        </div>
-        <div class="content">
-            <div>
-                <div class="contTitle">每日签到</div>
-                <div class="conttt conttiaojian">条件：每日登录酷牛仔</div>
-                <div class="conttt contjiangli">
-                    奖励：牛币
-                    <img src="@/assets/choiceness2.png" alt="">
-                    <span>+20</span>
-                </div>
-            </div>
-            <button class="conBtn conBtns">去新增</button>
         </div>
     </div>
 </template>
@@ -46,7 +34,9 @@ export default {
   name: 'myNiuzuan',
   data () {
     return {
-      tapBur: true
+      tapBur: true,
+      dataList: [],
+      que: {}
     }
   },
   methods: {
@@ -59,8 +49,16 @@ export default {
       }
     }
   },
-  mounted (options) {
+  mounted () {
     document.title = '我的牛钻'
+    let _this = this
+    this.que = this.$route.query
+    _this.api.getNiuzTask((res) => {
+      console.log(res)
+      this.dataList = res.data.task_detail
+    }, (err) => {
+      console.log(err)
+    })
   }
 }
 </script>

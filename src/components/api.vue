@@ -55,7 +55,6 @@ let getMine = function (success, error) {
     error(err.response)
   })
 }
-
 /**
  * 提交 想要加入的俱乐部ID
  */
@@ -512,7 +511,77 @@ let getMyFans = function (data, success, error) {
     error(err.response)
   })
 }
+/**
+ * 牛钻任务列表
+ */
+let getNiuzTask = function (success, error) {
+  axios.get(path + '/niuz_task/?link=' + Date.parse(new Date())).then(function (res) {
+    success(res)
+  }, function (err) {
+    error(err.response)
+  })
+}
+/**
+ * 牛钻记录
+ */
+let getNiuzDetail = function (success, error) {
+  axios.get(path + '/niuz_detail/?link=' + Date.parse(new Date())).then(function (res) {
+    success(res)
+  }, function (err) {
+    error(err.response)
+  })
+}
+/**
+ * 修改我的名片时 获取我的信息
+ */
+let getMyCardInfo = function (data, success, error) {
+  axios.get(path + '/user/' + data + '/?link=' + Date.parse(new Date())).then(function (res) {
+    success(res)
+  }, function (err) {
+    error(err.response)
+  })
+}
+/**
+ * 修改我的名片
+ */
+let putMyCardInfo = function (id, data, success, error) {
+  axios.put(path + '/user/' + id + '/?link=' + Date.parse(new Date()), data).then(function (res) {
+    success(res)
+  }, function (err) {
+    error(err.response)
+  })
+}
+/**
+ * 获取邀请人审核列表
+ */
+let getMyInvited = function (success, error) {
+  axios.get(path + '/my_invited/?link=' + Date.parse(new Date())).then(function (res) {
+    success(res)
+  }, function (err) {
+    error(err.response)
+  })
+}
+/**
+ * 是否同意 被邀请者 入会
+ */
+let postMyInvited = function (data, success, error) {
+  axios.post(path + '/my_invited/?link=' + Date.parse(new Date()), data).then(function (res) {
+    success(res)
+  }, function (err) {
+    error(err.response)
+  })
+}
 
+/**
+ * 编辑工作经验  提交
+ */
+let putWorkInfo = function (data, success, error) {
+  axios.put(path + '/work/' + Date.parse(new Date()) + '/', data).then(function (res) {
+    success(res)
+  }, function (err) {
+    error(err.response)
+  })
+}
 export default{
   login,
   getVerifyCode,
@@ -560,6 +629,13 @@ export default{
   getFootPrint,
   postFootPrint,
   getMyCollect,
-  getMyFans
+  getMyFans,
+  getNiuzTask,
+  getNiuzDetail,
+  getMyCardInfo,
+  putMyCardInfo,
+  getMyInvited,
+  postMyInvited,
+  putWorkInfo
 }
 </script>

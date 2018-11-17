@@ -5,10 +5,10 @@
           <img :src="item.avatarurl" alt="">
         </div>
         <div class="forText">
-          <div class="ff1" v-text="item.nickname">韩鹏翔</div>
-          <div class="ff2" v-text="item.position + '/' + item.comname">CEO/北京聚牛天下网络科技有限公司北京聚牛天下网络科技有限公司北京聚牛天下网络科技有限公司北京聚牛天下网络科技有限公司</div>
-          <div class="ff3" v-text="item.mobile">188 8888 8888</div>
-          <div class="ff4" v-text="item.club_name">北京酷牛仔俱乐部</div>
+          <div class="ff1" v-text="item.nickname"></div>
+          <div class="ff2" v-text="item.position + '/' + item.comname"></div>
+          <div class="ff3" v-text="item.mobile"></div>
+          <div class="ff4" v-text="item.club_name"></div>
         </div>
       </div>
     </div>
@@ -26,7 +26,6 @@ export default {
   methods: {
     path: function (data) {
       let _this = this
-      console.log(data)
       _this.$router.push({
         name: 'cardInfo',
         query: {
