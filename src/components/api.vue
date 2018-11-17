@@ -56,6 +56,16 @@ let getMine = function (success, error) {
   })
 }
 /**
+ * 根据ID获取公司名字
+ */
+let getCompany = function (data, success, error) {
+  axios.get(path + '/company/' + data + '/?' + (Date.parse(new Date()) + 3) + '&').then(function (res) {
+    success(res)
+  }).catch(function (err) {
+    error(err.response)
+  })
+}
+/**
  * 提交 想要加入的俱乐部ID
  */
 let getClubChoice = function (data, success, error) {
@@ -472,6 +482,26 @@ let getMyCustomers = function (data, success, error) {
   })
 }
 /**
+ * 更新客户信息   ( company = id )
+ */
+let putMyCustomers = function (id, data, success, error) {
+  axios.put(path + '/my_customer/' + id + '/?link=' + Date.parse(new Date()), data).then(function (res) {
+    success(res)
+  }, function (err) {
+    error(err.response)
+  })
+}
+/**
+ * 添加标签评价
+ */
+let patchMyCustomers = function (id, data, success, error) {
+  axios.patch(path + '/my_customer/' + id + '/?link=' + Date.parse(new Date()), data).then(function (res) {
+    success(res)
+  }, function (err) {
+    error(err.response)
+  })
+}
+/**
  * 销售笔记 获取足迹   ( company = id )
  */
 let getFootPrint = function (data, success, error) {
@@ -571,7 +601,6 @@ let postMyInvited = function (data, success, error) {
     error(err.response)
   })
 }
-
 /**
  * 编辑工作经验  提交
  */
@@ -582,12 +611,24 @@ let putWorkInfo = function (data, success, error) {
     error(err.response)
   })
 }
+/**
+ * 获取对公司进行评价的标签
+ */
+let getReviews = function (success, error) {
+  axios.get(path + '/reviews/?link=' + Date.parse(new Date())).then(function (res) {
+    success(res)
+  }, function (err) {
+    error(err.response)
+  })
+}
+
 export default{
   login,
   getVerifyCode,
   getToken,
   getMine,
   getApplyClub,
+  getCompany,
   getClubList,
   getWorkNum,
   getUserNum,
@@ -636,6 +677,9 @@ export default{
   putMyCardInfo,
   getMyInvited,
   postMyInvited,
-  putWorkInfo
+  putWorkInfo,
+  putMyCustomers,
+  getReviews,
+  patchMyCustomers
 }
 </script>

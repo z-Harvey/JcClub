@@ -177,29 +177,26 @@ export default {
     search
   },
   methods: {
-    test (data) {
-      console.log(data)
+    test: function (data) {
     },
     cllChe (data) {
-      console.log(data)
       this.dataList.department = data
     },
     cllLink (data) {
-      console.log(data)
       if (data.type === 'duo') {
         this.dataList.scArea = data.name
       } else {
         this.dataList.industry = data.name
       }
     },
-    submit1 () {
-      console.log(this.dataList)
-      let obj = JSON.parse(JSON.stringify(this.dataList))
+    submit1: function () {
+      let _this = this
+      let obj = JSON.parse(JSON.stringify(_this.dataList))
       obj.honors = JSON.stringify(obj.honors)
       obj.product = JSON.stringify(obj.product)
-      this.api.putWorkInfo(obj, (res) => {
+      _this.api.putWorkInfo(obj, function (res) {
         console.log(res)
-      }, (err) => {
+      }, function (err) {
         console.log(err)
       })
     },
@@ -208,119 +205,120 @@ export default {
       console.log(data)
       this.dataList.comname = data.name
     },
-    check (typ) {
+    check: function (typ) {
       let _this = this
       if (typ === 'sea') {
         _this.$refs.search.on_display()
         return
       } else if (typ === 'duo') {
-        this.$refs.linkage.on_display({type: 'industry', Choice: 2})
+        _this.$refs.linkage.on_display({type: 'industry', Choice: 2})
         return
       } else if (typ === 'xuanze') {
-        this.$refs.Check.on_display({type: 'submitAdd'})
+        _this.$refs.Check.on_display({type: 'submitAdd'})
         return
       }
-      this.$refs.linkage.on_display({type: 'industry', Choice: 1})
+      _this.$refs.linkage.on_display({type: 'industry', Choice: 1})
     },
-    areaFn (num) {
+    areaFn: function (num) {
       let str = null
+      let _this = this
       if (num) {
         str = 'pid=' + num
       } else {
         str = 'pid=' + 0
       }
-      this.api.getAreaList(str, (res) => {
-        this.pid1 = res.data
-      }, (err) => {
+      _this.api.getAreaList(str, function (res) {
+        _this.pid1 = res.data
+      }, function (err) {
         console.log(err)
       })
     },
-    gencli () {
-      if (this.dataList.gender === 1) {
-        this.dataList.gender = 2
+    gencli: function () {
+      let _this = this
+      if (_this.dataList.gender === 1) {
+        _this.dataList.gender = 2
       } else {
-        this.dataList.gender = 1
+        _this.dataList.gender = 1
       }
     },
-    areaFn1 (num) {
+    areaFn1: function (num) {
       let str = null
+      let _this = this
       if (num) {
         str = 'pid=' + num
       } else {
         str = 'pid=' + 0
       }
-      this.api.getAreaList(str, (res) => {
-        this.pid2 = res.data
-      }, (err) => {
+      _this.api.getAreaList(str, function (res) {
+        _this.pid2 = res.data
+      }, function (err) {
         console.log(err)
       })
     },
-    areaFn2 (num) {
+    areaFn2: function (num) {
       let str = null
+      let _this = this
       if (num) {
         str = 'pid=' + num
       } else {
         str = 'pid=' + 0
       }
-      this.api.getAreaList(str, (res) => {
-        this.pid3 = res.data
-      }, (err) => {
+      _this.api.getAreaList(str, function (res) {
+        _this.pid3 = res.data
+      }, function (err) {
         console.log(err)
       })
     },
-    submit () {
+    submit: function () {
       delete this.dataList.club
+      let _this = this
       let arr = []
-      if (this.pid.a1 !== 0) {
-        this.pid1.map((p1, p2) => {
-          if (p1.id === this.pid.a1) {
+      if (_this.pid.a1 !== 0) {
+        _this.pid1.map(function (p1, p2) {
+          if (p1.id === _this.pid.a1) {
             arr.push(p1.name)
           }
         })
-        this.pid2.map((p1, p2) => {
-          if (p1.id === this.pid.a2) {
+        _this.pid2.map(function (p1, p2) {
+          if (p1.id === _this.pid.a2) {
             arr.push(p1.name)
           }
         })
-        this.pid3.map((p1, p2) => {
-          if (p1.id === this.pid.a3) {
+        _this.pid3.map(function (p1, p2) {
+          if (p1.id === _this.pid.a3) {
             arr.push(p1.name)
           }
         })
-        this.dataList.area = arr.join('|')
+        _this.dataList.area = arr.join('|')
       }
-      console.log(this.dataList)
-      this.api.putMyCardInfo(this.Global.userInfo.myId, this.dataList, (res) => {
-        console.log(res)
+      _this.api.putMyCardInfo(_this.Global.userInfo.myId, _this.dataList, function (res) {
         if (res.status === 200) {
-          this.$router.go(-1)
+          _this.$router.go(-1)
         }
-      }, (err) => {
+      }, function (err) {
         console.log(err)
       })
     }
   },
   mounted () {
-    this.type = this.$route.query.type
-    if (this.$route.query.type === 'personal') {
+    let _this = this
+    _this.type = _this.$route.query.type
+    if (_this.$route.query.type === 'personal') {
       document.title = '编辑个人信息'
-      this.areaFn()
-      this.api.getMyCardInfo(this.Global.userInfo.myId, (res) => {
-        console.log(res)
-        this.dataList = res.data
-        this.ara = this.dataList.area.split('|')
-        console.log(this.ara)
-      }, (err) => {
+      _this.areaFn()
+      _this.api.getMyCardInfo(_this.Global.userInfo.myId, function (res) {
+        _this.dataList = res.data
+        _this.ara = _this.dataList.area.split('|')
+      }, function (err) {
         console.log(err)
       })
     } else {
       document.title = '编辑工作经验'
-      this.api.getWorkNum((res) => {
-        console.log(res)
-        this.dataList = res.data
-        this.dataList.honors = JSON.parse(this.dataList.honors)
-        this.dataList.product = JSON.parse(this.dataList.product)
-      }, (err) => {
+      _this.api.getWorkNum(function (res) {
+        _this.dataList = res.data
+        _this.dataList.honors = JSON.parse(_this.dataList.honors)
+        _this.dataList.product = JSON.parse(_this.dataList.product)
+      }, function (err) {
         console.log(err)
       })
     }

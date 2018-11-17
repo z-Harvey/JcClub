@@ -24,6 +24,10 @@
                     </div>
                     <div class="time"><span v-text="'@' + item.mark_people"></span>于 <span v-text="item.add_time"></span> 标记</div>
                 </div>
+                <div class="footerBtn">
+                    <button @click="unlock" v-if="is_deepunlock === 1">15牛钻解锁俱乐部外部会员标记的数据</button>
+                    <button @click="unlock" v-if="is_deepunlock === 2">15牛钻解锁俱乐部内部会员标记的数据</button>
+                </div>
             </div>
             <div class="return">
                 <img @click="close" src="@/assets/Return.png" alt="">
@@ -48,6 +52,10 @@
                         </div>
                     </div>
                     <div class="time"><span v-text="'@' + item.mark_people"></span>于 <span v-text="item.add_time"></span> 标记</div>
+                </div>
+                <div class="footerBtn">
+                    <button @click="unlock" v-if="is_deepunlock === 1">15牛钻解锁俱乐部外部会员标记的数据</button>
+                    <button @click="unlock" v-if="is_deepunlock === 2">15牛钻解锁俱乐部内部会员标记的数据</button>
                 </div>
             </div>
             <div class="return">
@@ -79,14 +87,15 @@
                     <div class="time"><span v-text="'@' + item.mark_people"></span>于 <span v-text="item.add_time"></span> 标记</div>
                 </div>
                 <div class="footerBtn">
-                    <button>15牛钻解锁俱乐部外部会员标记的数据</button>
-                    <button>15牛钻解锁俱乐部内部会员标记的数据</button>
+                    <button @click="unlock" v-if="is_deepunlock === 1">15牛钻解锁俱乐部外部会员标记的数据</button>
+                    <button @click="unlock" v-if="is_deepunlock === 2">15牛钻解锁俱乐部内部会员标记的数据</button>
                 </div>
             </div>
             <div class="return">
                 <img @click="close" src="@/assets/Return.png" alt="">
             </div>
         </div>
+        <Toast ref="toast"></Toast>
     </div>
 </template>
 
@@ -97,24 +106,88 @@ export default {
     return {
       show: false,
       type_num: null,
-      dataList: []
+      dataList: [],
+      comId: null,
+      is_deepunlock: null,
+      jsxy: null,
+      user_niuz: null
     }
   },
   methods: {
     close: function () {
       this.show = false
     },
-    on_display: function (data) {
-      console.log(data.results)
+    on_display: function (data, id) {
       let _this = this
+      console.log(data)
       _this.type_num = data.type_num
+      _this.comId = id
+      _this.is_deepunlock = data.results[0].is_deepunlock
       if (data.type_num === 2) {
         data.results.map(function (p1, p2) {
           p1.contact_list = JSON.parse(p1.contact_list)
         })
       }
+      let str = 'company=' + id
+      _this.api.getCompanyUnlock(str, function (res) {
+        console.log(res)
+        if (_this.is_deepunlock === 1) {
+          _this.jsxy = res.data.club_unlock_niuz
+        } else if (_this.is_deepunlock === 2) {
+          _this.jsxy = res.data.out_unlock_niuz
+        }
+        _this.user_niuz = res.data.user_niuz
+      }, function (err) {
+        console.log(err)
+      })
       _this.dataList = data.results
       this.show = true
+    },
+    unlock: function () {
+      let _this = this
+      let datas = {
+        comId: _this.comId,
+        is_deepunlock: _this.is_deepunlock,
+        niuz: _this.jsxy,
+        wode: _this.user_niuz
+      }
+      if (_this.user_niuz > _this.jsxy) {
+        let obj = {
+          Title: '提示',
+          Content: '是否确认花费' + _this.jsxy + '牛币解锁？',
+          Yes: '立即解锁',
+          No: '放弃解锁',
+          type: 4,
+          btn: 2,
+          success: _this.qrJieSuo
+        }
+        this.$refs.toast.on_display(obj, datas)
+      } else {
+        let obj = {
+          Title: '提示',
+          Content: '牛钻不足',
+          Yes: '立即解锁',
+          No: '确认',
+          type: 1,
+          btn: 0
+        }
+        this.$refs.toast.on_display(obj, datas)
+      }
+    },
+    qrJieSuo: function (data) {
+      console.log(data)
+      let _this = this
+      let obj = {
+        company: data.comId,
+        is_deepunlock: data.is_deepunlock === 1 ? 2 : 1
+      }
+      _this.api.postCompanyUnlock(obj, function (res) {
+        if (res.status === 201) {
+          _this.is_deepunlock = 3
+        }
+      }, function (err) {
+        console.log(err)
+      })
     }
   },
   mounted () {

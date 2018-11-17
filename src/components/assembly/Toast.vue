@@ -45,6 +45,9 @@
                 </div>
             </div>
         </div>
+        <div class="content" v-if="content.type === 5">
+            <input type="text" v-model="t4">
+        </div>
         <div style="height:2.5rem;"></div>
         <div class="butList" v-if="content.btn === 0">
             <button @click="close" v-text="content.No? content.No:'取消'" class="btnOne qx"></button>
@@ -70,6 +73,7 @@ export default {
         ri1: false,
         ri2: false
       },
+      t4: null,
       content: {},
       mat: {},
       datas: null,
@@ -111,6 +115,8 @@ export default {
         data = _this.datas
       } else if (this.content.type === 3) {
         data = _this.typ2
+      } else if (this.content.type === 5) {
+        data = _this.t4
       }
       this.content.success(data)
       this.show = false
@@ -170,6 +176,17 @@ export default {
     line-height: 1.05rem;
     font-size: .75rem;
     color:#888;
+}
+.content>input{
+    width:100%;
+    height:1.5rem;
+    background:#f7f7f7;
+    border:none;
+    color:#888;
+    font-size: .7rem
+}
+.content>input::after{
+    border: none;
 }
 .butList{
     display: flex;

@@ -37,16 +37,16 @@
                 <div>
                     <div>所在地</div>
                     <div class="xexBox">
-                        <select v-model="area[0]" @change="areaClick(0)">
-                            <option value="0">--请选择--</option>
+                        <select v-model="area.a1" @change="areaClick(0)">
+                            <option value="0" v-text="upData.province||'--请选择--'">--请选择--</option>
                             <option v-for="(item, index) in pid1" :key="index" :value="item.id" v-text="item.name"></option>
                         </select>
-                        <select v-model="area[1]" @change="areaClick(1)">
-                            <option value="0">--请选择--</option>
+                        <select v-model="area.a2" @change="areaClick(1)">
+                            <option value="0" v-text="upData.city||'--请选择--'">--请选择--</option>
                             <option v-for="(item, index) in pid2" :key="index" :value="item.id" v-text="item.name">市</option>
                         </select>
-                        <select v-model="area[2]" @change="areaClick(2)">
-                            <option value="0">--请选择--</option>
+                        <select v-model="area.a3" @change="areaClick(2)">
+                            <option value="0" v-text="upData.area||'--请选择--'">--请选择--</option>
                             <option v-for="(item, index) in pid3" :key="index" :value="item.id" v-text="item.name">区</option>
                         </select>
                     </div>
@@ -110,7 +110,7 @@
                 <div>联系人</div>
                 <div>仅自己可见，至少填写一个</div>
             </div>
-            <div class="contcon" v-for="(item, index) in contact_list" :key="index">
+            <div class="contcon" v-for="(item, index) in upData.contact_list" :key="index">
                 <div>
                     <div>姓名</div>
                     <input type="text" v-model="item.name" placeholder="输入联系人姓名（必填）">
@@ -127,9 +127,9 @@
                     <div>邮件</div>
                     <input type="email" v-model="item.email" placeholder="点此输入联系人邮件">
                 </div>
-                <div class="plus">
-                    <img src="@/assets/plus.png" alt="">
-                </div>
+            </div>
+            <div class="plus">
+                <img @click="contactPush" src="@/assets/plus.png" alt="">
             </div>
         </div>
         <div style="height:2.5rem;"></div>
@@ -153,7 +153,11 @@ export default {
       pid1: [],
       pid2: [],
       pid3: [],
-      area: [0, 0, 0],
+      area: {
+        a1: 0,
+        a2: 0,
+        a3: 0
+      },
       contact_list: [{
         name: '',
         position: '',
@@ -186,20 +190,32 @@ export default {
     }
   },
   methods: {
+    contactPush: function () {
+      if (this.upData.contact_list[this.upData.contact_list.length-1].name === '') {
+        return
+      }
+      let obj = {
+        name: '',
+        position: '',
+        phone: '',
+        email: ''
+      }
+      this.upData.contact_list.push(obj)
+    },
     submit: function () {
       let _this = this
       _this.pid1.map(function (p1, p2) {
-        if (p1.id === _this.area[0]) {
+        if (p1.id === _this.area.a1) {
           _this.upData.province = p1.name
         }
       })
       _this.pid2.map(function (p1, p2) {
-        if (p1.id === _this.area[1]) {
+        if (p1.id === _this.area.a2) {
           _this.upData.city = p1.name
         }
       })
       _this.pid3.map(function (p1, p2) {
-        if (p1.id === _this.area[2]) {
+        if (p1.id === _this.area.a3) {
           _this.upData.area = p1.name
         }
       })
@@ -215,9 +231,19 @@ export default {
       }
       _this.upData.net_url = 'http://' + _this.upData.net_url
       _this.upData.company = this.comCont.id
-      console.log(this.upData)
       _this.upData.contact_list = JSON.parse(JSON.stringify(_this.contact_list))
       _this.upData.contact_list = JSON.stringify(_this.upData.contact_list)
+      if (_this.cType === 'edit') {
+        _this.api.putMyCustomers(_this.comCont.id, _this.upData, function (res) {
+          console.log(res)
+          if (res.status === 200) {
+            _this.$router.go(-1)
+          }
+        }, function (err) {
+          console.log(err)
+        })
+        return
+      }
       _this.api.PostMyCustomer(_this.upData, function (res) {
         console.log(res)
       }, function (err) {
@@ -274,12 +300,13 @@ export default {
     areaClick: function (num) {
       let _this = this
       if (num === 0) {
-        _this.area[1] = 0
-        _this.area[2] = 0
-        _this.areaList('pid2', num)
+        _this.area.a2 = 0
+        console.log(_this.area.a1)
+        _this.area.a3 = 0
+        _this.areaList('pid2', _this.area.a1)
       } else if (num === 1) {
-        _this.area[2] = 0
-        _this.areaList('pid3', num)
+        _this.area.a3 = 0
+        _this.areaList('pid3', _this.area.a2)
       }
     },
     areaList: function (el, num) {
@@ -295,7 +322,21 @@ export default {
   mounted (options) {
     let _this = this
     if (this.$route.query.type) {
-      document.title = this.$route.query.type
+      document.title = '编辑客户信息'
+      _this.cType = _this.$route.query.type
+      _this.api.getCompany(_this.$route.query.com_id, function (res) {
+        _this.comCont = res.data
+      }, function (err) {
+        console.log(err)
+      })
+      _this.api.getMyCustomers(_this.$route.query.com_id, function (res) {
+        console.log(res)
+        _this.upData = res.data
+        _this.upData.contact_list = JSON.parse(_this.upData.contact_list)
+        _this.contact_list = _this.upData.contact_list
+      }, function (err) {
+        console.log(err)
+      })
     } else {
       document.title = '新增客户'
     }
@@ -430,6 +471,7 @@ input::placeholder{
     color:#ccc !important;
 }
 .plus{
+    padding-left:.5rem;
     text-align: left;
 }
 .plus>img{

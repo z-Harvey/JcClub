@@ -13,9 +13,7 @@
             <button @click="path(0)">客户主页</button>
         </div>
         <div class="tit2">
-            <span>有钱任性</span>
-            <span>有钱任性</span>
-            <span>有钱任性</span>
+            <p v-for="(item, index) in msgData.reviews" :key="index" v-text="item">有钱任性</p>
             <div @click="navPath(2)">
                 <img src="@/assets/edit(1).png" alt="">
                 <span>编辑</span>
@@ -23,7 +21,7 @@
         </div>
         <nav>
             <button @click="navPath(0)" :class="navBtn?'navBtn':''">个人信息</button>
-            <button @click="navPath(1)" :class="!navBtn?'navBtn':''">销售足迹99999</button>
+            <button @click="navPath(1)" :class="!navBtn?'navBtn':''">销售足迹 <span v-text="msgData.footPrint_count"></span></button>
         </nav>
         <!-- <router-view :type="'SalesNotes'"></router-view> -->
         <CuInfo ref="cuinfo" :type="'SalesNotes'" :show="navBtn"/>
@@ -76,10 +74,15 @@ export default {
           _this.navBtn = false
           break
         case 2:
-          _this.$router.push('/editComment')
+          _this.$router.push({
+            path: '/editComment',
+            query: {
+              com_id: _this.que.com_id
+            }
+          })
           break
         case 3:
-          _this.$router.push({ path: '/MarkupCu', query: { type: '编辑客户信息' } })
+          _this.$router.push({ path: '/MarkupCu', query: { type: 'edit', com_id: _this.que.com_id } })
           break
       }
     },
@@ -115,6 +118,7 @@ export default {
     _this.api.getNotesHeader(str, function (res) {
       console.log(res)
       _this.msgData = res.data[0]
+      _this.msgData.reviews = _this.msgData.reviews.split('|')
     }, function (err) {
       console.log(err)
     })
@@ -174,11 +178,13 @@ export default {
     padding:.5rem .75rem .75rem .75rem;
     background:#fff;
 }
-.tit2>span{
+.tit2>p{
+    display: inline-block;
     padding:.2rem .5rem;
     background: rgba(170, 170, 170, 0.1);
     color:#888;
     font-size: .6rem;
+    margin:.1rem .1rem;
 }
 .tit2>div>img{
     width:.7rem;

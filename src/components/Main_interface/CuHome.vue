@@ -18,16 +18,7 @@
             </div>
             <div class="tagBox">
                 <div class="tagBoxs" :class="tapBur?'tagBoxs1':'tagBoxs2'">
-                    <div>有钱任性</div>
-                    <div>有钱 999</div>
-                    <div>有 9</div>
-                    <div>有钱性 999</div>
-                    <div>有钱aa任性 999</div>
-                    <div>有钱任s性 999</div>
-                    <div>有钱任s性 999</div>
-                    <div>有钱任s性 999</div>
-                    <div>有钱任s性 999</div>
-                    <div>有钱任s性 999</div>
+                    <div v-for="(item, index) in msg.reviews_list" :key="index" v-text="item[0] + ' ' + item[1]">有钱任性</div>
                 </div>
                 <div class="pullDown" @click="pullDown" :class="tapBur?'pullDown2':'pullDown1'">
                     <img src="@/assets/pull_down.png" alt="">
@@ -81,21 +72,21 @@ export default {
       if (num === 0) {
         _this.api.getCompanyBasic(str, function (res) {
           res.data['type_num'] = num
-          _this.$refs.modal.on_display(res.data)
+          _this.$refs.modal.on_display(res.data, _this.que.com_id)
         }, function (err) {
           console.log(err)
         })
       } else if (num === 1) {
         _this.api.getCompanyScale(str, function (res) {
           res.data['type_num'] = num
-          _this.$refs.modal.on_display(res.data)
+          _this.$refs.modal.on_display(res.data, _this.que.com_id)
         }, function (err) {
           console.log(err)
         })
       } else if (num === 2) {
         _this.api.getCompanyContact(str, function (res) {
           res.data['type_num'] = num
-          _this.$refs.modal.on_display(res.data)
+          _this.$refs.modal.on_display(res.data, _this.que.com_id)
         }, function (err) {
           console.log(err)
         })
@@ -218,7 +209,7 @@ export default {
     overflow: hidden;
 }
 .tagBoxs1{
-    height:2.9rem;
+    max-height:2.9rem;
 }
 .tagBoxs2{
     height:auto;

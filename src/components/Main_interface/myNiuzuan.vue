@@ -53,10 +53,10 @@ export default {
     document.title = '我的牛钻'
     let _this = this
     this.que = this.$route.query
-    _this.api.getNiuzTask((res) => {
+    _this.api.getNiuzTask(function (res) {
       console.log(res)
-      this.dataList = res.data.task_detail
-    }, (err) => {
+      _this.dataList = res.data.task_detail
+    }, function (err) {
       console.log(err)
     })
   }

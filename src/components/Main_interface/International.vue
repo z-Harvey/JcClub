@@ -99,7 +99,8 @@ export default {
   data () {
     return {
       sort: [false, false],
-      dataList: []
+      dataList: [],
+      status: null
     }
   },
   methods: {
@@ -122,6 +123,10 @@ export default {
     },
     path: function (typ, item) {
       let _this = this
+      if (_this.status === 0||_this.status === 2||_this.status === 3){
+        _this.init()
+        return
+      }
       if (typ === 0) {
         this.$router.push({
           path: '/CuHome',
@@ -202,6 +207,7 @@ export default {
       _this.api.CompanySeaStatus(str, function (res) {
         console.log(res)
         let obj = {}
+        _this.status = res.data.status
         switch (res.data.status) {
           case 0:
             obj = {

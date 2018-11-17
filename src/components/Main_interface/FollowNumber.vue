@@ -117,7 +117,6 @@ export default {
         }
         this.$refs.toast.on_display(obj, datas)
       }
-    //   this.$emit('alert', obj)
     },
     qrJieSuo: function (data) {
       console.log(data)
