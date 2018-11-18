@@ -1,6 +1,6 @@
 <template>
     <div class="CuHome">
-        <Toast ref="toast" @confirm="Unlock"></Toast>
+        <Toast ref="Toast" @confirm="Unlock"></Toast>
         <ModalInfo ref="modal"></ModalInfo>
         <div class="companyInfo">
             <div class="comTopBox">
@@ -8,26 +8,26 @@
                     <div class="shu">
                         <img src="@/assets/membershipApp_shu.png" alt="">
                     </div>
-                    <span v-text="msg.name">北京聚牛天下网络科技有限公司</span>
+                    <div class="name" v-text="msg.name">北京聚牛天下网络科技有限公司</div>
                     <div class="genjinNum">
                         <span>内部跟进 <span v-text="msg.club_mark_count"></span></span>
                         <span>外部跟进 <span v-text="msg.out_mark_count"></span></span>
                     </div>
                 </div>
-                <button @click="path(2, msg.id)">我的销售笔记</button>
+                <button v-if="msg.is_mark !== 0" @click="path(2, msg.id)">我的销售笔记</button>
             </div>
             <div class="tagBox">
                 <div class="tagBoxs" :class="tapBur?'tagBoxs1':'tagBoxs2'">
                     <div v-for="(item, index) in msg.reviews_list" :key="index" v-text="item[0] + ' ' + item[1]">有钱任性</div>
                 </div>
-                <div class="pullDown" @click="pullDown" :class="tapBur?'pullDown2':'pullDown1'">
-                    <img src="@/assets/pull_down.png" alt="">
+                <div class="pullDown" @click="pullDown" v-if="msg.reviews_list.length > 0" :class="tapBur?'pullDown2':'pullDown1'">
+                    <img src="@/assets/pull_down.png">
                 </div>
             </div>
         </div>
         <div class="navList">
             <button @click="path(0)" :class="aftBtn?'aftBtn':''">客户信息</button>
-            <button @click="path(1)" :class="!aftBtn?'aftBtn':''">跟进会员999</button>
+            <button @click="path(1)" :class="!aftBtn?'aftBtn':''">跟进会员 <span v-text="msg.mark_count"></span></button>
         </div>
         <!-- <router-view :type="'CuHome'" @alert="alert" @mol="mol_2"/> -->
         <CuInfo ref="cuinfo" :show="aftBtn" :type="'CuHome'" @alert="alert" @mol="mol_2"/>
@@ -46,7 +46,9 @@ export default {
       tapBur: true,
       aftBtn: true,
       que: {},
-      msg: {}
+      msg: {
+        reviews_list: []
+      }
     }
   },
   components: {
@@ -72,6 +74,16 @@ export default {
       if (num === 0) {
         _this.api.getCompanyBasic(str, function (res) {
           res.data['type_num'] = num
+          if (res.data.results.length <= 0) {
+            let obj = {
+              Title: '提示',
+              Content: '没有更多',
+              type: 1,
+              btn: 0
+            }
+            _this.$refs.Toast.on_display(obj)
+            return
+          }
           _this.$refs.modal.on_display(res.data, _this.que.com_id)
         }, function (err) {
           console.log(err)
@@ -79,6 +91,16 @@ export default {
       } else if (num === 1) {
         _this.api.getCompanyScale(str, function (res) {
           res.data['type_num'] = num
+          if (res.data.results.length <= 0) {
+            let obj = {
+              Title: '提示',
+              Content: '没有更多',
+              type: 1,
+              btn: 0
+            }
+            _this.$refs.Toast.on_display(obj)
+            return
+          }
           _this.$refs.modal.on_display(res.data, _this.que.com_id)
         }, function (err) {
           console.log(err)
@@ -86,6 +108,16 @@ export default {
       } else if (num === 2) {
         _this.api.getCompanyContact(str, function (res) {
           res.data['type_num'] = num
+          if (res.data.results.length <= 0) {
+            let obj = {
+              Title: '提示',
+              Content: '没有更多',
+              type: 1,
+              btn: 0
+            }
+            _this.$refs.Toast.on_display(obj)
+            return
+          }
           _this.$refs.modal.on_display(res.data, _this.que.com_id)
         }, function (err) {
           console.log(err)
@@ -125,7 +157,7 @@ export default {
     _this.$refs.cuinfo.cuHomeInit(_this.que.com_id)
     _this.api.getCompanyHeader(str, function (res) {
       _this.msg = res.data[0]
-      console.log(res.data)
+      console.log(_this.msg)
       _this.Global.temporary = res.data[0].is_deepunlock
     }, function (err) {
       console.log(err)
@@ -167,14 +199,16 @@ export default {
     display: inline-block;
     height:1.7rem;
 }
-.textInfo>span{
-    font-size: .7rem;
+.textInfo>.name{
+    font-size: .6rem;
     vertical-align: top;
-    line-height: .7rem;
+    line-height: .8rem;
+    display: inline-block;
+    width:9rem;
 }
 .genjinNum{
     font-size: .6rem;
-    margin:-.1rem 0 0 1rem;
+    margin:0rem 0 0 1rem;
 }
 .comTopBox>button{
     width:4.6rem;
@@ -240,6 +274,7 @@ export default {
     border-radius: 1.5rem;
     color: #888;
     border:0;
+    font-size: .6rem;
     margin-right: .75rem;
 }
 .navList>button::after{

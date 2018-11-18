@@ -1,13 +1,17 @@
 <template>
-  <div class="home_content" v-if="show">
+  <div class="home_content"
+    v-if="show"
+    @touchstart="touchstart($event)"
+    @touchmove="touchMove($event)"
+    @touchend="touchEnd($event)">
     <div class="srceach">
         <div class="inpBox">
             <img src="@/assets/srceach.png" alt="">
-            <input type="text" name="" id="" placeholder="输入会员名称进行搜索">
+            <input type="text" v-model="src" placeholder="输入会员名称进行搜索">
         </div>
-        <button class="srceBtn">搜索</button>
+        <button class="srceBtn" @click="srceach">搜索</button>
     </div>
-    <div class="sort">
+    <div class="sort" style="display:none;">
         <div @click="sorts(0)">
             <span>客户关系/线索</span>
             <img v-if="sort[0]" src="@/assets/bot1.png" alt="">
@@ -19,7 +23,7 @@
             <img v-else class="pai" src="@/assets/pai2.png" alt="">
         </div>
     </div>
-    <div class="Screening" v-if="sort[0]||sort[1]">
+    <div class="Screening" v-if="sort[0]||sort[1]" style="display:none;">
         <div class="s1" v-if="sort[0]">
             <div class="s1-tit">客户关系</div>
             <div class="s1-btnbox">
@@ -61,14 +65,14 @@
             </div>
         </div>
     </div>
-    <div style="height:5.25rem;"></div>
+    <div style="height:2.5rem;"></div>
     <div class="content" v-for="(item, index) in dataList" :key="index">
         <div class="contImg" @click="path('info', item)">
             <img :src="item.avatarurl" alt="">
         </div>
         <div class="cardInfo" @click="path('info', item)">
             <p class="name" v-text="item.nickname">昵称</p>
-            <p class="comName" v-text="item.position + '/' + item.comname">职位/公司</p>
+            <p class="comName" v-text="(item.position || '职位') + '/' + (item.comname || '公司')">职位/公司</p>
             <div class="tagBox">
                 <div v-text="item.industry||'未选择行业'"></div>
                 <div v-text="'工作' + item.workyears + '年'">工作N年</div>
@@ -81,9 +85,9 @@
                 <img src="@/assets/membershipApp_shu.png" alt="">
                 <span v-text="item.club_name">北京酷牛仔俱乐部</span>
             </div>
-            <div class="fooRight">
-                <button class="guanzhu" v-if="item.is_collect === 0&&myId !== item.user" @click="MyCollect(item)">关注Ta</button>
-                <button class="yiguanzhu" v-else-if="item.is_collect === 1&&myId !== item.user">已关注</button>
+            <div class="fooRight" v-if="!(myId === item.user)">
+                <button class="guanzhu" v-if="item.is_collect === 0" @click="MyCollect(item)">关注Ta</button>
+                <button class="yiguanzhu" v-else-if="item.is_collect === 1">已关注</button>
             </div>
         </div>
     </div>
@@ -110,10 +114,25 @@ export default {
         position: null,
         user: null,
         workyears: null
-      }]
+      }],
+      src: null
     }
   },
   methods: {
+    srceach () {
+      let str = 'search=' + this.src
+      this.api.srchUser(str, (res) => {
+        console.log(res)
+      }, (err) => {
+        console.log(err)
+      })
+    },
+    touchstart (e) {
+    },
+    touchMove (e) {
+    },
+    touchEnd (e) {
+    },
     MyCollect: function (data) {
       let _this = this
       let obj = {
@@ -155,6 +174,7 @@ export default {
       _this.api.getClubUser('', function (res) {
         _this.myId = _this.Global.userInfo.myId
         _this.dataList = res.data.results
+        console.log(res.data.results)
       }, function (err) {
         console.log(err)
       })

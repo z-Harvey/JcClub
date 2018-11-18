@@ -52,6 +52,7 @@ export default {
       let str = 'puser=' + _this.user_id
       _this.api.getUserFans(str, function (res) {
         _this.dataList = res.data.results
+        console.log(res)
       }, function (err) {
         console.log(err)
       })

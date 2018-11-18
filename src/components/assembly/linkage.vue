@@ -286,12 +286,6 @@ export default {
     height:.7rem;
     align-self: center
 }
-.cont-content>div:nth-child(odd)>div:nth-child(odd){
-    background:rgba(170,170,179,.2);
-}
-.cont-content>div:nth-child(even)>div:nth-child(even){
-    background:rgba(170,170,179,.2);
-}
 .btnbox{
     position: absolute;
     bottom: .25rem;
@@ -300,6 +294,9 @@ export default {
     height:2rem;
     border:0;
     background:#fff;
+}
+.btnbox>button{
+    font-size: .7rem;
 }
 .btn{
     height:2rem;

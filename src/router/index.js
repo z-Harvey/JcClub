@@ -11,7 +11,6 @@ import applySuccess from '@/components/Logon_process/applySuccess' // 入会申�
 import examineType from '@/components/Logon_process/examineType' // 审核成功与失败
 /**
  * 首页模块 页面注册
- * test             子路由测试
  * homeContent      首页内容
  * International    公海
  * myCustomer       我的客户

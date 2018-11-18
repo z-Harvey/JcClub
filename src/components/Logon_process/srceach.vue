@@ -3,7 +3,7 @@
         <div class="srcInp">
             <div>
                 <img src="@/assets/srceach_1.png" alt="">
-                <input type="text" v-model="inpText" placeholder="输入公司名称关键字，例：聚牛天下">
+                <input type="text" v-model="inpText" placeholder="输入公司名称关键字">
             </div>
             <button @click="sear">搜索</button>
         </div>
@@ -89,7 +89,7 @@ export default {
     justify-content: space-around;
 }
 .srcInp>div{
-    width:13.95rem;
+    width:11rem;
     height:1.75rem;
     background:rgba(241, 241, 241, 1);
     color:#888;
@@ -111,15 +111,17 @@ export default {
     background:rgba(0,0,0,0);
     text-align: left;
     border:0;
+    font-size: .7rem;
 }
 .srcInp>button{
-    width:2.75rem;
+    width:3.75rem;
     height:1.75rem;
     border-radius: .15rem;
     color:#fff;
     background: rgba(255, 152, 0, 1);
     border:0;
     margin-top:.25rem;
+    font-size: .7rem;
 }
 .srcInp>button::after{
     border:0;

@@ -35,18 +35,18 @@
                     <input type="text" v-model="upData.net_url" placeholder="输入客户企业网址">
                 </div>
                 <div>
-                    <div>所在地</div>
+                    <div>所在地(必选)</div>
                     <div class="xexBox">
                         <select v-model="area.a1" @change="areaClick(0)">
-                            <option value="0" v-text="upData.province||'--请选择--'">--请选择--</option>
+                            <option value="0" v-text="upData.province||'选择省'"></option>
                             <option v-for="(item, index) in pid1" :key="index" :value="item.id" v-text="item.name"></option>
                         </select>
                         <select v-model="area.a2" @change="areaClick(1)">
-                            <option value="0" v-text="upData.city||'--请选择--'">--请选择--</option>
+                            <option value="0" v-text="upData.city||'选择市'"></option>
                             <option v-for="(item, index) in pid2" :key="index" :value="item.id" v-text="item.name">市</option>
                         </select>
                         <select v-model="area.a3" @change="areaClick(2)">
-                            <option value="0" v-text="upData.area||'--请选择--'">--请选择--</option>
+                            <option value="0" v-text="upData.area||'选择区'"></option>
                             <option v-for="(item, index) in pid3" :key="index" :value="item.id" v-text="item.name">区</option>
                         </select>
                     </div>
@@ -110,7 +110,7 @@
                 <div>联系人</div>
                 <div>仅自己可见，至少填写一个</div>
             </div>
-            <div class="contcon" v-for="(item, index) in upData.contact_list" :key="index">
+            <div class="contcon" v-for="(item, index) in contact_list" :key="index">
                 <div>
                     <div>姓名</div>
                     <input type="text" v-model="item.name" placeholder="输入联系人姓名（必填）">
@@ -138,6 +138,7 @@
         </div>
         <linkage ref="linkage" @ok="cllLink" @ok1="linkCall"/>
         <Check ref="check" @ok="checkCall"/>
+        <Toast ref="Toast"/>
     </div>
 </template>
 
@@ -153,6 +154,7 @@ export default {
       pid1: [],
       pid2: [],
       pid3: [],
+      urlExp: "^((https|http|ftp|rtsp|mms)?://)?(([0-9a-z_!~*'().&=+$%-]+: )?[0-9a-z_!~*'().&=+$%-]+@)?(([0-9]{1,3}.){3}[0-9]{1,3}|([0-9a-z_!~*'()-]+.)*([0-9a-z][0-9a-z-]{0,61})?[0-9a-z].[a-z]{2,6})(:[0-9]{1,4})?((/?)|(/[0-9a-z_!~*'().;?:@&=+$,%#-]+)+/?)$",
       area: {
         a1: 0,
         a2: 0,
@@ -176,9 +178,9 @@ export default {
         city: '',
         area: '',
         address: '',
-        people_num: '',
-        fzjg_num: '',
-        turnover: '',
+        people_num: null,
+        fzjg_num: null,
+        turnover: null,
         company: '',
         contact_list: [{
           name: '',
@@ -191,7 +193,7 @@ export default {
   },
   methods: {
     contactPush: function () {
-      if (this.upData.contact_list[this.upData.contact_list.length-1].name === '') {
+      if (this.contact_list[this.contact_list.length - 1].name === '') {
         return
       }
       let obj = {
@@ -200,7 +202,7 @@ export default {
         phone: '',
         email: ''
       }
-      this.upData.contact_list.push(obj)
+      this.contact_list.push(obj)
     },
     submit: function () {
       let _this = this
@@ -229,9 +231,160 @@ export default {
           _this.upData.has_decision = i
         }
       }
-      _this.upData.net_url = 'http://' + _this.upData.net_url
       _this.upData.company = this.comCont.id
-      _this.upData.contact_list = JSON.parse(JSON.stringify(_this.contact_list))
+      if (_this.upData.company === '' || _this.upData.company === undefined) {
+        let obj = {
+          Title: '提示',
+          Content: '未选择公司',
+          type: 1,
+          btn: 0
+        }
+        this.$refs.Toast.on_display(obj)
+        return
+      } else if (_this.upData.simple_name === '') {
+        let obj = {
+          Title: '提示',
+          Content: '请输入简称',
+          type: 1,
+          btn: 0
+        }
+        this.$refs.Toast.on_display(obj)
+        return
+      } else if (_this.upData.industry === '') {
+        let obj = {
+          Title: '提示',
+          Content: '请选择行业',
+          type: 1,
+          btn: 0
+        }
+        this.$refs.Toast.on_display(obj)
+        return
+      } else if (_this.upData.type === '') {
+        let obj = {
+          Title: '提示',
+          Content: '请选择类型',
+          type: 1,
+          btn: 0
+        }
+        this.$refs.Toast.on_display(obj)
+        return
+      } else if (_this.upData.net_url !== '') {
+        let reg = eval("/:///ig")
+        if (!(reg.test(_this.upData.net_url))) {
+          _this.upData.net_url = 'http://' + _this.upData.net_url
+        }
+        let re = new RegExp(_this.urlExp)
+        if (!(re.test(_this.upData.net_url))) {
+          let obj = {
+            Title: '提示',
+            Content: '网址不正确',
+            type: 1,
+            btn: 0
+          }
+          this.$refs.Toast.on_display(obj)
+          return
+        }
+      }
+      if (_this.upData.province === '') {
+        let obj = {
+          Title: '提示',
+          Content: '未选择省',
+          type: 1,
+          btn: 0
+        }
+        this.$refs.Toast.on_display(obj)
+        return
+      } else if (_this.upData.city === '') {
+        let obj = {
+          Title: '提示',
+          Content: '未选择市',
+          type: 1,
+          btn: 0
+        }
+        this.$refs.Toast.on_display(obj)
+        return
+      } else if (_this.upData.area === '') {
+        let obj = {
+          Title: '提示',
+          Content: '未选择区',
+          type: 1,
+          btn: 0
+        }
+        this.$refs.Toast.on_display(obj)
+        return
+      } else if (_this.upData.people_num === null && _this.upData.fzjg_num === null && _this.upData.turnover === null) {
+        let obj = {
+          Title: '提示',
+          Content: '企业规模至少填写一项',
+          type: 1,
+          btn: 0
+        }
+        this.$refs.Toast.on_display(obj)
+        return
+      }
+      if (_this.contact_list[0].name === '' || _this.contact_list[0].phone === '' || _this.contact_list[0].position === '') {
+        if (!(_this.contact_list[0].name === '' && _this.contact_list[0].phone === '' && _this.contact_list[0].position === '')) {
+          if (_this.contact_list[0].name === '') {
+            let obj = {
+              Title: '提示',
+              Content: '请填写联系人姓名',
+              type: 1,
+              btn: 0
+            }
+            this.$refs.Toast.on_display(obj)
+            return
+          } else if (_this.contact_list[0].position === '') {
+            let obj = {
+              Title: '提示',
+              Content: '请填写联系人职务',
+              type: 1,
+              btn: 0
+            }
+            this.$refs.Toast.on_display(obj)
+            return
+          } else if (_this.contact_list[0].phone === '') {
+            let obj = {
+              Title: '提示',
+              Content: '请填写联系人电话',
+              type: 1,
+              btn: 0
+            }
+            this.$refs.Toast.on_display(obj)
+            return
+          }
+        } else {
+          let obj = {
+            Title: '提示',
+            Content: '至少填写一位联系人',
+            type: 1,
+            btn: 0
+          }
+          this.$refs.Toast.on_display(obj)
+          return
+        }
+      } else {
+        if (!(/^1[34578]\d{9}$/.test(_this.contact_list[0].phone))) {
+          let obj = {
+            Title: '提示',
+            Content: '电话号码格式错误',
+            type: 1,
+            btn: 0
+          }
+          this.$refs.Toast.on_display(obj)
+          return
+        }
+      }
+      if (_this.upData.province === '') {
+        let obj = {
+          Title: '提示',
+          Content: '未选择省',
+          type: 1,
+          btn: 0
+        }
+        this.$refs.Toast.on_display(obj)
+        return
+      }
+      _this.upData.contact_list = _this.contact_list
       _this.upData.contact_list = JSON.stringify(_this.upData.contact_list)
       if (_this.cType === 'edit') {
         _this.api.putMyCustomers(_this.comCont.id, _this.upData, function (res) {
@@ -246,8 +399,46 @@ export default {
       }
       _this.api.PostMyCustomer(_this.upData, function (res) {
         console.log(res)
+        if (res.status === 201) {
+          let obj = {
+            Title: '解锁成功',
+            Content: '新增成功，获得牛钻+' + 8,
+            type: 1,
+            btn: 2,
+            No: '我的客户',
+            Yes: '继续新增',
+            success: function (res) {
+              console.log(res)
+              _this.$router.go(-1)
+            },
+            fail: function () {
+              _this.Global.navListType = [false, false, true, false]
+              _this.$router.push({
+                path: '/home'
+              })
+            }
+          }
+          _this.$refs.Toast.on_display(obj)
+        }
       }, function (err) {
         console.log(err)
+        if (err.data.net_url) {
+          let obj = {
+            Title: '提示',
+            Content: '网址不正确',
+            type: 1,
+            btn: 0
+          }
+          _this.$refs.Toast.on_display(obj)
+        } else if (err.data.non_field_errors) {
+          let obj = {
+            Title: '提示',
+            Content: '标记过该客户，可进入客户首页编辑标记信息。',
+            type: 1,
+            btn: 0
+          }
+          _this.$refs.Toast.on_display(obj)
+        }
       })
     },
     cllLink: function (res) {
@@ -276,7 +467,6 @@ export default {
       this.upData.type = res
     },
     linkCall: function (res) {
-      console.log(res)
       this.upData.department = res.name
     },
     linkClick: function (typ) {
@@ -286,7 +476,13 @@ export default {
       } else if (typ === 'type') {
         _this.$refs.check.on_display({type: 2, Pattern: 1})
       } else if (typ === 'xiansuo') {
-        _this.$refs.linkage.on_display({type: 'industry', Choice: 3})
+        _this.$refs.check.xiansuo({
+          type: 'xiansuo',
+          Pattern: 1,
+          success: function (res) {
+            _this.upData.department = res
+          }
+          })
       }
     },
     path: function (num) {
@@ -435,6 +631,7 @@ export default {
     border:0;
     text-align: right;
     color:#ccc;
+    font-size: .7rem;
 }
 .btnList{
     width: 100%;
@@ -443,24 +640,25 @@ export default {
     line-height: 1.5rem
 }
 .btnList>span{
-    padding:.2rem .4rem;
+    padding:.2rem .3rem;
     border-radius: .15rem;
     background:#f1f1f1;
     color:#2c2c2c;
     display: inline-block;
-    font-size: .7rem;
-    height:.7rem;
-    line-height: .7rem
+    font-size: .6rem;
+    height:.6rem;
+    line-height: .6rem
 }
 .btnLists{
     width: 100%;
     text-align: right;
 }
 .btnLists>span{
-    padding:.2rem .4rem;
+    padding:.2rem .3rem;
     border-radius: .15rem;
     background:#f1f1f1;
     color:#2c2c2c;
+    font-size: .6rem;
 }
 .contcon>div>div>.atrCli{
     background:rgba(255, 152, 0, 1);
@@ -494,6 +692,7 @@ input::placeholder{
     color:#fff;
     border-radius: 1rem;
     border:0;
+    font-size: .7rem;
 }
 .markFooter>button{
     border:0;
@@ -515,6 +714,7 @@ input::placeholder{
     border:0;
     font-size: .7rem;
     color:#888;
+    background:#fff;
 }
 .checkBox{
     width:calc(100% - 3rem);

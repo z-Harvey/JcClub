@@ -12,7 +12,7 @@
         <div class="mCtit">
             <p>成功通过审核！欢迎加入酷牛仔~</p>
             <p>您的酷牛仔编号为：</p>
-            <p>KAA001</p>
+            <p v-text="msg.club_num">KAA001</p>
         </div>
         <input class="inviCode" v-model="nickname" type="text" placeholder="给自己取一个酷酷的江湖称号吧~">
     </div>
@@ -22,7 +22,7 @@
             <span class="no_content">原因：此处显示未通过原因此处显示未通过原因此处显示未通过原因此处显示未通过原因此处显示未通过原因此处显示未通过原因此处显示未通过原因</span>
         </div>
     </div>
-    <p class="Rules" v-if="Success_or_failure">俱乐部准则</p>
+    <!-- <p class="Rules" v-if="Success_or_failure">俱乐部准则</p> -->
     <div class="flxBtn" v-if="Success_or_failure">
         <button class="sqBtn" @click="sqBtn">进入酷牛仔</button>
     </div>
@@ -70,6 +70,12 @@ export default {
     let _this = this
     _this.msg = this.$route.params
     console.log(_this.msg)
+    this.api.getApplyStatus((res) => {
+      console.log(res)
+      this.msg['club_num'] = res.data[0].club_num
+    }, (err) => {
+      console.log(err)
+    })
   }
 }
 </script>
@@ -131,6 +137,8 @@ export default {
     height:1.5rem;
     text-align: center;
     margin-top:.75rem;
+    font-size: .7rem;
+    background:rgba(0,0,0,0);
 }
 .flxBtn{
     height:2.25rem;

@@ -14,13 +14,22 @@ export default {
     }
   },
   mounted () {
-    // this.$router.push('/memberCustomer')
-    // return
+    let r = decodeURI(window.location.search.substr(1))
+    let arr = r.split('&')
+    let codes = null
+    for (let i = 0; i < arr.length; i++) {
+      var arr1 = arr[i].split('=')
+      if (arr1[0] === 'code') {
+        codes = arr1[1]
+      }
+    }
     let _this = this
     let obj = {
-      code: '1'
+      code: codes
     }
     _this.api.getToken(obj, function (res) {
+      console.log(res)
+      _this.api.headerToken(res.data.token)
       if (res.data.is_user === 1) {
         switch (res.data.step) {
           case 0:

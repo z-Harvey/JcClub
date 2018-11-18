@@ -11,7 +11,7 @@
     </div>
     <div class="codeMy">
         <div>
-            <div v-text="'@' + msg.inviter">袁邦阳</div>
+            <div @click="path(5)" v-text="'@' + msg.inviter">袁邦阳</div>
             <div>我的邀请者</div>
         </div>
         <div @click="path(1)">
@@ -34,11 +34,11 @@
         </div>
         <div class="listLi" @click="path(4)">
             <div class="listLiLeft"><img src="@/assets/group.png" alt=""><span>我邀请的会员</span></div>
-            <div class="listLiRight"><span v-text="msg.collect_count + '/10'"></span><img src="@/assets/right.png" alt=""></div>
+            <div class="listLiRight"><span v-text="msg.invited_count + '/10'"></span><img src="@/assets/right.png" alt=""></div>
         </div>
     </div>
     </div>
-    <div class="adminBtn">
+    <div class="adminBtn" style="display:none;">
         <span>管理中心</span>
         <img src="@/assets/right1.png" alt="">
     </div>
@@ -93,6 +93,14 @@ export default {
           break
         case 4:
           _this.$router.push({ path: '/myInvitation' })
+          break
+        case 5:
+          _this.$router.push({
+            path: '/cardInfo',
+            query: {
+              user_id: _this.msg.inviter_id
+            }
+          })
           break
       }
     },

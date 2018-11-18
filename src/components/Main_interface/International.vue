@@ -4,11 +4,11 @@
     <div class="srceach">
         <div class="inpBox">
             <img src="@/assets/srceach.png" alt="">
-            <input type="text" name="" id="" placeholder="输入客户名称关键字，例：聚牛天下">
+            <input type="text" v-model="src" placeholder="输入客户名称关键字">
         </div>
-        <button class="srceBtn">搜索</button>
+        <button class="srceBtn" @click="srceach">搜索</button>
     </div>
-    <div class="sort">
+    <div class="sort" style="display:none;">
         <div @click="sorts(0)">
             <span>客户关系/线索</span>
             <img v-if="sort[0]" src="@/assets/bot1.png" alt="">
@@ -20,7 +20,7 @@
             <img v-else class="pai" src="@/assets/pai2.png" alt="">
         </div>
     </div>
-        <div class="Screening" v-if="sort[0]||sort[1]">
+    <div class="Screening" v-if="sort[0]||sort[1]">
         <div class="s1" v-if="sort[0]">
             <div class="s1-tit">客户关系</div>
             <div class="s1-btnbox">
@@ -72,7 +72,7 @@
                     <div class="cikeName" v-text="item.name">北京聚牛天下网络科技有限公司</div>
                     <div class="cikeposition">
                         <img src="@/assets/location.png" alt="">
-                        <span>地址</span>
+                        <span v-text="item.area">地址</span>
                     </div>
                 </div>
                 <div class="ricTag">
@@ -90,6 +90,7 @@
         </div>
     </div>
     <div style="height:2.75rem;"></div>
+    <Toast ref="Toast"/>
   </div>
 </template>
 
@@ -100,10 +101,20 @@ export default {
     return {
       sort: [false, false],
       dataList: [],
-      status: null
+      status: null,
+      src: null
     }
   },
   methods: {
+    srceach () {
+      let str = 'search=' + this.src
+      this.api.getCompanySeaList(str, (res) => {
+        console.log(res)
+        this.dataList = res.data.results
+      }, (err) => {
+        console.log(err)
+      })
+    },
     /**
      * 跳转到标记客户
      */
@@ -123,7 +134,7 @@ export default {
     },
     path: function (typ, item) {
       let _this = this
-      if (_this.status === 0||_this.status === 2||_this.status === 3){
+      if (_this.status === 0 || _this.status === 2 || _this.status === 3) {
         _this.init()
         return
       }
@@ -135,7 +146,6 @@ export default {
           }
         })
       } else if (typ === 1) {
-        // this.$router.push('/CuHome')
         let obj = {
           Title: '解锁客户数据',
           type: 2,
@@ -148,7 +158,6 @@ export default {
       }
     },
     clltoa: function (data) {
-      console.log(data)
       let _this = this
       let x = 0
       if (data.is_deepunlock) {
@@ -194,20 +203,22 @@ export default {
      * 审核失败情况下跳转到我的客户
      */
     fail: function () {
+      this.$refs.Toast.show = false
+      this.Global.navListType = [false, false, true, false]
+      this.$parent.navClick(2)
     },
     init: function () {
       let _this = this
       let str = ''
       _this.api.getCompanySeaList(str, function (res) {
-        console.log(res)
         _this.dataList = res.data.results
       }, function (err) {
         console.log(err)
       })
       _this.api.CompanySeaStatus(str, function (res) {
-        console.log(res)
         let obj = {}
         _this.status = res.data.status
+        _this.Global.stateList['status'] = res.data.status
         switch (res.data.status) {
           case 0:
             obj = {
@@ -224,7 +235,7 @@ export default {
           case 2:
             obj = {
               Title: '提示',
-              Content: '审核中',
+              Content: '您的查客户权限正在审核，请耐心等待~',
               type: 1,
               btn: 0,
               No: '确认'
@@ -234,7 +245,7 @@ export default {
           case 3:
             obj = {
               Title: '提示',
-              Content: '原因：此处显示未通过原因',
+              Content: '原因：' + res.data.desc,
               type: 1,
               btn: 3,
               No: '我的客户',
@@ -259,6 +270,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+
 .srceach{
     width:100%;
     height:2rem;
@@ -338,7 +350,7 @@ export default {
 }
 
 .content{
-    margin-top:4.75rem;
+    margin-top:2.5rem;
 }
 .contTit{
     padding:0 .75rem;

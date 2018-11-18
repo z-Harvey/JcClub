@@ -3,7 +3,7 @@
         <Toast ref="toast"/>
         <div class="titleBox">
             <img src="@/assets/membershipApp_shu.png" alt="">
-            <span>北京聚牛天下网络科技有限公司</span>
+            <span v-text="comName"></span>
         </div>
         <div class="miaoshu">
             选择你对客户的印象或新增一个标签
@@ -24,12 +24,12 @@ export default {
   data () {
     return {
       msg: [],
-      que: {}
+      que: {},
+      comName: null
     }
   },
   methods: {
     tap: function (tap) {
-      console.log(tap)
       tap.show = !tap.show
     },
     jia: function () {
@@ -43,7 +43,6 @@ export default {
       this.$refs.toast.on_display(obj)
     },
     jisCallback: function (data) {
-      console.log(data)
       let obj = {
         name: data,
         show: true
@@ -62,7 +61,6 @@ export default {
         reviews: arr.join('|')
       }
       this.api.patchMyCustomers(_this.que.com_id, data, function (res) {
-        console.log(res)
         if (res.status === 200) {
           _this.$router.go(-1)
         }
@@ -75,9 +73,13 @@ export default {
     document.title = '编辑点评标记'
     let _this = this
     _this.que = _this.$route.query
+    this.api.getCompany(this.que.com_id, (res) => {
+      this.comName = res.data.name
+    }, (err) => {
+      console.log(err)
+    })
     _this.api.getReviews(function (res) {
-      for (let i = 0; i<res.data.length; i++) {
-        console.log(res.data[i])
+      for (let i = 0; i < res.data.length; i++) {
         let obj = {
           name: res.data[i],
           show: false

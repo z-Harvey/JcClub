@@ -3,11 +3,11 @@
     <div class="srceach">
         <div class="inpBox">
             <img src="@/assets/srceach.png" alt="">
-            <input type="text" name="" id="" placeholder="输入客户名称关键字，例：聚牛天下">
+            <input type="text" v-model="src" placeholder="输入客户名称关键字">
         </div>
-        <button class="srceBtn">搜索</button>
+        <button class="srceBtn" @click="srceach">搜索</button>
     </div>
-    <div class="sort">
+    <div class="sort" style="display:none;">
         <div>
             <span>客户关系/线索</span>
             <img v-if="false" src="@/assets/bot1.png" alt="">
@@ -24,7 +24,7 @@
             <img v-else src="@/assets/bot2.png" alt="">
         </div>
     </div>
-    <div class="sotrp">
+    <div class="sotrp" style="display:none;">
             <img v-if="true" class="pai" src="@/assets/pai1.png" alt="">
             <img v-else class="pai" src="@/assets/pai2.png" alt="">
         </div>
@@ -34,7 +34,7 @@
                 <img src="@/assets/qi.png" alt="">
             </div>
             <div class="forRight">
-                <div class="riCikename">
+                <div class="riCikename" @click="path(1, item)">
                     <div class="cikeName" v-text="item.company_name">北京聚牛天下网络科技有限公司</div>
                     <div class="cikeposition">
                         <img v-if="item.is_unlock === 0" src="@/assets/lock.png" alt="">
@@ -59,6 +59,7 @@
         </div>
     </div>
     <div style="height:2.75rem;"></div>
+    <Toast ref="Toast"/>
   </div>
 </template>
 
@@ -67,10 +68,20 @@ export default {
   name: 'home_content',
   data () {
     return {
-      dataList: []
+      dataList: [],
+      src: null
     }
   },
   methods: {
+    srceach () {
+      let str = 'search=' + this.src
+      this.api.srchMyCompany(str, (res) => {
+        console.log(res)
+        this.dataList = res.data.results
+      }, (err) => {
+        console.log(err)
+      })
+    },
     path: function (num, item) {
       let _this = this
       switch (num) {
@@ -82,6 +93,74 @@ export default {
             }
           })
           break
+        case 1:
+          if (item.is_unlock === 0) {
+            let obj = {
+              Title: '解锁客户数据',
+              type: 2,
+              btn: 3,
+              No: '放弃解锁',
+              Yes: '立即解锁',
+              success: _this.clltoa
+            }
+            item['id'] = item.company
+            _this.$refs.Toast.isUnlock(obj, item)
+          } else {
+            _this.$router.push({
+              path: '/CuHome',
+              query: {
+                com_id: item.company
+              }
+            })
+          }
+          break
+      }
+    },
+    clltoa: function (data) {
+      let _this = this
+      let x = 0
+      if (data.is_deepunlock) {
+        switch (data.is_deepunlock) {
+          case 1:
+            x = data.club_unlock_niuz
+            break
+          case 2:
+            x = data.out_unlock_niuz
+            break
+          case 3:
+            x = data.club_unlock_niuz + data.out_unlock_niuz
+            break
+        }
+        if (data.user_niuz - x >= 0) {
+          let obj = {
+            is_deepunlock: data.is_deepunlock,
+            company: data.id
+          }
+          _this.api.postCompanyUnlock(obj, function (res) {
+            if (res.status === 201) {
+              _this.$router.push({
+                path: '/CuHome',
+                query: {
+                  com_id: data.id
+                }
+              })
+            }
+          }, function (err) {
+            console.log(err)
+          })
+        } else {
+          let obj = {
+            Title: '提示',
+            Content: '牛钻不足',
+            type: 1,
+            btn: 0,
+            No: '确定',
+            Yes: '立即解锁'
+          }
+          setTimeout(() => {
+            _this.$refs.Toast.on_display(obj)
+          }, 200)
+        }
       }
     },
     init: function () {
@@ -209,7 +288,7 @@ export default {
 }
 
 .content{
-    margin-top:4.75rem;
+    margin-top:2.5rem;
     padding-top:.5rem;
     padding-bottom: .5rem;
 }

@@ -16,6 +16,7 @@
         <button v-if="btn" class="sqBtn" @click="sqBtn">申请</button>
         <button v-else class="sqBtns" disabled>申请</button>
     </div>
+    <Toast ref="Toast"/>
   </div>
 </template>
 
@@ -31,7 +32,6 @@ export default {
   },
   methods: {
     sqBtn: function () {
-      console.log('开始 入会申请')
       let _this = this
       let obj = {
         mobile: _this.phone
@@ -39,7 +39,23 @@ export default {
       _this.api.getApplyClub(obj, function (res) {
         _this.$router.push('/membershipApp')
       }, function (err) {
-        console.log(err)
+        if (err.data.mobile[0] === '邀请者未加入俱乐部') {
+          let obj = {
+            Title: '提示',
+            Content: '邀请者未加入俱乐部',
+            type: 1,
+            btn: 0
+          }
+          _this.$refs.Toast.on_display(obj)
+        } else if (err.data.mobile[0] === '邀请者手机号有误') {
+          let obj = {
+            Title: '提示',
+            Content: '邀请者手机号有误',
+            type: 1,
+            btn: 0
+          }
+          _this.$refs.Toast.on_display(obj)
+        }
       })
     },
     phonezz: function () {
@@ -119,6 +135,7 @@ export default {
     height:1.5rem;
     text-align: center;
     margin-top:.75rem;
+    font-size: .7rem;
     background:rgba(0,0,0,0);
 }
 .sqBtnBox{

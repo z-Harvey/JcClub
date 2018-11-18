@@ -34,6 +34,12 @@ export default {
       }
       this.show = true
     },
+    xiansuo: function (obj) {
+      let _this = this
+      _this.que = obj
+      _this.httpQuery(1)
+      this.show = true
+    },
     close: function () {
       this.show = false
     },
@@ -45,6 +51,11 @@ export default {
           arr.push(p1.name)
         }
       })
+      if (_this.que.type === 'xiansuo') {
+        _this.que.success(arr.join('、'))
+        _this.close()
+        return
+      }
       _this.$emit('ok', arr.join('、'))
       _this.close()
     },
@@ -74,15 +85,32 @@ export default {
     btn: function (item) {
       let _this = this
       let arrs = []
-      console.log(_this.que.Pattern)
-      _this.arr.map(function (p1, p2) {
-        if (p1.id === item.id) {
-          p1.show = !p1.show
-        } else if (_this.que.Pattern === 1) {
-          p1.show = false
-        }
-        arrs.push(p1)
-      })
+      if (_this.que.type === 'xiansuo') {
+        if (item.show) {}
+        let iw = 0
+        _this.arr.map(function (p1, p2) {
+          if (p1.show) {
+            iw = iw + 1
+          }
+        })
+        _this.arr.map(function (p1, p2) {
+          if (iw < 3 || item.show) {
+            if (p1.id === item.id) {
+              p1.show = !p1.show
+            }
+          }
+          arrs.push(p1)
+        })
+      } else {
+        _this.arr.map(function (p1, p2) {
+          if (p1.id === item.id) {
+            p1.show = !p1.show
+          } else if (_this.que.Pattern === 1) {
+            p1.show = false
+          }
+          arrs.push(p1)
+        })
+      }
       _this.arr = arrs
     }
   },
@@ -151,6 +179,7 @@ export default {
     bottom: .5rem;
     left: 0;
     border:0;
+    font-size: .7rem;
 }
 .OK::after{
     border:0;

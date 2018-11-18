@@ -92,6 +92,11 @@ export default {
       _this.rio[re] = !_this.rio[re]
     },
     close: function () {
+      try {
+        this.content.fail()
+      } catch (err) {
+        console.log(err)
+      }
       this.show = false
     },
     _click: function () {

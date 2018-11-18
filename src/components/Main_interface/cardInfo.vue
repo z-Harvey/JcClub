@@ -149,6 +149,19 @@ export default {
     myCard: function () {
       let _this = this
       _this.source = 'my'
+      _this.$router.push({
+        path: '/cardInfo',
+        query: {
+          user_id: _this.Global.userInfo.myId
+        }
+      })
+      _this.user_id = _this.Global.userInfo.myId
+      _this.$refs.CuInfo.cardInfoInit(_this.user_id)
+      _this.api.getUserHeader(_this.user_id, function (res) {
+        _this.listData = res.data
+      }, function (err) {
+        console.log(err)
+      })
     }
   },
   mounted () {
@@ -156,15 +169,12 @@ export default {
     let _this = this
     let gl = _this.Global.userInfo
     let que = _this.$route.query
-    console.log(gl.myId)
-    console.log(que.user_id)
     if (parseInt(que.user_id) === parseInt(gl.myId)) {
       _this.source = 'my'
     }
     _this.user_id = que.user_id
     _this.$refs.CuInfo.cardInfoInit(_this.user_id)
     _this.api.getUserHeader(_this.user_id, function (res) {
-      console.log(res)
       _this.listData = res.data
     }, function (err) {
       console.log(err)

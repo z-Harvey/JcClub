@@ -19,6 +19,7 @@
         <button @click="path(1)">申请开通</button>
     </div>
     <srceachMol ref="srcea"/>
+    <Toast ref="Toast" />
   </div>
 </template>
 
@@ -44,11 +45,25 @@ export default {
       } else if (num === 1) {
         _this.api.PostCompanyPerm(function (res) {
           if (res.status === 201) {
-            console.log('申请成功')
+            let obj = {
+              Title: '提示',
+              Content: '已提交审核，等待确认',
+              type: 1,
+              btn: 0,
+              No: '确认',
+              fail: (res) => {
+                _this.$router.push({
+                  path: '/home'
+                })
+              }
+            }
+            _this.$refs.Toast.on_display(obj)
           }
         }, function (err) {
           if (err.status === 400) {
-            console.log('正在申请，请勿重复提交')
+            _this.$router.push({
+              path: '/home'
+            })
           }
         })
       }

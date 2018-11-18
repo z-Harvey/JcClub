@@ -3,7 +3,7 @@
         <div class="srcInp">
             <div>
                 <img src="@/assets/srceach_1.png" alt="">
-                <input type="text" v-model="inpVal" placeholder="输入客户名称关键字，例：聚牛天下">
+                <input type="text" v-model="inpVal" placeholder="输入客户名称关键字">
             </div>
             <button @click="srceach">搜索</button>
         </div>
@@ -82,7 +82,7 @@ export default {
     left:0;
 }
 .srcInp>div{
-    width:13.95rem;
+    width:12rem;
     height:1.75rem;
     background:rgba(241, 241, 241, 1);
     color:#888;
@@ -90,6 +90,7 @@ export default {
     text-align: left;
     display: flex;
     margin-top:.25rem;
+    justify-content: space-around;
 }
 .srcInp>div>img{
     align-self: center;
@@ -102,17 +103,19 @@ export default {
     width:11.5rem;
     height:1.5rem;
     background:rgba(0,0,0,0);
+    font-size: .7rem;
     text-align: left;
     border:0;
 }
 .srcInp>button{
-    width:2.75rem;
+    width:3.5rem;
     height:1.75rem;
     border-radius: .15rem;
     color:#fff;
     background: rgba(255, 152, 0, 1);
     border:0;
     margin-top:.25rem;
+    font-size: .7rem;
 }
 .srcInp>button::after{
     border:0;

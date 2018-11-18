@@ -1,6 +1,6 @@
 <template>
     <div class="FollowNumber" v-if="show">
-        <nav>
+        <nav style="display:none;">
             <div>
                 <span>客户关系</span>
                 <img src="@/assets/bot2.png" alt="">
@@ -15,10 +15,10 @@
             </div>
         </nav>
         <div class="card" v-for="(item, index) in dataList" :key="index">
-            <div class="cardImg" @click="path(0)">
+            <div class="cardImg" @click="path(0, item)">
                 <img :src="item.avatarurl" alt="">
             </div>
-            <div class="cardNameBtn" @click="path(0)">
+            <div class="cardNameBtn" @click="path(0, item)">
                 <div class="name" v-text="item.nickname">云端飞扬</div>
                 <div class="nameNumber">
                     <span><span v-text="item.mark_num"></span> 跟进客户</span>
@@ -134,11 +134,16 @@ export default {
         console.log(err)
       })
     },
-    path: function (num) {
+    path: function (num, item) {
       let _this = this
       switch (num) {
         case 0:
-          _this.$router.push('/cardInfo')
+          _this.$router.push({
+            path: '/cardInfo',
+            query: {
+              user_id: item.user
+            }
+          })
           break
       }
     },

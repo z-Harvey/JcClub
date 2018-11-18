@@ -55,7 +55,7 @@
                 <input type="text" v-model="userInfo.mobile" placeholder="请输入电话">
             </div>
             <div class="contLists">
-                <span>所在地</span>
+                <span>所在地(必填)</span>
                 <div class="xexBox">
                     <select v-model="city.sel1" @change="selText('0')" >
                         <option value="0" v-text="sel3text[0]||'--请选择--'"></option>
@@ -86,7 +86,7 @@
                 <input type="date" v-model="userInfo.birthday"/>
             </div>
             <div class="contLists">
-                <span>学历</span>
+                <span>学历(必填)</span>
                 <div class="xexBox">
                     <select v-model="userInfo.edu_background" @change="selText">
                         <option value="">请选择</option>
@@ -137,15 +137,15 @@
           <div class="subContent">
             <div class="contList">
                 <span>工作年限</span>
-                <input type="date" v-model="workInfo.workyears"/>
+                <input type="date" v-model="workInfo.workyears" placeholder="参加工作的年限（必填）"/>
             </div>
             <div class="contList">
                 <span>销售年限</span>
-                <input type="date" v-model="workInfo.salesyears"/>
+                <input type="date" v-model="workInfo.salesyears" placeholder="做销售的工作年限（必填）"/>
             </div>
             <div class="contList">
                 <span>行业年限</span>
-                <input type="date" v-model="workInfo.industryyears"/>
+                <input type="date" v-model="workInfo.industryyears" placeholder="目前所在行业的工作年限（必填）"/>
             </div>
           </div>
           <div class="subContent">
@@ -154,6 +154,7 @@
                 <div v-for="(item, index) in workInfo.honors" :key="index">
                     <input class="width_100inp" v-model="item.key" type="text" placeholder="请输入荣誉名称">
                     <button>上传图片</button>
+                    <!-- <input type="file" accept="image/*"> -->
                 </div>
                 <img class="plus" @click="subjia(2)" src="@/assets/plus.png" alt="">
             </div>
@@ -244,7 +245,6 @@ export default {
     userInfoPush: function () {
       let _this = this
       let areaArr = []
-      console.log(_this.city.sel1)
       if (_this.city.sel1 === 0) {
         areaArr.push(_this.sel3text[0])
         if (_this.sel3text[0] === '--请选择--') {
@@ -285,7 +285,6 @@ export default {
       }
       if (_this.city.sel3 === 0) {
         areaArr.push(_this.sel3text[2])
-        console.log(_this.sel3text[2])
         if (_this.sel3text[2] === '--请选择--') {
           let obj = {
             Title: '提示',
@@ -364,21 +363,11 @@ export default {
         this.$refs.Toast.on_display(obj)
         return
       }
-      let re = /^(\w-*\.*)+@(\w-?)+(\.\w{2,})+$/
-      if (!(re.test(_this.userInfo.email))) {
-        let obj = {
-          Title: '提示',
-          Content: '请填写正确邮箱',
-          type: 1,
-          btn: 0
-        }
-        this.$refs.Toast.on_display(obj)
-        return
-      }
       let datas = JSON.parse(JSON.stringify(_this.userInfo))
       delete datas.club
       _this.api.postUserInfo(datas, function (res) {
         if (res.data.step === 2) {
+          document.getElementsByClassName('submitAdd')[0].scrollTop = 0
           _this.cont_one = !_this.cont_one
         }
       }, function (err) {
@@ -509,7 +498,7 @@ export default {
       if (_this.workInfo.workyears === null || _this.workInfo.workyears === '') {
         let obj = {
           Title: '提示',
-          Content: '请选择工作年限',
+          Content: '请输入工作年限',
           type: 1,
           btn: 0
         }
@@ -519,7 +508,7 @@ export default {
       if (_this.workInfo.department === null || _this.workInfo.department === '') {
         let obj = {
           Title: '提示',
-          Content: '请选择销售年限',
+          Content: '请输入销售年限',
           type: 1,
           btn: 0
         }
@@ -529,7 +518,7 @@ export default {
       if (_this.workInfo.industryyears === null || _this.workInfo.industryyears === '') {
         let obj = {
           Title: '提示',
-          Content: '请选择行业年限',
+          Content: '请输入行业年限',
           type: 1,
           btn: 0
         }
@@ -540,7 +529,8 @@ export default {
         Title: '是否确认提交？',
         Content: '请您确保您填写的信息准确无误，否则可能会影响审核结果',
         type: 1,
-        btn: 2
+        btn: 2,
+        success: _this.test
       }
       this.$refs.Toast.on_display(obj)
     },
@@ -558,7 +548,6 @@ export default {
       _this.workInfo.industry = res.name
     },
     cllChe: function (res) {
-      console.log(res)
       let _this = this
       _this.workInfo.department = res
     },
@@ -689,6 +678,7 @@ export default {
     text-align: right;
     border: none;
     font-size: .7rem;
+    background:#fff;
 }
 .contList>.checkBox{
     height:1.5rem;
@@ -779,6 +769,7 @@ export default {
     color:#fff;
     margin-top:.25rem;
     border:none;
+    font-size: .7rem;
 }
 .flxBut>button::after{
     border:none;
@@ -788,11 +779,11 @@ export default {
     width:100%;
     height:2.25rem;
     position: fixed;
-    bottom:0rem;
-    left:0rem;
+    bottom:0;
+    left:0;
     background: #fff;
     display: flex;
-    justify-content: space-evenly
+    justify-content: space-around;
 }
 .flxBut2>button{
     width:7rem;
@@ -802,6 +793,7 @@ export default {
     color:#fff;
     margin-top:.25rem;
     border:none;
+    font-size: .7rem;
 }
 .flxBut2>button::after{
     border:none;
@@ -837,6 +829,7 @@ export default {
     text-align: left;
     float: left;
     color:#101010;
+    background:#fff;
 }
 .subcontList>div>button{
     height:1.5rem;
@@ -848,6 +841,9 @@ export default {
     background: #fff;
     border:0;
     color:rgba(255, 152, 0, 1);
+}
+.subcontList>div>input,button{
+  font-size: .7rem;
 }
 .plus{
     width: 1.2rem;
@@ -874,7 +870,6 @@ export default {
     background:rgba(255, 152, 0, 1);
     color:#fff;
 }
-
 .subContent>.contLists{
     text-align: left;
     padding:0rem .5rem;
@@ -898,5 +893,12 @@ export default {
     border:0;
     font-size: .7rem;
     color:#888;
+    background: #fff;
+}
+.width_100inp{
+  font-size: .7rem;
+}
+.contList>div{
+  color:#888;
 }
 </style>

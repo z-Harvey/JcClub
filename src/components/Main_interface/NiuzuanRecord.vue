@@ -5,7 +5,7 @@
                 <div class="tit" v-text="item.task_msg"></div>
                 <div class="time" v-text="item.add_time"></div>
             </div>
-            <div class="num" v-text="'+' + item.num"></div>
+            <div class="num" v-text="item.num > 0? '+' + item.num: item.num"></div>
         </div>
     </div>
 </template>
@@ -24,6 +24,7 @@ export default {
     document.title = '牛钻记录'
     this.api.getNiuzDetail((res) => {
       this.dataList = res.data
+      console.log(res)
     }, (err) => {
       console.log(err)
     })

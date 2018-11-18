@@ -203,6 +203,7 @@ export default {
     height:100%;
     background:rgba(16, 16, 16, .3);
     display: flex;
+    z-index: 10;
 }
 .content{
     align-self: center;

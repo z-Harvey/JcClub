@@ -89,6 +89,7 @@ export default {
         _this.Global.userInfo['avatarurl'] = res.data.avatarurl
         _this.Global.userInfo['nickname'] = res.data.nickname
         _this.Global.userInfo['token'] = res.data.token
+        _this.api.headerToken(res.data.token)
         _this.Global.userInfo['userSig'] = res.data.userSig
         _this.$router.push('/NoMember')
       }, function (err) {
@@ -99,6 +100,7 @@ export default {
   mounted () {
     document.title = '登录'
     this.token = this.$route.params.token
+    console.log(this.$route.params)
   }
 }
 </script>

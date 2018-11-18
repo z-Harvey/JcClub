@@ -10,7 +10,8 @@
                 <span>内部跟进 <span v-text="msgData.club_mark_count"></span></span>
                 <span>外部跟进 <span v-text="msgData.out_mark_count"></span></span>
             </div>
-            <button @click="path(0)">客户主页</button>
+            <button @click="path(0)" v-if="msgData.is_unlock === 1">客户主页</button>
+            <button @click="path(1, msgData)" v-if="msgData.is_unlock === 0">解锁查看</button>
         </div>
         <div class="tit2">
             <p v-for="(item, index) in msgData.reviews" :key="index" v-text="item">有钱任性</p>
@@ -33,6 +34,7 @@
         <div class="footer" v-else>
             <button @click="new_foot">新增足迹</button>
         </div>
+        <Toast ref="Toast"/>
     </div>
 </template>
 
@@ -53,14 +55,71 @@ export default {
     CuInfo
   },
   methods: {
-    path: function () {
+    path: function (num, item) {
       let _this = this
-      this.$router.push({
-        path: '/CuHome',
-        query: {
-          com_id: _this.que.com_id
+      if (num === 0) {
+        this.$router.push({
+          path: '/CuHome',
+          query: {
+            com_id: _this.que.com_id
+          }
+        })
+      } else if (num === 1) {
+        console.log(item)
+        // this.$router.push('/CuHome')
+        let obj = {
+          Title: '解锁客户数据',
+          type: 2,
+          btn: 3,
+          No: '放弃解锁',
+          Yes: '立即解锁',
+          success: _this.clltoa
         }
-      })
+        _this.$refs.Toast.isUnlock(obj, item)
+      }
+    },
+    clltoa (data) {
+      console.log(data)
+      let _this = this
+      let x = 0
+      if (data.is_deepunlock) {
+        switch (data.is_deepunlock) {
+          case 1:
+            x = data.club_unlock_niuz
+            break
+          case 2:
+            x = data.out_unlock_niuz
+            break
+          case 3:
+            x = data.club_unlock_niuz + data.out_unlock_niuz
+            break
+        }
+        if (data.user_niuz - x >= 0) {
+          let obj = {
+            is_deepunlock: data.is_deepunlock,
+            company: data.id
+          }
+          _this.api.postCompanyUnlock(obj, function (res) {
+            if (res.status === 201) {
+              _this.path(0, data)
+            }
+          }, function (err) {
+            console.log(err)
+          })
+        } else {
+          let obj = {
+            Title: '提示',
+            Content: '牛钻不足',
+            type: 1,
+            btn: 0,
+            No: '确定',
+            Yes: '立即解锁'
+          }
+          setTimeout(() => {
+            _this.$refs.Toast.on_display(obj)
+          }, 200)
+        }
+      }
     },
     navPath: function (num) {
       let _this = this
@@ -109,19 +168,22 @@ export default {
     }
   },
   mounted () {
-    document.title = '销售笔记'
-    // this.new_foot()
-    let _this = this
-    _this.que = _this.$route.query
-    let str = 'id=' + _this.que.com_id
-    _this.$refs.cuinfo.SalesNotesInit(_this.que.com_id)
-    _this.api.getNotesHeader(str, function (res) {
-      console.log(res)
-      _this.msgData = res.data[0]
-      _this.msgData.reviews = _this.msgData.reviews.split('|')
-    }, function (err) {
+    try {
+      document.title = '销售笔记'
+      let _this = this
+      _this.que = _this.$route.query
+      let str = 'id=' + _this.que.com_id
+      _this.$refs.cuinfo.SalesNotesInit(_this.que.com_id)
+      _this.api.getNotesHeader(str, function (res) {
+        console.log(res)
+        _this.msgData = res.data[0]
+        _this.msgData.reviews = _this.msgData.reviews.split('|')
+      }, function (err) {
+        console.log(err)
+      })
+    } catch (err) {
       console.log(err)
-    })
+    }
   }
 }
 </script>
@@ -143,7 +205,6 @@ export default {
     background: #fff;
 }
 .cikename{
-    display: inline-block;
     line-height: .7rem
 }
 .cikename>img{

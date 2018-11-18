@@ -196,13 +196,15 @@ export default {
       obj.product = JSON.stringify(obj.product)
       _this.api.putWorkInfo(obj, function (res) {
         console.log(res)
+        if (res.status === 200) {
+          _this.$router.go(-1)
+        }
       }, function (err) {
         console.log(err)
       })
     },
     // 选择公司后的回调
     cllSrceach (data) {
-      console.log(data)
       this.dataList.comname = data.name
     },
     check: function (typ) {
@@ -244,12 +246,9 @@ export default {
     areaFn1: function (num) {
       let str = null
       let _this = this
-      if (num) {
-        str = 'pid=' + num
-      } else {
-        str = 'pid=' + 0
-      }
+      str = 'pid=' + _this.pid.a1
       _this.api.getAreaList(str, function (res) {
+        console.log(res.data)
         _this.pid2 = res.data
       }, function (err) {
         console.log(err)
@@ -258,11 +257,7 @@ export default {
     areaFn2: function (num) {
       let str = null
       let _this = this
-      if (num) {
-        str = 'pid=' + num
-      } else {
-        str = 'pid=' + 0
-      }
+      str = 'pid=' + _this.pid.a2
       _this.api.getAreaList(str, function (res) {
         _this.pid3 = res.data
       }, function (err) {
@@ -292,6 +287,7 @@ export default {
         _this.dataList.area = arr.join('|')
       }
       _this.api.putMyCardInfo(_this.Global.userInfo.myId, _this.dataList, function (res) {
+        console.log(res)
         if (res.status === 200) {
           _this.$router.go(-1)
         }
@@ -371,14 +367,20 @@ export default {
     padding:0rem .5rem;
     font-size: .7rem;
     line-height: 2.25rem;
+    min-height: 2.35rem;
 }
 .contList>input{
     height:1.5rem;
-    width:10.7rem;
-    float: right;
+    width:70%;
     margin-top:.3rem;
     text-align: right;
     border: none;
+    background:#fff;
+    float: right;
+    font-size: .7rem;
+}
+.contList>span{
+    float: left;
 }
 .contList>select{
     width:100%;
@@ -387,13 +389,15 @@ export default {
     border:none;
     padding-left: 1rem;
     color:#888;
+    background:#fff;
+    font-size: .7rem;
 }
 .contList>div{
-    width:10.7rem;
-    float: right;
-    line-height: 1.5rem;
+    width:calc(100% - 2.5rem);
+    min-height: 2.25rem;
     margin-top:.3rem;
     text-align: right;
+    padding-left:2.5rem;
     color:#888;
 }
 .sex>div{
@@ -440,6 +444,7 @@ export default {
     color:#fff;
     margin-top:.25rem;
     border:none;
+    font-size: .7rem;
 }
 .flxBut>button::after{
     border:none;
@@ -515,5 +520,11 @@ export default {
     height:1.2rem;
     text-align: left;
     margin-top:.9rem;
+}
+.subcontList>div>input,button{
+    font-size: .7rem;
+}
+.width_100inp{
+    font-size: .7rem
 }
 </style>

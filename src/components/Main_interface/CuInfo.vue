@@ -9,19 +9,19 @@
                 <div class="contcon">
                     <div>
                         <div>行业</div>
-                        <div v-text="msg.industry">人力资源</div>
+                        <div v-text="msg.industry || '--'">人力资源</div>
                     </div>
                     <div>
                         <div>官网地址</div>
-                        <div v-text="msg.net_url">Http://www.xiaoshouniu.cn</div>
+                        <div v-text="msg.net_url || '--'">Http://www.xiaoshouniu.cn</div>
                     </div>
                     <div>
                         <div>公司地址</div>
-                        <div v-text="msg.address">北京市昌平区龙锦苑东五区</div>
+                        <div v-text="msg.address || '--'">北京市昌平区龙锦苑东五区</div>
                     </div>
                     <div>
                         <div>企业类型</div>
-                        <div v-text="msg.type">民营企业</div>
+                        <div v-text="msg.type || '--'">民营企业</div>
                     </div>
                 </div>
             </div>
@@ -33,15 +33,15 @@
                 <div class="contcon">
                     <div>
                         <div>人数</div>
-                        <div v-text="msg.people_num">8</div>
+                        <div v-text="msg.people_num || '--'">8</div>
                     </div>
                     <div>
                         <div>分支机构数</div>
-                        <div v-text="msg.fzjg_num">0</div>
+                        <div v-text="msg.fzjg_num || '--'">0</div>
                     </div>
                     <div>
                         <div>营业额</div>
-                        <div v-text="msg.turnover">1亿</div>
+                        <div v-text="msg.turnover || '--'">1亿</div>
                     </div>
                 </div>
             </div>
@@ -53,22 +53,22 @@
                 <div class="contcon" v-for="(item, index) in msg.contact_list" :key="index">
                     <div>
                         <div>姓名</div>
-                        <div v-text="item.name">王**</div>
+                        <div v-text="item.name || '--'">王**</div>
                     </div>
                     <div>
                         <div>职务</div>
-                        <div v-text="item.position">CEO</div>
+                        <div v-text="item.position || '--'">CEO</div>
                     </div>
                     <div>
                         <div>电话</div>
-                        <div v-text="item.phone">18*********</div>
+                        <div v-text="item.phone || '--'">18*********</div>
                     </div>
                     <div>
                         <div>邮件</div>
-                        <div v-text="item.email">***@***.***</div>
+                        <div v-text="item.email || '--'">***@***.***</div>
                     </div>
                 </div>
-              <div class="contFooter"><span>@xxxxx</span>于yyyy/mm/dd标记</div>
+              <div class="contFooter"><span v-text="'@' + msg.mark_people"></span>于 <span v-text="msg.add_time"></span> 标记</div>
             </div>
         </div>
         <div v-if="type === 'cardInfo'">
@@ -80,27 +80,27 @@
                 <div class="contcon">
                     <div>
                         <div>姓名</div>
-                        <div v-text="msg.name">袁邦阳</div>
+                        <div v-text="msg.name || '--'">袁邦阳</div>
                     </div>
                     <div>
                         <div>公司</div>
-                        <div v-text="msg.comname">北京聚牛天下网络科技有限公司</div>
+                        <div v-text="msg.comname || '--'">北京聚牛天下网络科技有限公司</div>
                     </div>
                     <div>
                         <div>职位</div>
-                        <div v-text="msg.position">CEO</div>
+                        <div v-text="msg.position || '--'">CEO</div>
                     </div>
                     <div>
                         <div>年龄</div>
-                        <div v-text="msg.age">24</div>
+                        <div v-text="msg.age || '--'">24</div>
                     </div>
                     <div>
                         <div>学历</div>
-                        <div v-text="msg.edu_background">博士后</div>
+                        <div v-text="msg.edu_background || '--'">博士后</div>
                     </div>
                     <div>
                         <div>所在地</div>
-                        <div v-text="msg.area">北京·昌平</div>
+                        <div v-text="msg.area || '--'">北京·昌平</div>
                     </div>
                 </div>
             </div>
@@ -112,15 +112,15 @@
                 <div class="contcon">
                     <div>
                         <div>手机号</div>
-                        <div v-text="msg.mobile">188 8888 8888</div>
+                        <div v-text="msg.mobile || '--'">188 8888 8888</div>
                     </div>
                     <div>
                         <div>邮箱</div>
-                        <div v-text="msg.email">yby@xiaoshouniu.cn</div>
+                        <div v-text="msg.email || '--'">yby@xiaoshouniu.cn</div>
                     </div>
                     <div>
                         <div>微信号</div>
-                        <div v-text="msg.wx_no">yuanbangyang</div>
+                        <div v-text="msg.wx_no || '--'">yuanbangyang</div>
                     </div>
                 </div>
             </div>
@@ -134,19 +134,19 @@
                 <div class="contcon">
                     <div>
                         <div>行业</div>
-                        <div v-text="msg.industry"></div>
+                        <div v-text="msg.industry || '--'"></div>
                     </div>
                     <div>
                         <div>官网地址</div>
-                        <div v-text="msg.net_url"></div>
+                        <div v-text="msg.net_url || '--'"></div>
                     </div>
                     <div>
                         <div>公司地址</div>
-                        <div v-text="msg.address"></div>
+                        <div v-text="msg.address || '--'"></div>
                     </div>
                     <div>
                         <div>企业类型</div>
-                        <div v-text="msg.type">民营企业</div>
+                        <div v-text="msg.type || '--'">民营企业</div>
                     </div>
                 </div>
             </div>
@@ -158,15 +158,15 @@
                 <div class="contcon">
                     <div>
                         <div>人数</div>
-                        <div v-text="msg.people_num"></div>
+                        <div v-text="msg.people_num || '--'"></div>
                     </div>
                     <div>
                         <div>分支机构数</div>
-                        <div v-text="msg.fzjg_num"></div>
+                        <div v-text="msg.fzjg_num || '--'"></div>
                     </div>
                     <div>
                         <div>营业额</div>
-                        <div v-text="msg.turnover">1亿</div>
+                        <div v-text="msg.turnover || '--'">1亿</div>
                     </div>
                 </div>
             </div>
@@ -178,19 +178,19 @@
                 <div class="contcon" v-for="(items, index) in msg.contact_list" :key="index">
                     <div>
                         <div>姓名</div>
-                        <div v-text="items.name">王**</div>
+                        <div v-text="items.name || '--'">王**</div>
                     </div>
                     <div>
                         <div>职务</div>
-                        <div v-text="items.position">CEO</div>
+                        <div v-text="items.position || '--'">CEO</div>
                     </div>
                     <div>
                         <div>电话</div>
-                        <div v-text="items.phone">18*********</div>
+                        <div v-text="items.phone || '--'">18*********</div>
                     </div>
                     <div>
                         <div>邮件</div>
-                        <div v-text="items.email">***@***.***</div>
+                        <div v-text="items.email || '--'">***@***.***</div>
                     </div>
                 </div>
             </div>
@@ -334,6 +334,8 @@ export default {
       _this.api.getCompanyInfo(str, function (res) {
         console.log(res)
         _this.msg = res.data
+        _this.msg.contact_list = JSON.parse(res.data.contact_list)
+        console.log(_this.msg)
       }, function (err) {
         console.log(err)
       })

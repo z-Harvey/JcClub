@@ -96,9 +96,8 @@ export default {
       }
     })
     _this.api.getMine(function (res) {
+      console.log(res.data)
       _this.Global.userInfo.myId = res.data.id
-      console.log(_this.nav_list)
-      console.log(this.nav_list)
     }, function (err) {
       console.log(err)
     })

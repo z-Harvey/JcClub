@@ -35,20 +35,8 @@
                 <div></div>
             </div>
             <div class="contcons">
-                <div>
-                    <div>此处显示产品名称</div>
-                    <div></div>
-                </div>
-                <div>
-                    <div>此处显示产品名称</div>
-                    <div></div>
-                </div>
-                <div>
-                    <div>此处显示产品名称</div>
-                    <div></div>
-                </div>
-                <div>
-                    <div>此处显示产品名称</div>
+                <div v-for="(item, index) in dataList.product" :key="index">
+                    <div v-text="item.key"></div>
                     <div></div>
                 </div>
             </div>
@@ -59,12 +47,8 @@
                 <div></div>
             </div>
             <div class="contcons">
-                <div>
-                    <div>此处显示部门名称</div>
-                    <div></div>
-                </div>
-                <div>
-                    <div>此处显示部门名称</div>
+                <div v-for="(item, index) in dataList.department" :key="index">
+                    <div v-text="item"></div>
                     <div></div>
                 </div>
             </div>
@@ -75,12 +59,8 @@
                 <div></div>
             </div>
             <div class="contcons">
-                <div>
-                    <div>此处显示领域名称</div>
-                    <div></div>
-                </div>
-                <div>
-                    <div>此处显示领域名称</div>
+                <div v-for="(item, index) in dataList.scArea" :key="index">
+                    <div v-text="item"></div>
                     <div></div>
                 </div>
             </div>
@@ -91,19 +71,11 @@
                 <div></div>
             </div>
             <div class="contcons">
-                <div>
-                    <div>此处显示荣誉名称</div>
+                <div v-for="(item, index) in dataList.honors" :key="index">
+                    <div v-text="item.key">此处显示荣誉名称</div>
                     <div>
                       <img src="@/assets/tupian.png" alt="">
                     </div>
-                </div>
-                <div>
-                    <div>此处显示荣誉名称</div>
-                    <div></div>
-                </div>
-                <div>
-                    <div>此处显示荣誉名称</div>
-                    <div></div>
                 </div>
             </div>
         </div>
@@ -116,7 +88,9 @@ export default {
   data () {
     return {
       tapBur: true,
-      dataList: {}
+      dataList: {
+        honors: []
+      }
     }
   },
   methods: {
@@ -125,6 +99,11 @@ export default {
       _this.api.getUserCardWork(data, function (res) {
         console.log(res)
         _this.dataList = res.data
+        _this.dataList.department = res.data.department.split('、')
+        _this.dataList.honors = JSON.parse(res.data.honors)
+        _this.dataList.product = JSON.parse(res.data.product)
+        _this.dataList.scArea = res.data.scArea.split('、')
+        console.log(_this.dataList)
       }, function (err) {
         console.log(err)
       })

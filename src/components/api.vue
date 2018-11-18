@@ -1,12 +1,15 @@
 <script type="text/javascript">
 import axios from 'axios'
-const path = '/api'
+const path = ''
+// const path = '/api'
+
+let headerToken = (token) => {
+  axios.defaults.headers.Authorization = 'JWT ' + token
+}
 
 /**
  * 用户进入界面  用code换取token  同时查看是不是用户  与当前状态
  */
-// axios.defaults.headers.Authorization = 'LS_yyPo8b3nWo1hs0uyj3FQk'
-axios.defaults.headers.Authorization = 'JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1NDI4MDA0NzksInVzZXJfaWQiOjQsImVtYWlsIjoiMTFAMTEuY29tIiwidXNlcm5hbWUiOiIxODIxMDI0NTc1MiJ9.whjRWys9moC6bS3rpsxz9fXzsukSdHJ-OlpRdSuMgPQ'
 let getToken = function (data, success, error) {
   axios.post(path + '/public_login/', data).then(function (res) {
     success(res)
@@ -51,8 +54,8 @@ let getApplyClub = function (data, success, error) {
 let getMine = function (success, error) {
   axios.get(path + '/mine/' + (Date.parse(new Date()) + 3) + '/').then(function (res) {
     success(res)
-  }).catch(function (err) {
-    error(err.response)
+  }, function (err) {
+    error(err)
   })
 }
 /**
@@ -279,7 +282,7 @@ let delMyCollect = function (data, success, error) {
   })
 }
 /**
- * 公海List
+ * 公海List    搜索  search
  */
 let getCompanySeaList = function (data, success, error) {
   axios.get(path + '/companySea/?link=' + Date.parse(new Date()) + '&' + data).then(function (res) {
@@ -621,8 +624,31 @@ let getReviews = function (success, error) {
     error(err.response)
   })
 }
+/**
+ * 搜索会员  search
+ */
+let srchUser = function (data, success, error) {
+  axios.get(path + '/club_user/?link=' + Date.parse(new Date()) + '&' + data).then(function (res) {
+    success(res)
+  }, function (err) {
+    error(err.response)
+  })
+}
+/**
+ * 搜索我的客户  search
+ */
+let srchMyCompany = function (data, success, error) {
+  axios.get(path + '/my_customer/?link=' + Date.parse(new Date()) + '&' + data).then(function (res) {
+    success(res)
+  }, function (err) {
+    error(err.response)
+  })
+}
 
 export default{
+  srchUser,
+  srchMyCompany,
+  headerToken,
   login,
   getVerifyCode,
   getToken,
