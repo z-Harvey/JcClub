@@ -121,8 +121,10 @@ export default {
   methods: {
     srceach () {
       let str = 'search=' + this.src
+      let _this = this
       this.api.srchUser(str, (res) => {
         console.log(res)
+        _this.dataList = res.data.results
       }, (err) => {
         console.log(err)
       })

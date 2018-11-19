@@ -24,7 +24,7 @@
                     <span v-text="'+' + item.task_niuz"></span>
                 </div>
             </div>
-            <button class="conBtn">已领取</button>
+            <button class="conBtn conBtns" @click="path(1)">新增客户</button>
         </div>
     </div>
 </template>
@@ -46,6 +46,8 @@ export default {
         case 0:
           _this.$router.push('/NiuzuanRecord')
           break
+        case 1:
+          _this.$router.push('/MarkupCu')
       }
     }
   },

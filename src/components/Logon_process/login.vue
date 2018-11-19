@@ -25,7 +25,7 @@ export default {
   name: 'login',
   data () {
     return {
-      phone: 18210245752,
+      phone: null,
       ph_ts: false,
       yzm_yz: false,
       yzBtn: true,

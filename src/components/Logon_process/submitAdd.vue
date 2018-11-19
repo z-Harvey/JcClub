@@ -58,17 +58,17 @@
                 <span>所在地(必填)</span>
                 <div class="xexBox">
                     <select v-model="city.sel1" @change="selText('0')" >
-                        <option value="0" v-text="sel3text[0]||'--请选择--'"></option>
+                        <option value="0" v-text="sel3text[0]||'省'"></option>
                         <option v-for="(item, index) in sList" :key="index" :value="item.id" v-text="item.name">省</option>
                     </select>
                     <!-- <span>/</span> -->
                     <select v-model="city.sel2" @change="selText('1')">
-                        <option value="0" v-text="sel3text[1]||'--请选择--'"></option>
+                        <option value="0" v-text="sel3text[1]||'市'"></option>
                         <option v-for="(item, index) in sList1" :key="index" :value="item.id" v-text="item.name">市</option>
                     </select>
                     <!-- <span>/</span> -->
                     <select v-model="city.sel3" @change="selText('2')">
-                        <option value="0" v-text="sel3text[2]||'--请选择--'"></option>
+                        <option value="0" v-text="sel3text[2]||'区'"></option>
                         <option v-for="(item, index) in sList2" :key="index" :value="item.id" v-text="item.name">区</option>
                     </select>
                 </div>
@@ -247,7 +247,7 @@ export default {
       let areaArr = []
       if (_this.city.sel1 === 0) {
         areaArr.push(_this.sel3text[0])
-        if (_this.sel3text[0] === '--请选择--') {
+        if (_this.sel3text[0] === '省') {
           let obj = {
             Title: '提示',
             Content: '请选择完整所在地',
@@ -266,7 +266,7 @@ export default {
       }
       if (_this.city.sel2 === 0) {
         areaArr.push(_this.sel3text[1])
-        if (_this.sel3text[1] === '--请选择--') {
+        if (_this.sel3text[1] === '市') {
           let obj = {
             Title: '提示',
             Content: '请选择完整所在地',
@@ -285,7 +285,7 @@ export default {
       }
       if (_this.city.sel3 === 0) {
         areaArr.push(_this.sel3text[2])
-        if (_this.sel3text[2] === '--请选择--') {
+        if (_this.sel3text[2] === '区') {
           let obj = {
             Title: '提示',
             Content: '请选择完整所在地',
@@ -378,12 +378,12 @@ export default {
       let _this = this
       let num = null
       if (str === '0') {
-        _this.sel3text = ['--请选择--', '--请选择--', '--请选择--']
+        _this.sel3text = ['省', '市', '区']
         num = _this.city.sel1
         _this.city.sel2 = 0
         _this.city.sel3 = 0
       } else if (str === '1') {
-        _this.sel3text[2] = '--请选择--'
+        _this.sel3text[2] = '区'
         num = _this.city.sel2
         _this.city.sel3 = 0
       }

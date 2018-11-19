@@ -156,6 +156,7 @@ export default {
         }
       })
       _this.user_id = _this.Global.userInfo.myId
+      _this.$refs.workEx.workInfoInit(_this.user_id)
       _this.$refs.CuInfo.cardInfoInit(_this.user_id)
       _this.api.getUserHeader(_this.user_id, function (res) {
         _this.listData = res.data

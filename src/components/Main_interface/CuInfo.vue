@@ -391,7 +391,7 @@ export default {
 }
 .contcon>div{
     padding:.25rem .5rem;
-    height:.7rem;
+    min-height:.7rem;
     font-size: .7rem;
     line-height: .7rem;
 }
@@ -401,7 +401,8 @@ export default {
 }
 .contcon>div>div:last-child{
     color:rgba(255, 152, 0, 1);
-    float: right;
+    text-align: right;
+    padding-left:3rem;
 }
 .contFooter{
     border-radius: .25rem;
