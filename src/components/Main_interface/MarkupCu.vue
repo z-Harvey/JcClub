@@ -138,11 +138,14 @@
         </div>
         <linkage ref="linkage" @ok="cllLink" @ok1="linkCall"/>
         <Check ref="check" @ok="checkCall"/>
+        <search ref="search" @ok="cllSrceach"/>
         <Toast ref="Toast"/>
     </div>
 </template>
 
 <script>
+import search from '@/components/Logon_process/srceach'
+
 export default {
   name: 'MarkupCu',
   data () {
@@ -191,11 +194,14 @@ export default {
       }
     }
   },
+  components: {
+    search
+  },
   methods: {
+    cllSrceach (call) {
+      this.comCont = call
+    },
     contactPush: function () {
-      if (this.contact_list[this.contact_list.length - 1].name === '') {
-        return
-      }
       let obj = {
         name: '',
         position: '',
@@ -269,7 +275,8 @@ export default {
         this.$refs.Toast.on_display(obj)
         return
       } else if (_this.upData.net_url !== '') {
-        let reg = eval("/:///ig")
+        let reg = RegExp(/:\/\//)
+        console.log(reg.test(_this.upData.net_url))
         if (!(reg.test(_this.upData.net_url))) {
           _this.upData.net_url = 'http://' + _this.upData.net_url
         }
@@ -363,7 +370,7 @@ export default {
           return
         }
       } else {
-        if (!(/^1[34578]\d{9}$/.test(_this.contact_list[0].phone))) {
+        if (!(/^1[3456789]\d{9}$/.test(_this.contact_list[0].phone))) {
           let obj = {
             Title: '提示',
             Content: '电话号码格式错误',
@@ -402,7 +409,7 @@ export default {
         if (res.status === 201) {
           let obj = {
             Title: '解锁成功',
-            Content: '新增成功，获得牛钻+' + 8,
+            Content: '新增成功，获得牛钻+' + res.data.niuz_num,
             type: 1,
             btn: 2,
             No: '我的客户',
@@ -482,14 +489,14 @@ export default {
           success: function (res) {
             _this.upData.department = res
           }
-          })
+        })
       }
     },
     path: function (num) {
       let _this = this
       switch (num) {
         case 0:
-          _this.$router.push('/srceach')
+          _this.$refs.search.on_display()
           break
       }
     },
@@ -526,10 +533,11 @@ export default {
         console.log(err)
       })
       _this.api.getMyCustomers(_this.$route.query.com_id, function (res) {
-        console.log(res)
         _this.upData = res.data
         _this.upData.contact_list = JSON.parse(_this.upData.contact_list)
-        _this.contact_list = _this.upData.contact_list
+        if (_this.upData.contact_list !== null) {
+          _this.contact_list = _this.upData.contact_list
+        }
       }, function (err) {
         console.log(err)
       })

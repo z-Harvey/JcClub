@@ -13,7 +13,9 @@
             <div class="resImg">
                 <img src="@/assets/icon.png" alt="">
             </div>
-            <div class="cikename" v-text="item.name">阿里巴巴（中国）网络技术有限公司</div>
+            <div class="nameBox">
+                <div class="cikename" v-text="item.name">阿里巴巴（中国）网络技术有限公司</div>
+            </div>
         </div>
         <!-- <div class="or">没搜到？试试看输入更全的客户名称or<span>点此进行深度搜索</span></div> -->
     </div>
@@ -122,7 +124,7 @@ export default {
 }
 .Result{
     width: calc(92% - 1rem);
-    height:2.5rem;
+    min-height:2.5rem;
     background:#fff;
     border-radius: .25rem;
     padding:.75rem .5rem;
@@ -138,11 +140,17 @@ export default {
 .resImg>img{
     width:2.5rem;
 }
+.nameBox{
+    min-height: 2.5rem;
+    display: flex;
+}
 .cikename{
-    float: left;
-    line-height: 2.5rem;
+    align-self: center;
+    width:100%;
+    display: inline-block;
     margin-left:.5rem;
     font-size: .7rem;
+    text-align: left;
 }
 .or{
     margin-top:.5rem;

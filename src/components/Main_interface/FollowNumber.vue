@@ -57,7 +57,10 @@ export default {
       dataList: {},
       is_deepunlock: null,
       comId: null,
-      jsxy: null
+      jsxy: null,
+      page_size: 12,
+      p: 1,
+      ps: true
     }
   },
   methods: {
@@ -149,7 +152,7 @@ export default {
     },
     cuHomeInit: function (id) {
       let _this = this
-      let str = 'company=' + id
+      let str = 'company=' + id + '&p=' + this.p + '&page_size=' + this.page_size
       _this.comId = id
       _this.is_deepunlock = _this.Global.temporary
       if (_this.is_deepunlock === 1 || _this.is_deepunlock === 2) {
@@ -171,9 +174,26 @@ export default {
           if (p1.user === _this.Global.userInfo.myId) {
             p1.is_collect = 3
           }
-          console.log(p1)
           p1.add_time = Math.floor(Math.abs(Date.now() - new Date(p1.add_time).getTime()) / (3600 * 24 * 1e3))
         })
+      }, function (err) {
+        console.log(err)
+      })
+    },
+    ScrollInit: function (id) {
+      let _this = this
+      let str = 'company=' + _this.comId + '&p=' + this.p + '&page_size=' + this.page_size
+      _this.api.getCompanyMark(str, function (res) {
+        res.data.results.map(function (p1, p2) {
+          if (p1.user === _this.Global.userInfo.myId) {
+            p1.is_collect = 3
+          }
+          p1.add_time = Math.floor(Math.abs(Date.now() - new Date(p1.add_time).getTime()) / (3600 * 24 * 1e3))
+        })
+        _this.dataList = _this.dataList.concat(res.data.results)
+        if (_this.dataList.length === res.data.count) {
+          _this.ps = false
+        }
       }, function (err) {
         console.log(err)
       })

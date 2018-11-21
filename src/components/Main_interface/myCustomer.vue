@@ -1,5 +1,5 @@
 <template>
-  <div class="home_content" v-if="show">
+  <div class="home_content" v-if="show" @scroll="onScroll($event)">
     <div class="srceach">
         <div class="inpBox">
             <img src="@/assets/srceach.png" alt="">
@@ -69,16 +69,51 @@ export default {
   data () {
     return {
       dataList: [],
-      src: null
+      src: null,
+      p: 1,
+      page_size: 12,
+      ps: true
     }
   },
   methods: {
     srceach () {
       let str = 'search=' + this.src
       this.api.srchMyCompany(str, (res) => {
-        console.log(res)
         this.dataList = res.data.results
       }, (err) => {
+        console.log(err)
+      })
+    },
+    onScroll (e) {
+      if (this.ps === false) {
+        return
+      }
+      let total = e.srcElement.scrollHeight - e.srcElement.clientHeight - 1 // 总高度减视口高度 - 1
+      if (e.srcElement.scrollTop > total) {
+        this.p++
+        this.scll()
+      }
+    },
+    scll: function () {
+      let _this = this
+      let str = 'p=' + this.p + '&page_size=' + this.page_size
+      _this.api.getMyCustomer(str, function (res) {
+        console.log(res)
+        _this.dataList = _this.dataList.concat(res.data.results)
+        if (res.data.count === _this.dataList.length) {
+          _this.ps = false
+        }
+      }, function (err) {
+        console.log(err)
+      })
+    },
+    init: function () {
+      let _this = this
+      let str = 'p=' + this.p + '&page_size=' + this.page_size
+      _this.api.getMyCustomer(str, function (res) {
+        console.log(res)
+        _this.dataList = res.data.results
+      }, function (err) {
         console.log(err)
       })
     },
@@ -162,16 +197,6 @@ export default {
           }, 200)
         }
       }
-    },
-    init: function () {
-      let _this = this
-      let str = ''
-      _this.api.getMyCustomer(str, function (res) {
-        console.log(res)
-        _this.dataList = res.data.results
-      }, function (err) {
-        console.log(err)
-      })
     }
   },
   mounted () {

@@ -1,9 +1,11 @@
 <template>
-  <div class="international" v-if="show">
+  <div class="international"
+    v-if="show"
+    @scroll="onScroll($event)">
     <Toast ref="Toast"/>
     <div class="srceach">
         <div class="inpBox">
-            <img src="@/assets/srceach.png" alt="">
+            <img src="@/assets/srceach.png">
             <input type="text" v-model="src" placeholder="输入客户名称关键字">
         </div>
         <button class="srceBtn" @click="srceach">搜索</button>
@@ -11,13 +13,13 @@
     <div class="sort" style="display:none;">
         <div @click="sorts(0)">
             <span>客户关系/线索</span>
-            <img v-if="sort[0]" src="@/assets/bot1.png" alt="">
-            <img v-else src="@/assets/bot2.png" alt="">
+            <img v-if="sort[0]" src="@/assets/bot1.png">
+            <img v-else src="@/assets/bot2.png">
         </div>
         <div @click="sorts(1)">
             <span>默认排序</span>
-            <img v-if="sort[1]" class="pai" src="@/assets/pai1.png" alt="">
-            <img v-else class="pai" src="@/assets/pai2.png" alt="">
+            <img v-if="sort[1]" class="pai" src="@/assets/pai1.png">
+            <img v-else class="pai" src="@/assets/pai2.png">
         </div>
     </div>
     <div class="Screening" v-if="sort[0]||sort[1]">
@@ -42,43 +44,41 @@
         <div class="s2" v-if="sort[1]">
             <div>
                 <p>默认排序</p>
-                <img src="@/assets/yes.png" alt="">
+                <img src="@/assets/yes.png">
             </div>
             <div>
                 <p>按跟进人数由高到低排序</p>
-                <img src="@/assets/yes.png" alt="">
+                <img src="@/assets/yes.png">
             </div>
             <div>
                 <p>按跟进人数由低到高排序</p>
-                <img src="@/assets/yes.png" alt="">
+                <img src="@/assets/yes.png">
             </div>
             <div>
                 <p>按牛币价格由高到低排序</p>
-                <img src="@/assets/yes.png" alt="">
+                <img src="@/assets/yes.png">
             </div>
             <div>
                 <p>按牛币价格由低到高排序</p>
-                <img src="@/assets/yes.png" alt="">
+                <img src="@/assets/yes.png">
             </div>
         </div>
     </div>
     <div class="content">
         <div class="contFor" v-for="(item, index) in dataList" :key="index">
             <div class="tapBox">
-                <img src="@/assets/qi.png" alt="">
+                <img src="@/assets/qi.png">
             </div>
             <div class="forRight">
                 <div class="riCikename">
                     <div class="cikeName" v-text="item.name">北京聚牛天下网络科技有限公司</div>
                     <div class="cikeposition">
-                        <img src="@/assets/location.png" alt="">
+                        <img src="@/assets/location.png">
                         <span v-text="item.area">地址</span>
                     </div>
                 </div>
                 <div class="ricTag">
-                    <div>有钱任性</div>
-                    <div>有钱任性</div>
-                    <div>有钱任性</div>
+                    <div v-for="(item, index) in item.reviews_list" :key="index" v-text="item">有钱任性</div>
                 </div>
                 <div class="forFuterr">
                     <div>内部跟进 <span v-text="item.club_mark_count"></span></div>
@@ -102,7 +102,10 @@ export default {
       sort: [false, false],
       dataList: [],
       status: null,
-      src: null
+      src: null,
+      page_size: 12,
+      p: 1,
+      ps: true
     }
   },
   methods: {
@@ -209,7 +212,7 @@ export default {
     },
     init: function () {
       let _this = this
-      let str = ''
+      let str = 'p=' + this.p + '&page_size=' + this.page_size
       _this.api.getCompanySeaList(str, function (res) {
         _this.dataList = res.data.results
       }, function (err) {
@@ -259,6 +262,28 @@ export default {
       }, function (err) {
         console.log(err)
       })
+    },
+    scll () {
+      if (this.ps === false) {
+        return
+      }
+      let _this = this
+      let str = 'p=' + this.p + '&page_size=' + this.page_size
+      _this.api.getCompanySeaList(str, (res) => {
+        _this.dataList = _this.dataList.concat(res.data.results)
+        if (res.data.count === this.dataList.length) {
+          this.ps = false
+        }
+      }, function (err) {
+        console.log(err)
+      })
+    },
+    onScroll (e) {
+      let total = e.srcElement.scrollHeight - e.srcElement.clientHeight - 1 // 总高度减视口高度 - 1
+      if (e.srcElement.scrollTop > total) {
+        this.p++
+        this.scll()
+      }
     }
   },
   mounted () {
@@ -270,7 +295,14 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
+.international{
+    position: fixed;
+    width:100%;
+    height:100%;
+    left:0;
+    top:0;
+    overflow: auto
+}
 .srceach{
     width:100%;
     height:2rem;
@@ -376,7 +408,8 @@ export default {
 .contFor{
     margin:0 .75rem;
     padding:.5rem 0;
-    border-bottom: 1px solid #f7f7f7
+    border-bottom: 1px solid #f7f7f7;
+    background:#fff;
 }
 .tapBox{
     width:.8rem;
@@ -403,6 +436,8 @@ export default {
 }
 .riCikename>.cikeName{
     display: inline-block;
+    /* border:1px solid red; */
+    /* width:10rem; */
 }
 .riCikename>.cikeposition{
     float: right;
@@ -418,12 +453,14 @@ export default {
     font-size: .5rem;
     margin:.4rem .25rem .4rem 0;
     color:#888;
+    min-height: 1rem;
 }
 .ricTag>div{
     padding:.1rem .5rem;
     background:rgba(236, 236, 237, 1);
     line-height: .8rem;
     display: inline-block;
+    margin-right:.2rem;
 }
 .forFuterr{
     color:#888;

@@ -1,5 +1,5 @@
 <template>
-    <div class="HisCustomer">
+    <div class="HisCustomer" @scroll="onScroll($event)">
         <div class="screen">
             <div>
                 <div>客户关系/线索</div>
@@ -50,7 +50,10 @@ export default {
   data () {
     return {
       tapBur: true,
-      dataList: []
+      dataList: [],
+      page_size: 12,
+      p: 1,
+      ps: true
     }
   },
   methods: {
@@ -122,22 +125,50 @@ export default {
           }, 200)
         }
       }
+    },
+    init () {
+      let str = 'user=' + this.user_id + '&p=' + this.p + '&page_size=' + this.page_size
+      this.api.getUserCustomer(str, (res) => {
+        console.log(res)
+        res.data.results.map((p1, p2) => {
+          p1.add_time = Math.floor(Math.abs(Date.now() - new Date(p1.add_time).getTime()) / (3600 * 24 * 1e3))
+        })
+        this.dataList = res.data.results
+        if (this.dataList.length === res.data.count) {
+          this.ps = false
+        }
+      }, (err) => {
+        console.log(err)
+      })
+    },
+    initScroll () {
+      let str = 'user=' + this.user_id + '&p=' + this.p + '&page_size=' + this.page_size
+      this.api.getUserCustomer(str, (res) => {
+        res.data.results.map(function (p1, p2) {
+          p1.add_time = Math.floor(Math.abs(Date.now() - new Date(p1.add_time).getTime()) / (3600 * 24 * 1e3))
+        })
+        this.dataList = this.dataList.concat(res.data.results)
+        console.log(res)
+        // if (res.data)
+      }, (err) => {
+        console.log(err)
+      })
+    },
+    onScroll (e) {
+      if (this.ps === false) {
+        return
+      }
+      let total = e.srcElement.scrollHeight - e.srcElement.clientHeight - 1 // 总高度减视口高度 - 1
+      if (e.srcElement.scrollTop > total) {
+        this.p++
+        this.initScroll()
+      }
     }
   },
   mounted (options) {
-    let _this = this
     document.title = 'Ta的客户'
-    _this.user_id = _this.$route.query.user_id
-    let str = 'user=' + _this.user_id
-    _this.api.getUserCustomer(str, function (res) {
-      res.data.map(function (p1, p2) {
-        p1.add_time = Math.floor(Math.abs(Date.now() - new Date(p1.add_time).getTime()) / (3600 * 24 * 1e3))
-      })
-      _this.dataList = res.data
-      console.log(res.data)
-    }, function (err) {
-      console.log(err)
-    })
+    this.user_id = this.$route.query.user_id
+    this.init()
   }
 }
 </script>

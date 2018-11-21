@@ -8,9 +8,9 @@
     <my ref="c3" :show="nav_list[3]"/>
     <nav>
         <div @click="navClick(0)" class="link_tou">
-            <img v-if="nav_list[0]" src="@/assets/home.png" alt="">
-            <img v-else src="@/assets/home_a.png" alt="">
-            <p :class="nav_list[0]?'pcole':''">首页</p>
+            <img v-if="nav_list[0]" src="@/assets/friend.png" alt="">
+            <img v-else src="@/assets/friend_a.png" alt="">
+            <p :class="nav_list[0]?'pcole':''">会员</p>
         </div>
         <div @click="navClick(1)" class="link_tou">
             <img v-if="nav_list[1]" src="@/assets/navTar.png" alt="">
@@ -96,7 +96,6 @@ export default {
       }
     })
     _this.api.getMine(function (res) {
-      console.log(res.data)
       _this.Global.userInfo.myId = res.data.id
     }, function (err) {
       console.log(err)

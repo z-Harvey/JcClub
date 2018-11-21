@@ -1,9 +1,7 @@
 <template>
   <div class="home_content"
     v-if="show"
-    @touchstart="touchstart($event)"
-    @touchmove="touchMove($event)"
-    @touchend="touchEnd($event)">
+    @scroll="onScroll($event)">
     <div class="srceach">
         <div class="inpBox">
             <img src="@/assets/srceach.png" alt="">
@@ -66,28 +64,30 @@
         </div>
     </div>
     <div style="height:2.5rem;"></div>
-    <div class="content" v-for="(item, index) in dataList" :key="index">
-        <div class="contImg" @click="path('info', item)">
-            <img :src="item.avatarurl" alt="">
-        </div>
-        <div class="cardInfo" @click="path('info', item)">
-            <p class="name" v-text="item.nickname">昵称</p>
-            <p class="comName" v-text="(item.position || '职位') + '/' + (item.comname || '公司')">职位/公司</p>
-            <div class="tagBox">
-                <div v-text="item.industry||'未选择行业'"></div>
-                <div v-text="'工作' + item.workyears + '年'">工作N年</div>
-                <div v-text="'客户' + item.mate_num">客户999</div>
+    <div class="scll">
+        <div class="content" v-for="(item, index) in dataList" :key="index">
+            <div class="contImg" @click="path('info', item)">
+                <img :src="item.avatarurl" alt="">
             </div>
-            <div class="regular">对接部门 <span v-text="item.department">此处显示部门名称</span></div>
-        </div>
-        <div class="footer">
-            <div class="fooLeft">
-                <img src="@/assets/membershipApp_shu.png" alt="">
-                <span v-text="item.club_name">北京酷牛仔俱乐部</span>
+            <div class="cardInfo" @click="path('info', item)">
+                <p class="name" v-text="item.nickname">昵称</p>
+                <p class="comName" v-text="(item.position || '职位') + '/' + (item.comname || '公司')">职位/公司</p>
+                <div class="tagBox">
+                    <div v-text="item.industry||'未选择行业'"></div>
+                    <div v-text="'工作' + item.workyears + '年'">工作N年</div>
+                    <div v-text="'客户' + item.mate_num">客户999</div>
+                </div>
+                <div class="regular">对接部门 <span v-text="item.department">此处显示部门名称</span></div>
             </div>
-            <div class="fooRight" v-if="!(myId === item.user)">
-                <button class="guanzhu" v-if="item.is_collect === 0" @click="MyCollect(item)">关注Ta</button>
-                <button class="yiguanzhu" v-else-if="item.is_collect === 1">已关注</button>
+            <div class="footer">
+                <div class="fooLeft">
+                    <img src="@/assets/membershipApp_shu.png" alt="">
+                    <span v-text="item.club_name">北京酷牛仔俱乐部</span>
+                </div>
+                <div class="fooRight" v-if="!(myId === item.user)">
+                    <button class="guanzhu" v-if="item.is_collect === 0" @click="MyCollect(item)">关注Ta</button>
+                    <button class="yiguanzhu" v-else-if="item.is_collect === 1">已关注</button>
+                </div>
             </div>
         </div>
     </div>
@@ -102,20 +102,11 @@ export default {
     return {
       sort: [false, false],
       myId: '',
-      dataList: [{
-        club_name: [{
-          club__name: '',
-          club: ''
-        }],
-        comname: null,
-        department: null,
-        is_collect: null,
-        name: null,
-        position: null,
-        user: null,
-        workyears: null
-      }],
-      src: null
+      dataList: [],
+      src: null,
+      page_size: 12,
+      p: 1,
+      ps: true
     }
   },
   methods: {
@@ -128,12 +119,6 @@ export default {
       }, (err) => {
         console.log(err)
       })
-    },
-    touchstart (e) {
-    },
-    touchMove (e) {
-    },
-    touchEnd (e) {
     },
     MyCollect: function (data) {
       let _this = this
@@ -171,15 +156,41 @@ export default {
       }
     //   this.$router.push('/cardInfo')
     },
-    init: function () {
+    init () {
       let _this = this
-      _this.api.getClubUser('', function (res) {
+      let str = 'p=' + this.p + '&page_size=' + this.page_size
+      _this.api.getClubUser(str, function (res) {
         _this.myId = _this.Global.userInfo.myId
         _this.dataList = res.data.results
-        console.log(res.data.results)
       }, function (err) {
         console.log(err)
       })
+    },
+    scll () {
+      if (this.ps === false) {
+        return
+      }
+      let _this = this
+      let str = 'p=' + this.p + '&page_size=' + this.page_size
+      _this.api.getClubUser(str, (res) => {
+        _this.dataList = _this.dataList.concat(res.data.results)
+        if (res.data.count === this.dataList.length) {
+          this.ps = false
+        }
+      }, function (err) {
+        console.log(err)
+      })
+    },
+    touchStart (e) {
+    },
+    touchMove (e) {
+    },
+    onScroll (e) {
+      let total = e.srcElement.scrollHeight - e.srcElement.clientHeight - 1 // 总高度减视口高度 - 1
+      if (e.srcElement.scrollTop > total) {
+        this.p++
+        this.scll()
+      }
     }
   },
   mounted () {

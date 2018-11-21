@@ -16,19 +16,25 @@ export default {
   mounted () {
     let r = decodeURI(window.location.search.substr(1))
     let arr = r.split('&')
-    let codes = null
+    let urlCode = null
+    let pages = null
+    for (let i = 0; i < arr.length; i++) {
+      let arr1 = arr[i].split('=')
+      if (arr1[0] === 'code') {
+        urlCode = arr1[1]
+      }
+    }
     for (let i = 0; i < arr.length; i++) {
       var arr1 = arr[i].split('=')
-      if (arr1[0] === 'code') {
-        codes = arr1[1]
+      if (arr1[0] === 'pages') {
+        pages = arr1[1]
       }
     }
     let _this = this
     let obj = {
-      code: codes
+      code: urlCode
     }
     _this.api.getToken(obj, function (res) {
-      console.log(res)
       _this.api.headerToken(res.data.token)
       if (res.data.is_user === 1) {
         switch (res.data.step) {
@@ -45,7 +51,7 @@ export default {
             })
             break
           case 3:
-            _this.getApplyStatus()
+            _this.getApplyStatus(pages)
             break
         }
       } else {
@@ -59,11 +65,36 @@ export default {
     })
   },
   methods: {
-    getApplyStatus: function () {
+    getApplyStatus: function (pages) {
       let _this = this
       _this.api.getApplyStatus(function (res) {
         if (res.data[0].status === 1) {
-          _this.$router.push({ path: '/home' })
+          switch (pages) {
+            case '0':
+              _this.$router.push({ path: '/applySuccess' })
+              break
+            case '1': // 公海
+              _this.Global.navListType = [false, true, false, false]
+              _this.$router.push({ path: '/home' })
+              break
+            case '2': // 我的客户
+              _this.Global.navListType = [false, false, true, false]
+              _this.$router.push({ path: '/home' })
+              break
+            case '3': // 我的客户
+              _this.Global.navListType = [false, false, false, true]
+              _this.$router.push({ path: '/home' })
+              break
+            case '4': // 我的关注
+              _this.$router.push({ path: '/HisFollow', query: {source: 'my'} })
+              break
+            case '5': // 新增客户
+              _this.$router.push({ path: '/MarkupCu' })
+              break
+            default:
+              _this.$router.push({ path: '/home' })
+              break
+          }
         } else if (res.data[0].status === 4 || res.data[0].status === 5) {
           _this.$router.push({
             name: 'applySuccess',

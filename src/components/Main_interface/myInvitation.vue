@@ -7,7 +7,7 @@
           <div class="contat">
               <div class="userName" v-text="item.nickname">韩鹏翔</div>
               <div class="cikeName" v-text="item.club_name">北京酷牛仔俱乐部</div>
-              <div class="time">于yyyy/mm/dd hh:mm申请入会</div>
+              <div class="time">于 <span v-text="item.apply_time"></span> 申请入会</div>
           </div>
           <div class="zhuangtai">
               <span v-if="item.status === 5" class="z1">待审核</span>
@@ -21,6 +21,8 @@
               <button class="b2" @click="btn(1, item)">同意</button>
           </div>
       </div>
+      <img class="blank" v-if="dataList.length <= 0" src="@/assets/blank.png" alt="">
+      <Toast ref="Toast"/>
   </div>
 </template>
 
@@ -34,13 +36,41 @@ export default {
   },
   methods: {
     btn: function (num, item) {
-      console.log(item)
+      let _this = this
+      let obj = null
+      switch (num) {
+        case 0:
+          obj = {
+            Title: '提示',
+            Content: '是否确认拒绝邀请此会员？',
+            type: 1,
+            btn: 2,
+            success: () => {
+              _this.callSuccess(num, item)
+            }
+          }
+          this.$refs.Toast.on_display(obj)
+          break
+        case 1:
+          obj = {
+            Title: '提示',
+            Content: '是否确认邀请此会员？',
+            type: 1,
+            btn: 2,
+            success: () => {
+              _this.callSuccess(num, item)
+            }
+          }
+          this.$refs.Toast.on_display(obj)
+          break
+      }
+    },
+    callSuccess (num, item) {
       let obj = {
         user: item.puser,
         is_agree: num
       }
       this.api.postMyInvited(obj, (res) => {
-        console.log(res)
         if (res.status === 201) {
           item.status = res.data.status
         }
@@ -69,6 +99,11 @@ export default {
     height:100%;
     background:#f9f9f9;
     overflow: auto;
+}
+.blank{
+    width:6.66rem;
+    height:6.66rem;
+    margin-top:6.66rem;
 }
 .content{
     width:calc(92% - 1rem);

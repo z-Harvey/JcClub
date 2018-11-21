@@ -1,5 +1,5 @@
 <template>
-    <div class="HisFollow">
+    <div class="HisFollow" @scroll="onScroll($event)">
       <div class="For" v-for="(item, index) in dataList" :key="index" @click="path(item)">
         <div class="forImg">
           <img :src="item.avatarurl" alt="">
@@ -11,6 +11,7 @@
           <div class="ff4" v-text="item.club_name">北京酷牛仔俱乐部</div>
         </div>
       </div>
+      <img class="blank" v-if="dataList.length <= 0" src="@/assets/blank.png" alt="">
     </div>
 </template>
 
@@ -20,7 +21,11 @@ export default {
   data () {
     return {
       tapBur: true,
-      dataList: []
+      dataList: [],
+      p: 1,
+      page_size: 12,
+      ps: true,
+      isMy: null
     }
   },
   methods: {
@@ -35,30 +40,70 @@ export default {
           user_id: data.puser
         }
       })
+    },
+    myInit () {
+      let str = 'p=' + this.p + '&page_size=' + this.page_size
+      this.api.getMyCollect(str, (res) => {
+        this.dataList = res.data.results
+      }, (err) => {
+        console.log(err)
+      })
+    },
+    myscll () {
+      let str = 'p=' + this.p + '&page_size=' + this.page_size
+      this.api.getMyCollect(str, (res) => {
+        this.dataList = this.dataList.concat(res.data.results)
+        if (this.dataList.length === res.data.count) {
+          this.ps = false
+        }
+      }, (err) => {
+        console.log(err)
+      })
+    },
+    youInit () {
+      let str = 'user=' + this.user_id + '&p=' + this.p + '&page_size=' + this.page_size
+      this.api.getUserCollect(str, (res) => {
+        this.dataList = res.data.results
+      }, (err) => {
+        console.log(err)
+      })
+    },
+    youscll () {
+      let str = 'user=' + this.user_id + '&p=' + this.p + '&page_size=' + this.page_size
+      this.api.getUserCollect(str, (res) => {
+        this.dataList = this.dataList.concat(res.data.results)
+        if (this.dataList.length === res.data.count) {
+          this.ps = false
+        }
+      }, (err) => {
+        console.log(err)
+      })
+    },
+    onScroll (e) {
+      if (this.ps === false) {
+        return
+      }
+      let total = e.srcElement.scrollHeight - e.srcElement.clientHeight - 1 // 总高度减视口高度 - 1
+      if (e.srcElement.scrollTop > total) {
+        this.p++
+        if (this.isMy === 'my') {
+          this.myscll()
+        } else {
+          this.youscll()
+        }
+      }
     }
   },
   mounted (options) {
     let _this = this
+    this.isMy = this.$route.query.source
     if (this.$route.query.source === 'my') {
       document.title = '我的关注'
-      let str = ''
-      _this.api.getMyCollect(str, function (res) {
-        console.log(res)
-        _this.dataList = res.data.results
-      }, function (err) {
-        console.log(err)
-      })
+      this.myInit()
     } else {
       document.title = 'Ta的关注'
-      console.log('Ta的关注')
       _this.user_id = _this.$route.query.user_id
-      let str = 'user=' + _this.user_id
-      _this.api.getUserCollect(str, function (res) {
-        console.log(res)
-        _this.dataList = res.data.results
-      }, function (err) {
-        console.log(err)
-      })
+      this.youInit()
     }
   }
 }
@@ -74,6 +119,11 @@ export default {
   background:#f9f9f9;
   width:100%;
   height:100%;
+}
+.blank{
+  margin-top:6.66rem;
+  width:6.66rem;
+  height:6.66rem;
 }
 .For{
   padding:.75rem .5rem;

@@ -75,7 +75,7 @@ export default {
     loginBtn: function () {
       let _this = this
       // _this.$router.push('/NoMember')
-      if (_this.hehe === null) {
+      if (_this.hehe === null || _this.phone === null) {
         return
       }
       let obj = {

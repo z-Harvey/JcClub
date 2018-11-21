@@ -1,5 +1,5 @@
 <template>
-    <div class="CuHome">
+    <div class="CuHome" @scroll="onScroll($event)">
         <Toast ref="Toast" @confirm="Unlock"></Toast>
         <ModalInfo ref="modal"></ModalInfo>
         <div class="companyInfo">
@@ -47,7 +47,10 @@ export default {
       aftBtn: true,
       que: {},
       msg: {
-        reviews_list: []
+        reviews_list: [],
+        page_size: 12,
+        p: 1,
+        ps: true
       }
     }
   },
@@ -59,6 +62,16 @@ export default {
     Unlock: function () {
       console.log('解锁')
       this.$refs.toast.close()
+    },
+    onScroll (e) {
+      if (this.$refs.follo.ps === false) {
+        return
+      }
+      let total = e.srcElement.scrollHeight - e.srcElement.clientHeight - 1 // 总高度减视口高度 - 1
+      if (e.srcElement.scrollTop > total) {
+        this.$refs.follo.p++
+        this.$refs.follo.ScrollInit()
+      }
     },
     // 标签下拉
     pullDown: function () {

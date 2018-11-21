@@ -130,7 +130,7 @@
           <div class="subContent">
             <div class="subcontList">
                 <span>销售产品</span>
-                <input class="width_100inp" v-for="(item,index) in workInfo.product" :key="index" v-model="item.key" type="text" placeholder="请输入产品名称">
+                <input class="width_100inp" v-for="(item,index) in product" :key="index" v-model="item.key" type="text" placeholder="请输入产品名称">
                 <img class="plus" @click="subjia(1)" src="@/assets/plus.png" alt="">
             </div>
           </div>
@@ -151,7 +151,7 @@
           <div class="subContent">
             <div class="subcontList">
                 <span>销售荣誉</span>
-                <div v-for="(item, index) in workInfo.honors" :key="index">
+                <div v-for="(item, index) in honors" :key="index">
                     <input class="width_100inp" v-model="item.key" type="text" placeholder="请输入荣誉名称">
                     <button>上传图片</button>
                     <!-- <input type="file" accept="image/*"> -->
@@ -201,6 +201,8 @@ export default {
         avatarurl: '', // 头像路径
         club: [{club__name: ''}] // 俱乐部   int
       },
+      product: [{key: ''}], // 产品
+      honors: [{key: '', img: ''}], // 荣誉
       workInfo: {
         comname: null, // 公司名
         industry: null, // 行业
@@ -223,13 +225,9 @@ export default {
     subjia: function (num) {
       let _this = this
       if (num === 1) {
-        if (!(_this.workInfo.product[_this.workInfo.product.length - 1].key === '')) {
-          _this.workInfo.product.push({key: ''})
-        }
+        _this.product.push({key: ''})
       } else if (num === 2) {
-        if (!(_this.workInfo.honors[_this.workInfo.honors.length - 1].key === '')) {
-          _this.workInfo.honors.push({key: ''})
-        }
+        _this.honors.push({key: '', img: ''})
       }
     },
     /**
@@ -369,6 +367,7 @@ export default {
         if (res.data.step === 2) {
           document.getElementsByClassName('submitAdd')[0].scrollTop = 0
           _this.cont_one = !_this.cont_one
+          document.getElementsByClassName('subContentBox')[0].scrollTop = 0
         }
       }, function (err) {
         console.log(err)
@@ -388,7 +387,6 @@ export default {
         _this.city.sel3 = 0
       }
       _this.api.getAreaList('pid=' + num, function (res) {
-        console.log(res)
         switch (str) {
           case '0':
             _this.sList1 = res.data
@@ -428,8 +426,8 @@ export default {
       let _this = this
       this.$refs.Toast.close()
       let data = JSON.parse(JSON.stringify(_this.workInfo))
-      data.product = JSON.stringify(_this.workInfo.product)
-      data.honors = JSON.stringify(_this.workInfo.honors)
+      data.product = JSON.stringify(_this.product)
+      data.honors = JSON.stringify(_this.honors)
       _this.api.postWorkInfo(data, function (res) {
         console.log(res)
         _this.$router.push({
@@ -559,13 +557,16 @@ export default {
     document.title = '入会申请'
     let _this = this
     _this.api.getUserNum(function (res) { // 未完成的基本信息
+      console.log(res.data)
       _this.sel3text = res.data.area ? res.data.area.split('|') : ['', '', '']
       _this.userInfo = res.data
     }, function (err) {
       console.log(err)
     })
-    _this.api.getWorkNum(function (res) { // 未完成的经验信息
-      console.log(res)
+    _this.api.getWorkNum((res) => { // 未完成的经验信息
+      this.workInfo = res.data
+      this.honors = JSON.parse(res.data.honors)
+      this.product = JSON.parse(res.data.product)
     }, function (err) {
       console.log(err)
     })

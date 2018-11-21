@@ -13,7 +13,9 @@
                 <div class="resImg">
                     <img src="@/assets/icon.png" alt="">
                 </div>
-                <div class="cikename" v-text="item.name">阿里巴巴（中国）网络技术有限公司</div>
+                <div class="nameBox">
+                    <div class="cikename" v-text="item.name">阿里巴巴（中国）网络技术有限公司</div>
+                </div>
             </div>
         </div>
         <!-- <div class="or">没搜到？试试看输入更全的客户名称or<span>点此进行深度搜索</span></div> -->
@@ -32,10 +34,6 @@ export default {
     }
   },
   methods: {
-    getParams: function () {
-      let routerParams = this.$route.params.dataobj
-      console.log(routerParams)
-    },
     close: function () {
       this.show = false
     },
@@ -44,6 +42,9 @@ export default {
     },
     btn: function (data) {
       this.close()
+      this.youme = false
+      this.DataList = []
+      this.inpText = null
       this.$emit('ok', data)
     },
     sear: function () {
@@ -62,10 +63,6 @@ export default {
     }
   },
   mounted (options) {
-  },
-  watch: {
-    // 监测路由变化,只要变化了就调用获取路由参数方法将数据存储本组件即可
-    '$route': 'getParams'
   }
 }
 </script>
@@ -152,11 +149,17 @@ export default {
 .resImg>img{
     width:2.5rem;
 }
+.nameBox{
+    min-height: 2.5rem;
+    display: flex;
+}
 .cikename{
-    float: left;
-    line-height: 2.5rem;
+    align-self: center;
+    width:100%;
+    display: inline-block;
     margin-left:.5rem;
     font-size: .7rem;
+    text-align: left;
 }
 .or{
     margin-top:.5rem;
