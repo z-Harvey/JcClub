@@ -14,6 +14,8 @@ export default {
     }
   },
   mounted () {
+    this.$router.push('/batchNew')
+    return
     let r = decodeURI(window.location.search.substr(1))
     let arr = r.split('&')
     let urlCode = null

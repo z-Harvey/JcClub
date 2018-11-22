@@ -35,6 +35,11 @@ import myNiuzuan from '@/components/Main_interface/myNiuzuan' // 我的牛钻
 import NiuzuanRecord from '@/components/Main_interface/NiuzuanRecord' // 牛钻记录
 import myInvitation from '@/components/Main_interface/myInvitation' // 我邀请的会员
 import editInfo from '@/components/Main_interface/editInfo' //  编辑信息  个人信息、工作经验
+import batchMarking from '@/components/Main_interface/batchMarking' //  标记客户入口  批量上传Excel入口
+import batchNew from '@/components/Main_interface/batchNew' //  批量上传Excel
+import dataConfirm from '@/components/Main_interface/dataConfirm' //  公司名匹配失败
+import dataStatistics from '@/components/Main_interface/dataStatistics' //  需要补全的数据列表
+
 /**
  * 管理员模块 页面注册
  */
@@ -76,6 +81,10 @@ export default new Router({
     { path: '/NiuzuanRecord', name: 'NiuzuanRecord', component: NiuzuanRecord },
     { path: '/myInvitation', name: 'myInvitation', component: myInvitation },
     { path: '/editInfo', name: 'editInfo', component: editInfo },
+    { path: '/batchMarking', name: 'batchMarking', component: batchMarking },
+    { path: '/batchNew', name: 'batchNew', component: batchNew },
+    { path: '/dataConfirm', name: 'dataConfirm', component: dataConfirm },
+    { path: '/dataStatistics', name: 'dataStatistics', component: dataStatistics },
     /**
      * ------------------------------- Main_interface 文件夹下的文件
      */

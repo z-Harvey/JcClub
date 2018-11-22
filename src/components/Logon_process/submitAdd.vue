@@ -245,6 +245,7 @@ export default {
           this.userInfo.avatarurl = res.data.url
         }
       }, (err) => {
+        console.log(err)
         alert('上传失败')
       })
     },
@@ -263,6 +264,7 @@ export default {
           item.img = res.data.url
         }
       }, (err) => {
+        console.log(err)
         alert('上传失败')
       })
     },

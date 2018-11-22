@@ -21,7 +21,7 @@
             </div>
         </div>
         <nav>
-            <button @click="navPath(0)" :class="navBtn?'navBtn':''">个人信息</button>
+            <button @click="navPath(0)" :class="navBtn?'navBtn':''">企业信息</button>
             <button @click="navPath(1)" :class="!navBtn?'navBtn':''">销售足迹 <span v-text="msgData.footPrint_count"></span></button>
         </nav>
         <!-- <router-view :type="'SalesNotes'"></router-view> -->

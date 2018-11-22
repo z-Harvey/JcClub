@@ -204,7 +204,8 @@ export default {
           item.img = res.data.url
         }
       }, (err) => {
-        alert('上传失败')        
+        console.log(err)
+        alert('上传失败')
       })
     },
     upPort (file) {
@@ -224,7 +225,8 @@ export default {
           this.dataList.avatarurl = res.data.url
         }
       }, (err) => {
-        
+        console.log(err)
+        alert('上传失败')
       })
     },
     plus (num) {
@@ -355,7 +357,6 @@ export default {
         _this.dataList.area = arr.join('|')
       }
       _this.api.putMyCardInfo(_this.Global.userInfo.myId, _this.dataList, function (res) {
-        console.log(res)
         if (res.status === 200) {
           _this.$router.go(-1)
         }
