@@ -32,11 +32,12 @@ export default {
     }
     let _this = this
     let obj = {
-      code: urlCode
+      code: '1'
     }
     _this.api.getToken(obj, function (res) {
       _this.api.headerToken(res.data.token)
       if (res.data.is_user === 1) {
+        console.log(res.data.step)
         switch (res.data.step) {
           case 0:
             _this.$router.push('/NoMember')

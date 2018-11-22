@@ -65,15 +65,15 @@
             <div class="contcon">
                 <div>
                     <div>人数</div>
-                    <input type="number" v-model="upData.people_num" placeholder="输入客户企业人数">
+                    <input type="text" v-model="upData.people_num" placeholder="输入客户企业人数">
                 </div>
                 <div>
                     <div>分支机构数</div>
-                    <input type="number" v-model="upData.fzjg_num" placeholder="输入客户">
+                    <input type="text" v-model="upData.fzjg_num" placeholder="输入客户">
                 </div>
                 <div>
                     <div>营业额</div>
-                    <input type="number" v-model="upData.turnover" placeholder="输入客户营业额">
+                    <input type="text" v-model="upData.turnover" placeholder="输入客户营业额">
                 </div>
             </div>
         </div>
@@ -181,9 +181,9 @@ export default {
         city: '',
         area: '',
         address: '',
-        people_num: null,
-        fzjg_num: null,
-        turnover: null,
+        people_num: '',
+        fzjg_num: '',
+        turnover: '',
         company: '',
         contact_list: [{
           name: '',
@@ -319,7 +319,7 @@ export default {
         }
         this.$refs.Toast.on_display(obj)
         return
-      } else if (_this.upData.people_num === null && _this.upData.fzjg_num === null && _this.upData.turnover === null) {
+      } else if (_this.upData.people_num === '' && _this.upData.fzjg_num === '' && _this.upData.turnover === '') {
         let obj = {
           Title: '提示',
           Content: '企业规模至少填写一项',
@@ -395,11 +395,17 @@ export default {
       _this.upData.contact_list = JSON.stringify(_this.upData.contact_list)
       if (_this.cType === 'edit') {
         _this.api.putMyCustomers(_this.comCont.id, _this.upData, function (res) {
-          console.log(res)
           if (res.status === 200) {
             _this.$router.go(-1)
           }
         }, function (err) {
+          let obj = err.data
+          let str = ''
+          for (let ij in obj) {
+            str += ij + ':'
+            str += obj[ij]
+          }
+          alert(str)
           console.log(err)
         })
         return

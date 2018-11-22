@@ -37,6 +37,7 @@
                 <img :src="userInfo.avatarurl" alt="">
                 <div class="contImgmol">
                     <img src="@/assets/camera.png" alt="">
+                    <input type="file" @change="upPort($event)" accept="image/*">
                 </div>
             </div>
             <div class="contList">
@@ -153,7 +154,11 @@
                 <span>销售荣誉</span>
                 <div v-for="(item, index) in honors" :key="index">
                     <input class="width_100inp" v-model="item.key" type="text" placeholder="请输入荣誉名称">
-                    <button>上传图片</button>
+                    <div>
+                      <img v-if="item.img" :src="item.img" alt="">
+                      <button v-else>上传图片</button>
+                      <input type="file" @change="upimg($event, item)" accept="image/*">
+                    </div>
                     <!-- <input type="file" accept="image/*"> -->
                 </div>
                 <img class="plus" @click="subjia(2)" src="@/assets/plus.png" alt="">
@@ -161,7 +166,8 @@
           </div>
       </div>
       <div class="flxBut" v-if="cont_one">
-          <button @click="userInfoPush">下一步</button>
+          <button v-if="isImg" @click="userInfoPush">下一步</button>
+          <button v-else disabled v-text="porBtnText"></button>
       </div>
       <div class="flxBut2" v-else>
           <button @click="next_step">上一步</button>
@@ -183,6 +189,8 @@ export default {
       sList: [],
       sList1: [],
       sList2: [],
+      isImg: true,
+      porBtnText: '正在上传图像...',
       city: {
         sel1: 0,
         sel2: 0,
@@ -222,6 +230,42 @@ export default {
     search
   },
   methods: {
+    upPort (file) {
+      let files = new FormData()
+      files.append('file', file.target.files[0])
+      files.append('type', 1)
+      this.isImg = false
+      this.api.upImg(files, (res) => {
+        if (res.status === 200) {
+          this.porBtnText = '图像上传成功'
+          setTimeout(() => {
+            this.isImg = true
+            this.porBtnText = '正在上传图像...'
+          }, 500)
+          this.userInfo.avatarurl = res.data.url
+        }
+      }, (err) => {
+        alert('上传失败')
+      })
+    },
+    upimg (file, item) {
+      let files = new FormData()
+      files.append('file', file.target.files[0])
+      files.append('type', 1)
+      this.isImg = false
+      this.api.upImg(files, (res) => {
+        if (res.status === 200) {
+          this.porBtnText = '图像上传成功'
+          setTimeout(() => {
+            this.isImg = true
+            this.porBtnText = '正在上传图像...'
+          }, 500)
+          item.img = res.data.url
+        }
+      }, (err) => {
+        alert('上传失败')
+      })
+    },
     subjia: function (num) {
       let _this = this
       if (num === 1) {
@@ -804,6 +848,10 @@ export default {
     background:#fff;
     color:rgba(255, 152, 0, 1);
 }
+.flxBut>button[disabled]{
+    color: #888;
+    background:rgba(241, 241, 241, 1);
+}
 .subContent>.subcontList{
     text-align: left;
     padding:0rem .5rem;
@@ -845,6 +893,43 @@ export default {
 }
 .subcontList>div>input,button{
   font-size: .7rem;
+}
+.subcontList>div>div>img{
+    float: right;
+    width:1rem;
+    height:1rem;
+    margin:.25rem 1.5rem 0 0;
+}
+.subcontList>div>div{
+    height:1.5rem;
+    width: 29%;
+    border: none;
+    text-align: right;
+    float: left;
+    background: #fff;
+    border:0;
+    color:rgba(255, 152, 0, 1);
+    position: relative;
+}
+.subcontList>div>div>button::after{
+    border:none;
+}
+.subcontList>div>div>button{
+    width:100%;
+    height:1.5rem;
+    border: none;
+    color:rgba(255, 152, 0, 1);
+    background: #fff;
+    vertical-align: top;
+}
+.subcontList>div>div>input{
+    vertical-align: top;
+    position: absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    opacity: 0;
 }
 .plus{
     width: 1.2rem;
@@ -901,5 +986,14 @@ export default {
 }
 .contList>div{
   color:#888;
+}
+
+.contImgmol>input{
+    width:100%;
+    height:100%;
+    position: absolute;
+    top:0;
+    left:0;
+    opacity: 0;
 }
 </style>

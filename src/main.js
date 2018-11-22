@@ -6,6 +6,7 @@ import router from './router'
 import wx from 'wx'
 
 import Toast from './components/assembly/Toast'
+import imgMask from './components/assembly/imgMask'
 import ModalInfo from './components/assembly/ModalInfo'
 import Check from './components/assembly/Check'
 import linkage from './components/assembly/linkage'
@@ -13,6 +14,7 @@ import Global from './components/Global'
 import api from './components/api'
 
 Vue.component('Toast', Toast)
+Vue.component('imgMask', imgMask)
 Vue.component('ModalInfo', ModalInfo)
 Vue.component('Check', Check)
 Vue.component('linkage', linkage)

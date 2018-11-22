@@ -16,7 +16,7 @@
                 </div>
                 <button v-if="msg.is_mark !== 0" @click="path(2, msg.id)">我的销售笔记</button>
             </div>
-            <div class="tagBox">
+            <div class="tagBox" v-if="msg.reviews_list.length > 0">
                 <div class="tagBoxs" :class="tapBur?'tagBoxs1':'tagBoxs2'">
                     <div v-for="(item, index) in msg.reviews_list" :key="index" v-text="item[0] + ' ' + item[1]">有钱任性</div>
                 </div>
@@ -192,7 +192,7 @@ export default {
     background:#fff;
 }
 .comTopBox{
-    height:1.7rem;
+    min-height:1.7rem;
     padding:.5rem .75rem;
     text-align:left;
     color:#2c2c2c;
@@ -210,10 +210,10 @@ export default {
 }
 .textInfo{
     display: inline-block;
-    height:1.7rem;
+    min-height:1.7rem;
 }
 .textInfo>.name{
-    font-size: .6rem;
+    font-size: .7rem;
     vertical-align: top;
     line-height: .8rem;
     display: inline-block;
@@ -221,7 +221,7 @@ export default {
 }
 .genjinNum{
     font-size: .6rem;
-    margin:0rem 0 0 1rem;
+    margin:.25rem 0 0 1rem;
 }
 .comTopBox>button{
     width:4.6rem;

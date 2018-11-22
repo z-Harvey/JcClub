@@ -42,18 +42,6 @@ export default {
       let str = 'p=' + this.p + '&page_size=' + this.page_size
       this.api.getMyFans(str, (res) => {
         this.dataList = res.data.results
-        this.dataList = this.dataList.concat(res.data.results)
-        this.dataList = this.dataList.concat(res.data.results)
-        this.dataList = this.dataList.concat(res.data.results)
-        this.dataList = this.dataList.concat(res.data.results)
-        this.dataList = this.dataList.concat(res.data.results)
-        this.dataList = this.dataList.concat(res.data.results)
-        this.dataList = this.dataList.concat(res.data.results)
-        this.dataList = this.dataList.concat(res.data.results)
-        this.dataList = this.dataList.concat(res.data.results)
-        this.dataList = this.dataList.concat(res.data.results)
-        this.dataList = this.dataList.concat(res.data.results)
-        this.dataList = this.dataList.concat(res.data.results)
       }, (err) => {
         console.log(err)
       })
@@ -70,7 +58,7 @@ export default {
       })
     },
     youInit () {
-      let str = 'user=' + this.user_id + '&p=' + this.p + '&page_size=' + this.page_size
+      let str = 'puser=' + this.user_id + '&p=' + this.p + '&page_size=' + this.page_size
       this.api.getUserFans(str, (res) => {
         this.dataList = res.data.results
       }, (err) => {
@@ -78,7 +66,7 @@ export default {
       })
     },
     youScroll () {
-      let str = 'user=' + this.user_id + '&p=' + this.p + '&page_size=' + this.page_size
+      let str = 'puser=' + this.user_id + '&p=' + this.p + '&page_size=' + this.page_size
       this.api.getUserFans(str, (res) => {
         this.dataList = this.dataList.concat(res.data.results)
         if (this.dataList.length === res.data.count) {

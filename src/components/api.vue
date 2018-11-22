@@ -1,7 +1,7 @@
 <script type="text/javascript">
 import axios from 'axios'
-const path = ''
-// const path = '/api'
+// const path = ''
+const path = '/api'
 
 let headerToken = (token) => {
   axios.defaults.headers.Authorization = 'JWT ' + token
@@ -605,6 +605,17 @@ let postMyInvited = function (data, success, error) {
   })
 }
 /**
+ * 文件上传  type 1 头像 2 荣誉
+ */
+let upImg = function (data, success, error) {
+  axios.post(path + '/upload/?link=' + Date.parse(new Date()), data).then(function (res) {
+    success(res)
+  }, function (err) {
+    error(err.response)
+  })
+}
+
+/**
  * 编辑工作经验  提交
  */
 let putWorkInfo = function (data, success, error) {
@@ -706,6 +717,7 @@ export default{
   putWorkInfo,
   putMyCustomers,
   getReviews,
-  patchMyCustomers
+  patchMyCustomers,
+  upImg
 }
 </script>

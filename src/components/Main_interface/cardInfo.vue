@@ -215,11 +215,11 @@ export default {
     border-radius: 50%;
     overflow: hidden;
     margin:-1.75rem auto 0;
+    display: flex;
 }
 .imgBox>img{
     width:2.5rem;
-    height:2.5rem;
-    border-radius: 50%;
+    align-self: center;
 }
 .tag{
     height:.9rem;

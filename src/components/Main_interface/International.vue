@@ -383,6 +383,7 @@ export default {
 
 .content{
     margin-top:2.5rem;
+    background: #fff;
 }
 .contTit{
     padding:0 .75rem;
@@ -409,7 +410,6 @@ export default {
     margin:0 .75rem;
     padding:.5rem 0;
     border-bottom: 1px solid #f7f7f7;
-    background:#fff;
 }
 .tapBox{
     width:.8rem;

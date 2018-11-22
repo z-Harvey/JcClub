@@ -4,7 +4,7 @@
         <div class="title">
             <div class="cikename">
                 <img src="@/assets/membershipApp_shu.png" alt="">
-                <span v-text="msgData.name">北京聚牛天下网络科技有限公司</span>
+                <div class="name" v-text="msgData.name">北京聚牛天下网络科技有限公司</div>
             </div>
             <div class="number">
                 <span>内部跟进 <span v-text="msgData.club_mark_count"></span></span>
@@ -175,7 +175,6 @@ export default {
       let str = 'id=' + _this.que.com_id
       _this.$refs.cuinfo.SalesNotesInit(_this.que.com_id)
       _this.api.getNotesHeader(str, function (res) {
-        console.log(res)
         _this.msgData = res.data[0]
         _this.msgData.reviews = _this.msgData.reviews.split('|')
       }, function (err) {
@@ -203,6 +202,7 @@ export default {
     color:#2c2c2c;
     border-bottom: 1px solid #f7f7f7;
     background: #fff;
+    position: relative;
 }
 .cikename{
     line-height: .7rem
@@ -211,17 +211,21 @@ export default {
     width:.7rem;
     height:.7rem;
     vertical-align: top;
+    float: left;
 }
-.cikename>span{
+.cikename>.name{
     font-size: .7rem;
+    width:9rem;
     vertical-align: top;
+    padding-left:1rem;
+    line-height: .8rem
 }
 .number{
     font-size: .6rem;
     display: inline-block;
     padding-left:1rem;
 }
-.title>button{
+.title>button::after{
     border:0;
 }
 .title>button{
@@ -232,8 +236,9 @@ export default {
     border:0;
     background: rgba(255, 152, 0, 0.1);
     color:rgba(255, 152, 0, 1);
-    float: right;
-    margin-top:-.5rem;
+    position: absolute;
+    top:.5rem;
+    right:.75rem;
 }
 .tit2{
     padding:.5rem .75rem .75rem .75rem;

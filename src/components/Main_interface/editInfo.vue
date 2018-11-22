@@ -5,8 +5,9 @@
         <div class="subContent">
             <div class="contImg">
                 <img :src="dataList.avatarurl" alt="">
-                <div>
-                    <img src="" alt="">
+                <div class="portMold">
+                    <img src="@/assets/camera.png" alt="">
+                    <input type="file" @change="upPort($event)" accept="image/*">
                 </div>
             </div>
             <div class="contList">
@@ -98,8 +99,8 @@
           <div class="subContent">
             <div class="subcontList">
                 <span>销售产品</span>
-                <input class="width_100inp" v-for="(item, index) in dataList.product" :key="index" v-model="item.key" type="text" placeholder="请输入产品名称">
-                <img class="plus" src="@/assets/plus.png" alt="">
+                <input class="width_100inp" v-for="(item, index) in product" :key="index" v-model="item.key" type="text" placeholder="请输入产品名称">
+                <img class="plus" @click="plus(0)" src="@/assets/plus.png" alt="">
             </div>
           </div>
           <div class="subContent">
@@ -119,19 +120,25 @@
           <div class="subContent">
             <div class="subcontList">
                 <span>业绩荣誉</span>
-                <div v-for="(item, index) in dataList.honors" :key="index">
+                <div v-for="(item, index) in honors" :key="index">
                     <input class="width_100inp" v-model="item.key" type="text" placeholder="请输入荣誉名称">
-                    <button>上传图片</button>
+                    <div>
+                        <img v-if="item.img" :src="item.img" alt="">
+                        <button  v-else>上传图片</button>
+                        <input @change="upimg($event, item)" type="file" accept="image/*">
+                    </div>
                 </div>
-                <img class="plus" src="@/assets/plus.png" alt="">
+                <img class="plus" @click="plus(1)" src="@/assets/plus.png" alt="">
             </div>
           </div>
       </div>
       <div class="flxBut" v-if="type === 'personal'">
-          <button @click="submit">保存</button>
+          <button v-if="isImg" @click="submit">保存</button>
+          <button v-else disabled v-text="porBtnText"></button>
       </div>
       <div class="flxBut" v-else>
-          <button @click="submit1">保存</button>
+          <button v-if="isImg" @click="submit1">保存</button>
+          <button v-else disabled v-text="porBtnText"></button>
       </div>
       <Toast ref="Toast" @confirm="test"/>
       <Check ref="Check" @ok="cllChe"/>
@@ -149,6 +156,8 @@ export default {
     return {
       cont_one: false,
       type: null,
+      isImg: true,
+      porBtnText: '正在上传图像...',
       dataList: {
         area: '',
         avatarurl: '',
@@ -170,13 +179,72 @@ export default {
       pid1: [],
       pid2: [],
       pid3: [],
-      ara: []
+      ara: [],
+      honors: [],
+      product: []
     }
   },
   components: {
     search
   },
   methods: {
+    upimg (file, item) {
+      let files = new FormData()
+      files.append('file', file.target.files[0])
+      files.append('type', 1)
+      this.isImg = false
+      this.api.upImg(files, (res) => {
+        console.log(res.data.url)
+        if (res.status === 200) {
+          this.porBtnText = '图像上传成功'
+          setTimeout(() => {
+            this.isImg = true
+            this.porBtnText = '正在上传图像...'
+          }, 500)
+          item.img = res.data.url
+        }
+      }, (err) => {
+        alert('上传失败')        
+      })
+    },
+    upPort (file) {
+      console.log(file)
+      let files = new FormData()
+      files.append('file', file.target.files[0])
+      files.append('type', 1)
+      this.isImg = false
+      this.api.upImg(files, (res) => {
+        console.log(res.data.url)
+        if (res.status === 200) {
+          this.porBtnText = '图像上传成功'
+          setTimeout(() => {
+            this.isImg = true
+            this.porBtnText = '正在上传图像...'
+          }, 500)
+          this.dataList.avatarurl = res.data.url
+        }
+      }, (err) => {
+        
+      })
+    },
+    plus (num) {
+      let obj = null
+      console.log(num)
+      switch (num) {
+        case 0:
+          obj = {
+            key: ''
+          }
+          this.product.push(obj)
+          break
+        case 1:
+          obj = {
+            key: '',
+            img: ''
+          }
+          this.honors.push(obj)
+      }
+    },
     test: function (data) {
     },
     cllChe (data) {
@@ -192,8 +260,8 @@ export default {
     submit1: function () {
       let _this = this
       let obj = JSON.parse(JSON.stringify(_this.dataList))
-      obj.honors = JSON.stringify(obj.honors)
-      obj.product = JSON.stringify(obj.product)
+      obj.honors = JSON.stringify(_this.honors)
+      obj.product = JSON.stringify(_this.product)
       _this.api.putWorkInfo(obj, function (res) {
         console.log(res)
         if (res.status === 200) {
@@ -302,18 +370,19 @@ export default {
     if (_this.$route.query.type === 'personal') {
       document.title = '编辑个人信息'
       _this.areaFn()
-      _this.api.getMyCardInfo(_this.Global.userInfo.myId, function (res) {
+      _this.api.getMyCardInfo(_this.Global.userInfo.myId, (res) => {
         _this.dataList = res.data
         _this.ara = _this.dataList.area.split('|')
-      }, function (err) {
+        console.log(_this.dataList)
+      }, (err) => {
         console.log(err)
       })
     } else {
       document.title = '编辑工作经验'
       _this.api.getWorkNum(function (res) {
         _this.dataList = res.data
-        _this.dataList.honors = JSON.parse(_this.dataList.honors)
-        _this.dataList.product = JSON.parse(_this.dataList.product)
+        _this.honors = JSON.parse(_this.dataList.honors)
+        _this.product = JSON.parse(_this.dataList.product)
       }, function (err) {
         console.log(err)
       })
@@ -357,10 +426,34 @@ export default {
     overflow: hidden;
     margin: -.5rem auto .5rem;
     display: flex;
+    position: relative;
 }
 .contImg>img{
     width:2.5rem;
     align-self: center;
+}
+.portMold{
+    width:100%;
+    height:100%;
+    background:rgba(16, 16, 16, 0.3);
+    position: absolute;
+    top:0;
+    left:0;
+    display: flex;
+}
+.portMold>img{
+    width:1.1rem;
+    height:1.1rem;
+    align-self: center;
+    margin:0 auto;
+}
+.portMold>input{
+    width:100%;
+    height:100%;
+    position: absolute;
+    top:0;
+    left:0;
+    opacity: 0;
 }
 .subContent>.contList{
     text-align: left;
@@ -446,6 +539,10 @@ export default {
     border:none;
     font-size: .7rem;
 }
+.flxBut>button[disabled]{
+    color: #888;
+    background:rgba(241, 241, 241, 1);
+}
 .flxBut>button::after{
     border:none;
 }
@@ -509,11 +606,47 @@ export default {
     width: 30%;
     text-align: right;
     border: none;
+    float: left;
+    background: #fff;
+    border:0;
+    color:rgba(255, 152, 0, 1);
+}
+.subcontList>div>div>img{
+    float: right;
+    width:1rem;
+    height:1rem;
+    margin:.25rem 1.5rem 0 0;
+}
+.subcontList>div>div{
+    height:1.5rem;
+    width: 29%;
+    border: none;
     text-align: right;
     float: left;
     background: #fff;
     border:0;
     color:rgba(255, 152, 0, 1);
+    position: relative;
+}
+.subcontList>div>div>button::after{
+    border:none;
+}
+.subcontList>div>div>button{
+    width:100%;
+    height:1.5rem;
+    border: none;
+    color:rgba(255, 152, 0, 1);
+    background: #fff;
+    vertical-align: top;
+}
+.subcontList>div>div>input{
+    vertical-align: top;
+    position: absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    opacity: 0;
 }
 .plus{
     width: 1.2rem;

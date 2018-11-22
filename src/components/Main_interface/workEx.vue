@@ -74,11 +74,12 @@
                 <div v-for="(item, index) in dataList.honors" :key="index">
                     <div v-text="item.key">此处显示荣誉名称</div>
                     <div>
-                      <img src="@/assets/tupian.png" alt="">
+                      <img @click="imgMas(item.img)" :src="item.img" alt="">
                     </div>
                 </div>
             </div>
         </div>
+        <imgMask ref="imgMask"/>
     </div>
 </template>
 
@@ -94,6 +95,9 @@ export default {
     }
   },
   methods: {
+    imgMas (url) {
+      this.$refs.imgMask.on_display(url)
+    },
     workInfoInit: function (data) {
       let _this = this
       _this.api.getUserCardWork(data, function (res) {
