@@ -14,8 +14,6 @@ export default {
     }
   },
   mounted () {
-    this.$router.push('/batchNew')
-    return
     let r = decodeURI(window.location.search.substr(1))
     let arr = r.split('&')
     let urlCode = null
@@ -36,8 +34,9 @@ export default {
     let obj = {
       code: '1'
     }
-    _this.api.getToken(obj, function (res) {
+    _this.api.getToken(obj, (res) => {
       _this.api.headerToken(res.data.token)
+      _this.Global.userInfo['token'] = res.data.token
       if (res.data.is_user === 1) {
         console.log(res.data.step)
         switch (res.data.step) {

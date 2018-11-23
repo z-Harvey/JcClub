@@ -2,7 +2,7 @@
     <div class="batchMarking">
         <div class="content">
             <div class="nav nav1">
-                <div>
+                <div @click="path(0)">
                     <img src="@/assets/Alone_a.png" alt="">
                 </div>
                 <p>新增客户</p>
@@ -28,6 +28,7 @@ export default {
     path (num) {
       switch (num) {
         case 0:
+          this.$router.push('/MarkupCu')
           break
         case 1:
           this.$router.push('/batchNew')

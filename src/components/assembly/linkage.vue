@@ -198,7 +198,7 @@ export default {
         name: arr.join('、'),
         type: 'duo'
       }
-      _this.$emit('ok', obj)
+      this.msg.success(obj)
       _this.close()
       _this.listDatas = []
       _this.dataList = []

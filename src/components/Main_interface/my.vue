@@ -6,20 +6,20 @@
             <img :src="msg.avatarurl" alt="">
         </div>
         <p v-text="msg.nickname">李晓沫</p>
-        <p class="hehe" v-text="msg.club_name">XXXXXXX俱乐部</p>
-        <p class="hehe" v-text="'ID:' + msg.club_num">ID</p>
+        <p class="hehe" v-text="msg.club_name||'- -'">XXXXXXX俱乐部</p>
+        <p class="hehe" v-text="'ID:' + msg.club_num||0">ID</p>
     </div>
     <div class="codeMy">
         <div>
-            <div @click="path(5)" v-text="'@' + msg.inviter">袁邦阳</div>
+            <div @click="path(5)" v-text="'@' + msg.inviter||'- -'">袁邦阳</div>
             <div>我的邀请者</div>
         </div>
         <div @click="path(1)">
-            <div v-text="msg.fans_count">99</div>
+            <div v-text="msg.fans_count||0">99</div>
             <div>粉丝</div>
         </div>
         <div @click="path(0)">
-            <div v-text="msg.collect_count">99</div>
+            <div v-text="msg.collect_count||0">99</div>
             <div>关注</div>
         </div>
     </div>

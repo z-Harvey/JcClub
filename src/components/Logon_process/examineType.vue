@@ -16,18 +16,18 @@
         </div>
         <input class="inviCode" v-model="nickname" type="text" placeholder="给自己取一个酷酷的江湖称号吧~">
     </div>
-    <div class="meContent"  v-if="msg.status === 2||msg.status === '2'">
+    <div class="meContent" v-if="msg.status === 2||msg.status === '2'">
         <div class="mCtit">
             <p class="no_con">很遗憾，您未能通过审核~</p>
-            <span class="no_content">原因：此处显示未通过原因此处显示未通过原因此处显示未通过原因此处显示未通过原因此处显示未通过原因此处显示未通过原因此处显示未通过原因</span>
+            <span class="no_content">原因：此处显示未通过原因</span>
         </div>
     </div>
     <!-- <p class="Rules" v-if="Success_or_failure">俱乐部准则</p> -->
-    <div class="flxBtn" v-if="Success_or_failure">
-        <button class="sqBtn" @click="sqBtn">进入酷牛仔</button>
+    <div class="flxBtn" v-if="msg.status === 6||msg.status === '6'">
+        <button class="sqBtn" @click="sqBtn(0)">进入酷牛仔</button>
     </div>
-    <div class="flxBtn" v-else>
-        <button class="sqBtn" @click="sqBtn">重新申请</button>
+    <div class="flxBtn" v-if="msg.status === 2||msg.status === '2'">
+        <button class="sqBtn" @click="sqBtn(1)">重新申请</button>
     </div>
   </div>
 </template>
@@ -49,20 +49,28 @@ export default {
     }
   },
   methods: {
-    sqBtn: function () {
+    sqBtn: function (num) {
       let _this = this
-      let obj = {
-        nickname: _this.nickname
-      }
-      _this.api.postUserNickname(obj, function (res) {
-        if (res.data.nickname === _this.nickname) {
-          _this.$router.push({
-            path: '/home'
+      switch (num) {
+        case 0:
+          let obj = {
+            nickname: _this.nickname
+          }
+          _this.api.postUserNickname(obj, function (res) {
+            if (res.data.nickname === _this.nickname) {
+              _this.$router.push({
+                path: '/home'
+              })
+            }
+          }, function (err) {
+            alert(err.status)
+            console.lod(err)
           })
-        }
-      }, function (err) {
-        console.lod(err)
-      })
+          break
+        case 1:
+          _this.$router.push('/NoMember')
+          break
+      }
     }
   },
   mounted () {

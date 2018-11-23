@@ -5,26 +5,26 @@
             <div class="imgBox">
                 <img :src="listData.avatarurl" alt="">
             </div>
-            <div class="tag" v-text="listData.industry">互联网</div>
+            <div class="tag" v-text="listData.industry||'- -'">互联网</div>
             <div class="nameBox">
                 <div class="name">
                     <img v-if="listData.gender === 1" src="@/assets/man.png" alt="">
                     <img v-else src="@/assets/woman.png" alt="">
-                    <div v-text="listData.nickname">云端飞扬</div>
+                    <div v-text="listData.nickname||'- -'">云端飞扬</div>
                 </div>
-                <div class="cikeName" v-text="listData.club_name">北京酷牛仔俱乐部</div>
+                <div class="cikeName" v-text="listData.club_name||'- -'">北京酷牛仔俱乐部</div>
             </div>
             <div class="listNav">
                 <div @click="navPath(2)">
-                    <div v-text="listData.collect_count">99</div>
+                    <div v-text="listData.collect_count||0">99</div>
                     <div>关注</div>
                 </div>
                 <div @click="navPath(3)">
-                    <div v-text="listData.fans_count">99</div>
+                    <div v-text="listData.fans_count||0">99</div>
                     <div>粉丝</div>
                 </div>
                 <div @click="navPath(4)">
-                    <div v-text="listData.mate_num">99</div>
+                    <div v-text="listData.mate_num||0">99</div>
                     <div>客户</div>
                 </div>
             </div>
@@ -67,7 +67,9 @@ export default {
       source: null,
       dataList: null,
       listData: {},
-      user_id: null
+      user_id: null,
+      que: null,
+      gl: null
     }
   },
   methods: {
@@ -119,11 +121,19 @@ export default {
           break
         case 3:
           // 粉丝
-          _this.$router.push({
-            name: 'HisFans',
-            query: {
+          let obj = null
+          if (parseInt(_this.que.user_id) === parseInt(_this.gl.myId)) {
+            obj = {
+              source: 'my'
+            }
+          } else {
+            obj = {
               user_id: _this.user_id
             }
+          }
+          _this.$router.push({
+            name: 'HisFans',
+            query: obj
           })
           break
         case 4:
@@ -168,12 +178,12 @@ export default {
   mounted () {
     document.title = '名片信息'
     let _this = this
-    let gl = _this.Global.userInfo
-    let que = _this.$route.query
-    if (parseInt(que.user_id) === parseInt(gl.myId)) {
+    _this.gl = _this.Global.userInfo
+    _this.que = _this.$route.query
+    if (parseInt(_this.que.user_id) === parseInt(_this.gl.myId)) {
       _this.source = 'my'
     }
-    _this.user_id = que.user_id
+    _this.user_id = _this.que.user_id
     _this.$refs.CuInfo.cardInfoInit(_this.user_id)
     _this.api.getUserHeader(_this.user_id, function (res) {
       _this.listData = res.data

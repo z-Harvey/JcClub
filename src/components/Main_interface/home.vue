@@ -71,7 +71,7 @@ export default {
           _this.$refs.c3.init()
           break
         case 4:
-          this.$router.push('/MarkupCu')
+          this.$router.push('/batchMarking')
           arr[0] = true
           this.nav_list = arr
           return
@@ -100,15 +100,6 @@ export default {
     }, function (err) {
       console.log(err)
     })
-    // let obj = {
-    //   Title: '提示',
-    //   Content: '您尚未开通查客户权限，是否立即申请开通？',
-    //   Yes: '立即申请',
-    //   No: '放弃申请',
-    //   type: 1,
-    //   btn: 2
-    // }
-    // this.$refs.Toast.on_display(obj)
   }
 }
 </script>

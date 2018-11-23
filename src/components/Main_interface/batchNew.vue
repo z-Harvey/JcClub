@@ -2,7 +2,7 @@
     <div class="batchNew">
         <div class="btnBox btnBox1">
             <p>下载模板</p>
-            <div class="btn">
+            <div @click="getFile" class="btn" download="酷牛仔批量上传模板文件.xlsx">
                 <img src="@/assets/bottom_.png" alt="">
                 <span>下载模板</span>
                 <!-- <input type="file" accept="image/*"> -->
@@ -13,15 +13,16 @@
             <div class="btn">
                 <img src="@/assets/top_.png" alt="">
                 <span>上传数据文件</span>
-                <input @change="putFile($event)" type="file" accept="image/*">
+                <input @change="putFile($event)" type="file">
             </div>
-            <div class="speed">
+            <div class="speed" v-if="upz">
                 <div class="speedBox"><div class="speedColor" :style="'width:' + complete + '%;'"></div></div>
-                <span>上传中</span>
+                <span v-text="uptext">上传中</span>
             </div>
         </div>
         <div class="footer">
-            <button>下一步</button>
+            <button v-if="upz" @click="btn">下一步</button>
+            <button v-else disabled class="dis">下一步</button>
         </div>
     </div>
 </template>
@@ -33,27 +34,44 @@ export default {
   name: 'batchNew',
   data () {
     return {
-      complete: 0
+      complete: 0,
+      upz: false,
+      uptext: '上传中'
     }
   },
   methods: {
+    btn () {
+      this.$router.push('/dataConfirm')
+    },
     putFile (e) {
       let obj = new FormData()
       let _this = this
+      this.upz = true
+      this.uptext = '上传中'
       this.complete = 0
       obj.append('file', e.target.files[0])
-      obj.append('type', 1)
       let config = {
         onUploadProgress: progressEvent => {
           var complete = (progressEvent.loaded / progressEvent.total * 100 | 0)
           _this.complete = complete
         }
       }
-      http.post('/api/upload/', obj, config).then((res) => {
+      http.post('/markFile/', obj, config).then((res) => {
         console.log(res)
+        this.uptext = '完成'
       }, (err) => {
+        alert(err)
         console.log(err)
       })
+    },
+    getFile () {
+      window.location.href = '/static/批量新增客户模板.xlsx'
+    //   http.defaults.headers.Authorization = 'JWT ' + this.Global.userInfo.token
+    //   http.get('/api/markFile/').then((res) => {
+    //     console.log(res)
+    //   }, (err) => {
+    //     console.log(err)
+    //   })
     }
   },
   mounted (options) {
@@ -71,6 +89,9 @@ export default {
     top:0;
     left:0;
     background:rgba(249, 249, 249, 1);
+}
+a{
+    text-decoration:none;
 }
 .btnBox{
     font-size: .7rem
@@ -144,8 +165,13 @@ export default {
     color:#fff;
     border-radius: 1rem;
     margin:.25rem 0;
+    font-size: .7rem;
 }
 .footer>button::after{
     border:none;
+}
+.footer>.dis{
+    background:#f1f1f1;
+    color:#888;
 }
 </style>

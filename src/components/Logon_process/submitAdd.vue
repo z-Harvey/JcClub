@@ -2,7 +2,7 @@
   <div class="submitAdd">
       <Toast ref="Toast" @confirm="test"/>
       <Check ref="Check" @ok="cllChe"/>
-      <linkage ref="linkage" @ok="cllLink"/>
+      <linkage ref="linkage"/>
       <search ref="search" @ok="cllSrceach"/>
       <div class="memTitle">
           <img src="@/assets/membershipApp_shu1.png" alt="">
@@ -108,24 +108,36 @@
       <div class="subContentBox" v-else>
           <div class="subContent">
             <div class="contList">
-                <span>公司</span>
+                <span>公司<span class="red">*</span></span>
                 <div @click="check('sea')" v-text="workInfo.comname||'当前所在公司（必填）'" class="checkBox"></div>
             </div>
             <div class="contList">
-                <span>行业</span>
-                <div @click="check" v-text="workInfo.industry||'当前所在行业（必填）'" class="checkBox"></div>
-            </div>
-            <div class="contList">
-                <span>职业</span>
+                <span>职业<span class="red">*</span></span>
                 <input type="text" v-model="workInfo.position" placeholder="当前的职位（必填）">
             </div>
             <div class="contList">
-                <span>擅长领域</span>
-                <div @click="check('duo')" v-text="workInfo.scArea||'擅长的行业领域（多选、必填）'" class="checkBox" style="overflow: hidden;"></div>
+                <span>行业<span class="red">*</span></span>
+                <div @click="check" v-text="workInfo.industry||'当前所在行业（必填）'" class="checkBox"></div>
             </div>
             <div class="contList">
-                <span>对接部门</span>
+                <span>对接部门<span class="red">*</span></span>
                 <div @click="check('xuanze')" v-text="workInfo.department||'开发客户的对接部门（多选）'" class="checkBox"></div>
+            </div>
+            <div class="contList">
+                <span>工作年限<span class="red">*</span></span>
+                <input type="date" v-model="workInfo.workyears" placeholder="参加工作的年限（必填）"/>
+            </div>
+            <div class="contList">
+                <span>销售年限<span class="red">*</span></span>
+                <input type="date" v-model="workInfo.salesyears" placeholder="做销售的工作年限（必填）"/>
+            </div>
+            <div class="contList">
+                <span>行业年限<span class="red">*</span></span>
+                <input type="date" v-model="workInfo.industryyears" placeholder="目前所在行业的工作年限（必填）"/>
+            </div>
+            <div class="contList">
+                <span>擅长领域<span class="red">*</span></span>
+                <div @click="check('duo')" v-text="workInfo.scArea||'擅长的行业领域（多选、必填）'" class="checkBox" style="overflow: hidden;"></div>
             </div>
           </div>
           <div class="subContent">
@@ -136,18 +148,6 @@
             </div>
           </div>
           <div class="subContent">
-            <div class="contList">
-                <span>工作年限</span>
-                <input type="date" v-model="workInfo.workyears" placeholder="参加工作的年限（必填）"/>
-            </div>
-            <div class="contList">
-                <span>销售年限</span>
-                <input type="date" v-model="workInfo.salesyears" placeholder="做销售的工作年限（必填）"/>
-            </div>
-            <div class="contList">
-                <span>行业年限</span>
-                <input type="date" v-model="workInfo.industryyears" placeholder="目前所在行业的工作年限（必填）"/>
-            </div>
           </div>
           <div class="subContent">
             <div class="subcontList">
@@ -451,13 +451,25 @@ export default {
         _this.$refs.search.on_display()
         return
       } else if (typ === 'duo') {
-        this.$refs.linkage.on_display({type: 'industry', Choice: 2})
+        this.$refs.linkage.on_display({
+          type: 'industry',
+          Choice: 2,
+          success: (res) => {
+            _this.workInfo.scArea = res.name
+          }
+        })
         return
       } else if (typ === 'xuanze') {
         this.$refs.Check.on_display({type: 'submitAdd'})
         return
       }
-      this.$refs.linkage.on_display({type: 'industry', Choice: 1})
+      this.$refs.linkage.on_display({
+        type: 'industry',
+        Choice: 2,
+        success: (res) => {
+          _this.workInfo.industry = res.name
+        }
+      })
     },
     /**
      * 点击 '上一步' 时界面切换
@@ -582,15 +594,6 @@ export default {
       let _this = this
       _this.workInfo.comname = data.name
     },
-    cllLink: function (res) {
-      let _this = this
-      if (res.type === 'duo') {
-        _this.workInfo.scArea = res.name
-        console.log(res.name)
-        return
-      }
-      _this.workInfo.industry = res.name
-    },
     cllChe: function (res) {
       let _this = this
       _this.workInfo.department = res
@@ -643,6 +646,9 @@ export default {
     left:0;
     z-index: 9;
     text-align: left;
+}
+div>span>.red{
+  color:red;
 }
 .memTitle>img{
   width:.7rem;

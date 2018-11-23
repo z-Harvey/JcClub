@@ -655,6 +655,56 @@ let srchMyCompany = function (data, success, error) {
     error(err.response)
   })
 }
+/**
+ * 数据确认 界面
+ */
+let markFileCheck = function (success, error) {
+  axios.post(path + '/markFile_check/?link=' + Date.parse(new Date())).then(function (res) {
+    success(res)
+  }, function (err) {
+    error(err.response)
+  })
+}
+/**
+ * 获取通过校验的列表
+ */
+let SubFile = function (success, error) {
+  axios.get(path + '/SubFile/?link=' + Date.parse(new Date())).then(function (res) {
+    success(res)
+  }, function (err) {
+    error(err.response)
+  })
+}
+/**
+ * 获取通过校验，信息详情
+ */
+let qSubFile = function (data, success, error) {
+  axios.get(path + '/SubFile/' + data + '/?link=' + Date.parse(new Date())).then(function (res) {
+    success(res)
+  }, function (err) {
+    error(err.response)
+  })
+}
+/**
+ * 获取通过校验，信息详情
+ */
+let submitFileData = function (id, data, success, error) {
+  axios.put(path + '/SubFile/' + id + '/?link=' + Date.parse(new Date()), data).then(function (res) {
+    success(res)
+  }, function (err) {
+    error(err.response)
+  })
+}
+/**
+ * 数据无误
+ */
+let postDataOk = function (success, error) {
+  axios.post(path + '/SubFile/?link=' + Date.parse(new Date())).then(function (res) {
+    success(res)
+  }, function (err) {
+    error(err.response)
+  })
+}
 
 export default{
   srchUser,
@@ -718,6 +768,11 @@ export default{
   putMyCustomers,
   getReviews,
   patchMyCustomers,
-  upImg
+  upImg,
+  markFileCheck,
+  SubFile,
+  qSubFile,
+  submitFileData,
+  postDataOk
 }
 </script>

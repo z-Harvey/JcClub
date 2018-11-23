@@ -41,6 +41,7 @@ export default {
     myInit () {
       let str = 'p=' + this.p + '&page_size=' + this.page_size
       this.api.getMyFans(str, (res) => {
+        console.log(res.data)
         this.dataList = res.data.results
       }, (err) => {
         console.log(err)
@@ -60,6 +61,7 @@ export default {
     youInit () {
       let str = 'puser=' + this.user_id + '&p=' + this.p + '&page_size=' + this.page_size
       this.api.getUserFans(str, (res) => {
+        console.log(res.data)
         this.dataList = res.data.results
       }, (err) => {
         console.log(err)

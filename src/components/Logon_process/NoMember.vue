@@ -55,6 +55,8 @@ export default {
             btn: 0
           }
           _this.$refs.Toast.on_display(obj)
+        } else {
+          alert(err.status)
         }
       })
     },
