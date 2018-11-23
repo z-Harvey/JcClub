@@ -1,7 +1,7 @@
 <script type="text/javascript">
 import axios from 'axios'
-// const path = ''
-const path = '/api'
+const path = ''
+// const path = '/api'
 
 let headerToken = (token) => {
   axios.defaults.headers.Authorization = 'JWT ' + token
@@ -155,6 +155,16 @@ let getSearchCompany = function (data, success, error) {
  */
 let getSearchIndustry = function (data, success, error) {
   axios.get(path + '/industry/?' + data).then(function (res) {
+    success(res)
+  }, function (err) {
+    error(err.response)
+  })
+}
+/**
+ * 目标行业
+ */
+let getCustomerIndustry = function (data, success, error) {
+  axios.get(path + '/CustomerIndustry/?' + data).then(function (res) {
     success(res)
   }, function (err) {
     error(err.response)
@@ -773,6 +783,7 @@ export default{
   SubFile,
   qSubFile,
   submitFileData,
-  postDataOk
+  postDataOk,
+  getCustomerIndustry
 }
 </script>

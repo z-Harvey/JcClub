@@ -16,6 +16,14 @@
                     <div v-text="dataList.position">CEO</div>
                 </div>
                 <div>
+                    <div>行业</div>
+                    <div v-text="dataList.industry">CEO</div>
+                </div>
+                <div>
+                    <div>对接部门</div>
+                    <div v-text="dataList.department"></div>
+                </div>
+                <div>
                     <div>工作年限</div>
                     <div v-text="dataList.workyears">17年</div>
                 </div>
@@ -27,6 +35,18 @@
                     <div>行业年限</div>
                     <div v-text="dataList.industryyears">5年</div>
                 </div>
+                <div>
+                    <div>目标客户行业</div>
+                    <div v-text="dataList.mbkh_industry">CEO</div>
+                </div>
+                <div>
+                    <div>擅长领域</div>
+                    <div v-text="dataList.scArea">CEO</div>
+                </div>
+                <div>
+                    <div>标杆客户</div>
+                    <div v-text="bg_customer">CEO</div>
+                </div>
             </div>
         </div>
         <div v-if="type === 'cardInfo'" class="contBox">
@@ -37,30 +57,6 @@
             <div class="contcons">
                 <div v-for="(item, index) in dataList.product" :key="index">
                     <div v-text="item.key"></div>
-                    <div></div>
-                </div>
-            </div>
-        </div>
-        <div v-if="type === 'cardInfo'" class="contBox">
-            <div class="contTitle">
-                <div>开发客户的对接部门</div>
-                <div></div>
-            </div>
-            <div class="contcons">
-                <div v-for="(item, index) in dataList.department" :key="index">
-                    <div v-text="item"></div>
-                    <div></div>
-                </div>
-            </div>
-        </div>
-        <div v-if="type === 'cardInfo'" class="contBox">
-            <div class="contTitle">
-                <div>擅长领域</div>
-                <div></div>
-            </div>
-            <div class="contcons">
-                <div v-for="(item, index) in dataList.scArea" :key="index">
-                    <div v-text="item"></div>
                     <div></div>
                 </div>
             </div>
@@ -91,7 +87,8 @@ export default {
       tapBur: true,
       dataList: {
         honors: []
-      }
+      },
+      bg_customer: null
     }
   },
   methods: {
@@ -103,11 +100,15 @@ export default {
       _this.api.getUserCardWork(data, function (res) {
         console.log(res)
         _this.dataList = res.data
-        _this.dataList.department = res.data.department.split('、')
         _this.dataList.honors = JSON.parse(res.data.honors)
         _this.dataList.product = JSON.parse(res.data.product)
-        _this.dataList.scArea = res.data.scArea.split('、')
-        console.log(_this.dataList)
+        console.log(_this.dataList.product)
+        _this.dataList.bg_customer = JSON.parse(res.data.bg_customer)
+        let arr = []
+        _this.dataList.bg_customer.map((p1) => {
+          arr.push(p1.key)
+        })
+        _this.bg_customer = arr.join('、')
       }, function (err) {
         console.log(err)
       })
@@ -152,7 +153,7 @@ export default {
 }
 .contcon>div{
     padding:.25rem .5rem;
-    height:.7rem;
+    min-height:.7rem;
     font-size: .7rem;
     line-height: .7rem;
 }
@@ -162,7 +163,8 @@ export default {
 }
 .contcon>div>div:last-child{
     color:rgba(255, 152, 0, 1);
-    float: right;
+    min-height: .7rem;
+    text-align: right;
 }
 .contFooter{
     border-radius: .25rem;

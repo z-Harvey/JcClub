@@ -76,45 +76,54 @@
       <div class="subContentBox" v-if="type === 'exper'">
           <div class="subContent">
             <div class="contList">
-                <span>公司</span>
+                <span>公司<span class="red">*</span></span>
                 <div @click="check('sea')" v-text="dataList.comname||'当前所在公司（必填）'" class="checkBox"></div>
             </div>
             <div class="contList">
-                <span>行业</span>
+                <span>行业<span class="red">*</span></span>
                 <div @click="check" v-text="dataList.industry||'当前所在行业（必填）'" class="checkBox"></div>
             </div>
             <div class="contList">
-                <span>职业</span>
+                <span>职业<span class="red">*</span></span>
                 <input type="text" v-model="dataList.position" placeholder="当前的职位（必填）">
             </div>
             <div class="contList">
-                <span>擅长领域</span>
-                <div @click="check('duo')" v-text="dataList.scArea||'擅长的行业领域（多选、必填）'" class="checkBox"></div>
+                <span>对接部门<span class="red">*</span></span>
+                <div @click="check('xuanze')" v-text="dataList.department||'开发客户的对接部门（多选）'" class="checkBox"></div>
             </div>
             <div class="contList">
-                <span>对接部门</span>
-                <div @click="check('xuanze')" v-text="dataList.department||'开发客户的对接部门（多选）'" class="checkBox"></div>
+                <span>工作年限<span class="red">*</span></span>
+                <input type="date" v-model="dataList.workyears" placeholder="参加工作的年限">
+            </div>
+            <div class="contList">
+                <span>销售年限<span class="red">*</span></span>
+                <input type="date" v-model="dataList.salesyears" placeholder="做销售的工作年限">
+            </div>
+            <div class="contList">
+                <span>行业年限<span class="red">*</span></span>
+                <input type="date" v-model="dataList.industryyears" placeholder="目前所在行业的工作年限">
+            </div>
+          </div>
+          <div class="subContent">
+            <div class="contList">
+                <span>目标客户行业<span class="red">*</span></span>
+                <div @click="check('duos')" v-text="dataList.mbkh_industry||'目标客户所在的行业 (多选)'" class="checkBox"></div>
+            </div>
+            <div class="contList">
+                <span>擅长领域<span class="red">*</span></span>
+                <div @click="check('duo')" v-text="dataList.scArea||'擅长的行业领域（多选、必填）'" class="checkBox"></div>
+            </div>
+            <div class="subcontList">
+                <span>标杆客户<span class="red">*</span></span><span class="rightTex">至少一个</span>
+                <input class="width_100inp" v-for="(item,index) in bg_customer" :key="index" v-model="item.key" type="text" placeholder="请输入标杆客户">
+                <img class="plus" @click="plus(2)" src="@/assets/plus.png" alt="">
             </div>
           </div>
           <div class="subContent">
             <div class="subcontList">
-                <span>销售产品</span>
+                <span>销售产品<span class="red">*</span></span><span class="rightTex">至少一个</span>
                 <input class="width_100inp" v-for="(item, index) in product" :key="index" v-model="item.key" type="text" placeholder="请输入产品名称">
                 <img class="plus" @click="plus(0)" src="@/assets/plus.png" alt="">
-            </div>
-          </div>
-          <div class="subContent">
-            <div class="contList">
-                <span>工作年限</span>
-                <input type="date" v-model="dataList.workyears" placeholder="参加工作的年限">
-            </div>
-            <div class="contList">
-                <span>销售年限</span>
-                <input type="date" v-model="dataList.salesyears" placeholder="做销售的工作年限">
-            </div>
-            <div class="contList">
-                <span>行业年限</span>
-                <input type="date" v-model="dataList.industryyears" placeholder="目前所在行业的工作年限">
             </div>
           </div>
           <div class="subContent">
@@ -158,6 +167,7 @@ export default {
       type: null,
       isImg: true,
       porBtnText: '正在上传图像...',
+      bg_customer: [{key: ''}],
       dataList: {
         area: '',
         avatarurl: '',
@@ -169,7 +179,9 @@ export default {
         mobile: '',
         name: '',
         wx_no: '',
-        nickname: ''
+        nickname: '',
+        mbkh_industry: '',
+        bg_customer: [{key: ''}]
       },
       pid: {
         a1: 0,
@@ -245,6 +257,14 @@ export default {
             img: ''
           }
           this.honors.push(obj)
+          break
+        case 2:
+          obj = {
+            key: '',
+            img: ''
+          }
+          this.bg_customer.push(obj)
+          break
       }
     },
     test: function (data) {
@@ -261,9 +281,100 @@ export default {
     },
     submit1: function () {
       let _this = this
+      if (_this.dataList.industry === null || _this.dataList.industry === '') {
+        let obj = {
+          Title: '提示',
+          Content: '请选择行业',
+          type: 1,
+          btn: 0
+        }
+        this.$refs.Toast.on_display(obj)
+        return
+      }
+      if (_this.dataList.position === null || _this.dataList.position === '') {
+        let obj = {
+          Title: '提示',
+          Content: '请选择职业',
+          type: 1,
+          btn: 0
+        }
+        this.$refs.Toast.on_display(obj)
+        return
+      }
+      if (_this.dataList.department === null || _this.dataList.department === '') {
+        let obj = {
+          Title: '提示',
+          Content: '请选择对接部门',
+          type: 1,
+          btn: 0
+        }
+        this.$refs.Toast.on_display(obj)
+        return
+      }
+      if (_this.dataList.workyears === null || _this.dataList.workyears === '') {
+        let obj = {
+          Title: '提示',
+          Content: '请选择工作年限',
+          type: 1,
+          btn: 0
+        }
+        this.$refs.Toast.on_display(obj)
+        return
+      }
+      if (_this.dataList.salesyears === null || _this.dataList.salesyears === '') {
+        let obj = {
+          Title: '提示',
+          Content: '请选择销售年限',
+          type: 1,
+          btn: 0
+        }
+        this.$refs.Toast.on_display(obj)
+        return
+      }
+      if (_this.dataList.industryyears === null || _this.dataList.industryyears === '') {
+        let obj = {
+          Title: '提示',
+          Content: '请选择行业年限',
+          type: 1,
+          btn: 0
+        }
+        this.$refs.Toast.on_display(obj)
+        return
+      }
+      if (_this.dataList.scArea === null || _this.dataList.scArea === '') {
+        let obj = {
+          Title: '提示',
+          Content: '请选择擅长领域',
+          type: 1,
+          btn: 0
+        }
+        this.$refs.Toast.on_display(obj)
+        return
+      }
+      // if (_this.bg_customer[0].key === null || _this.bg_customer[0].key === '') {
+      //   let obj = {
+      //     Title: '提示',
+      //     Content: '至少填写一个标杆客户',
+      //     type: 1,
+      //     btn: 0
+      //   }
+      //   this.$refs.Toast.on_display(obj)
+      //   return
+      // }
+      if (_this.product[0].key === null || _this.product[0].key === '') {
+        let obj = {
+          Title: '提示',
+          Content: '至少填写一个销售产品',
+          type: 1,
+          btn: 0
+        }
+        this.$refs.Toast.on_display(obj)
+        return
+      }
       let obj = JSON.parse(JSON.stringify(_this.dataList))
       obj.honors = JSON.stringify(_this.honors)
       obj.product = JSON.stringify(_this.product)
+      obj.bg_customer = JSON.stringify(_this.bg_customer)
       _this.api.putWorkInfo(obj, function (res) {
         console.log(res)
         if (res.status === 200) {
@@ -283,7 +394,22 @@ export default {
         _this.$refs.search.on_display()
         return
       } else if (typ === 'duo') {
-        _this.$refs.linkage.on_display({type: 'industry', Choice: 2})
+        _this.$refs.linkage.on_display({
+          type: 'industry',
+          Choice: 2,
+          success: (res) => {
+            _this.dataList.scArea = res.name
+          }
+        })
+        return
+      } else if (typ === 'duos') {
+        this.$refs.linkage.on_display({
+          type: 'Cust',
+          Choice: 2,
+          success: (res) => {
+            _this.dataList.mbkh_industry = res.name
+          }
+        })
         return
       } else if (typ === 'xuanze') {
         _this.$refs.Check.on_display({type: 'submitAdd'})
@@ -374,7 +500,6 @@ export default {
       _this.api.getMyCardInfo(_this.Global.userInfo.myId, (res) => {
         _this.dataList = res.data
         _this.ara = _this.dataList.area.split('|')
-        console.log(_this.dataList)
       }, (err) => {
         console.log(err)
       })
@@ -384,6 +509,12 @@ export default {
         _this.dataList = res.data
         _this.honors = JSON.parse(_this.dataList.honors)
         _this.product = JSON.parse(_this.dataList.product)
+        console.log(_this.dataList.bg_customer === null)
+        if (_this.dataList.bg_customer !== null) {
+          _this.bg_customer = JSON.parse(_this.dataList.bg_customer)
+        } else {
+          _this.bg_customer = [{key: ''}]
+        }
       }, function (err) {
         console.log(err)
       })
@@ -402,6 +533,12 @@ export default {
     left:0;
     overflow: auto;
     background:rgba(249, 249, 249, 1);
+}
+.rightTex{
+  float: right;
+}
+div>span>.red{
+  color:red;
 }
 .subContentBox{
     width: 100%;
@@ -433,6 +570,7 @@ export default {
     width:2.5rem;
     align-self: center;
 }
+
 .portMold{
     width:100%;
     height:100%;

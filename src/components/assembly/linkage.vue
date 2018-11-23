@@ -68,14 +68,25 @@ export default {
         }
         arr.push(p1)
       })
-      _this.api.getSearchIndustry('pid=' + ite.id, function (res) {
-        _this.listDatas = res.data
-        _this.listDatas.map(function (p1, p2) {
-          p1['show'] = false
+      if (this.msg.type === 'industry') {
+        _this.api.getSearchIndustry('pid=' + ite.id, function (res) {
+          _this.listDatas = res.data
+          _this.listDatas.map(function (p1, p2) {
+            p1['show'] = false
+          })
+        }, function (err) {
+          console.log(err)
         })
-      }, function (err) {
-        console.log(err)
-      })
+      } else if (this.msg.type === 'Cust') {
+        _this.api.getCustomerIndustry('pid=' + ite.id, function (res) {
+          _this.listDatas = res.data
+          _this.listDatas.map(function (p1, p2) {
+            p1['show'] = false
+          })
+        }, function (err) {
+          console.log(err)
+        })
+      }
       _this.listData = arr
       _this.currList = ite.id
     },
@@ -95,8 +106,6 @@ export default {
       let _this = this
       let arr = []
       let jishu = 0
-      console.log(str)
-      console.log(_this.dataList)
       if (!str.show) {
         _this.dataList.map(function (p1, p2) {
           p1.cont.map(function (n1, n2) {
@@ -160,14 +169,26 @@ export default {
     },
     httpQuery: function (typ) {
       let _this = this
+      let str = ''
       if (typ === 'industry') {
-        let str = 'pid=0'
+        str = 'pid=0'
         _this.api.getSearchIndustry(str, function (res) {
           _this.listData = res.data
           _this.listData.map(function (p1, p2) {
             p1['show'] = false
           })
         }, function (err) {
+          console.log(err)
+        })
+      } else if (typ === 'Cust') {
+        str = 'pid=0'
+        this.api.getCustomerIndustry(str, (res) => {
+          console.log(res)
+          _this.listData = res.data
+          _this.listData.map(function (p1, p2) {
+            p1['show'] = false
+          })
+        }, (err) => {
           console.log(err)
         })
       }

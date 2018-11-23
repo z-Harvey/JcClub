@@ -135,19 +135,28 @@
                 <span>行业年限<span class="red">*</span></span>
                 <input type="date" v-model="workInfo.industryyears" placeholder="目前所在行业的工作年限（必填）"/>
             </div>
+          </div>
+          <div class="subContent">
+            <div class="contList">
+                <span>目标客户行业<span class="red">*</span></span>
+                <div @click="check('duos')" v-text="workInfo.mbkh_industry||'目标客户所在的行业 (多选)'" class="checkBox" style="overflow: hidden;"></div>
+            </div>
             <div class="contList">
                 <span>擅长领域<span class="red">*</span></span>
                 <div @click="check('duo')" v-text="workInfo.scArea||'擅长的行业领域（多选、必填）'" class="checkBox" style="overflow: hidden;"></div>
             </div>
-          </div>
-          <div class="subContent">
             <div class="subcontList">
-                <span>销售产品</span>
-                <input class="width_100inp" v-for="(item,index) in product" :key="index" v-model="item.key" type="text" placeholder="请输入产品名称">
-                <img class="plus" @click="subjia(1)" src="@/assets/plus.png" alt="">
+                <span>标杆客户<span class="red">*</span></span><span class="rightTex">至少一个</span>
+                <input class="width_100inp" v-for="(item,index) in bg_customer" :key="index" v-model="item.key" type="text" placeholder="请输入产品名称">
+                <img class="plus" @click="subjia(3)" src="@/assets/plus.png" alt="">
             </div>
           </div>
           <div class="subContent">
+            <div class="subcontList">
+                <span>销售产品<span class="red">*</span></span><span class="rightTex">至少一个</span>
+                <input class="width_100inp" v-for="(item,index) in product" :key="index" v-model="item.key" type="text" placeholder="请输入产品名称">
+                <img class="plus" @click="subjia(1)" src="@/assets/plus.png" alt="">
+            </div>
           </div>
           <div class="subContent">
             <div class="subcontList">
@@ -211,6 +220,7 @@ export default {
       },
       product: [{key: ''}], // 产品
       honors: [{key: '', img: ''}], // 荣誉
+      bg_customer: [{key: ''}], // 标杆客户
       workInfo: {
         comname: null, // 公司名
         industry: null, // 行业
@@ -222,7 +232,8 @@ export default {
         salesyears: null, // 销售年限
         industryyears: null, // 行业年限
         honors: [{key: '', img: ''}], // 荣誉
-        club_id: null // 俱乐部ID
+        club_id: null, // 俱乐部ID
+        mbkh_industry: null
       }
     }
   },
@@ -274,6 +285,8 @@ export default {
         _this.product.push({key: ''})
       } else if (num === 2) {
         _this.honors.push({key: '', img: ''})
+      } else if (num === 3) {
+        this.bg_customer.push({key: ''})
       }
     },
     /**
@@ -459,6 +472,15 @@ export default {
           }
         })
         return
+      } else if (typ === 'duos') {
+        this.$refs.linkage.on_display({
+          type: 'Cust',
+          Choice: 2,
+          success: (res) => {
+            _this.workInfo.mbkh_industry = res.name
+          }
+        })
+        return
       } else if (typ === 'xuanze') {
         this.$refs.Check.on_display({type: 'submitAdd'})
         return
@@ -486,6 +508,7 @@ export default {
       let data = JSON.parse(JSON.stringify(_this.workInfo))
       data.product = JSON.stringify(_this.product)
       data.honors = JSON.stringify(_this.honors)
+      data.bg_customer = JSON.stringify(_this.bg_customer)
       _this.api.postWorkInfo(data, function (res) {
         console.log(res)
         _this.$router.push({
@@ -525,16 +548,6 @@ export default {
         let obj = {
           Title: '提示',
           Content: '请填写职业',
-          type: 1,
-          btn: 0
-        }
-        this.$refs.Toast.on_display(obj)
-        return
-      }
-      if (_this.workInfo.scArea === null || _this.workInfo.scArea === '') {
-        let obj = {
-          Title: '提示',
-          Content: '请选择擅长领域',
           type: 1,
           btn: 0
         }
@@ -581,6 +594,46 @@ export default {
         this.$refs.Toast.on_display(obj)
         return
       }
+      if (_this.workInfo.mbkh_industry === null || _this.workInfo.mbkh_industry === '') {
+        let obj = {
+          Title: '提示',
+          Content: '请选择目标客户行业',
+          type: 1,
+          btn: 0
+        }
+        this.$refs.Toast.on_display(obj)
+        return
+      }
+      if (_this.workInfo.scArea === null || _this.workInfo.scArea === '') {
+        let obj = {
+          Title: '提示',
+          Content: '请选择擅长领域',
+          type: 1,
+          btn: 0
+        }
+        this.$refs.Toast.on_display(obj)
+        return
+      }
+      if (_this.bg_customer[0].key === '') {
+        let obj = {
+          Title: '提示',
+          Content: '至少一个标杆客户',
+          type: 1,
+          btn: 0
+        }
+        this.$refs.Toast.on_display(obj)
+        return
+      }
+      if (_this.product[0].key === '') {
+        let obj = {
+          Title: '提示',
+          Content: '至少一个销售产品',
+          type: 1,
+          btn: 0
+        }
+        this.$refs.Toast.on_display(obj)
+        return
+      }
       let obj = {
         Title: '是否确认提交？',
         Content: '请您确保您填写的信息准确无误，否则可能会影响审核结果',
@@ -616,6 +669,7 @@ export default {
       this.workInfo = res.data
       this.honors = JSON.parse(res.data.honors)
       this.product = JSON.parse(res.data.product)
+      this.bg_customer = JSON.parse(res.data.bg_customer)
     }, function (err) {
       console.log(err)
     })
@@ -646,6 +700,9 @@ export default {
     left:0;
     z-index: 9;
     text-align: left;
+}
+.rightTex{
+  float: right;
 }
 div>span>.red{
   color:red;
