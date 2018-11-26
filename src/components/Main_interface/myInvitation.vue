@@ -152,7 +152,7 @@ export default {
 .btnList{
     text-align: right;
     padding-top:.5rem;
-    border:1px solid rgba(247, 247, 247, 1);
+    border-top:1px solid rgba(247, 247, 247, 1);
     margin-top:.5rem;
 }
 .btnList>button::after{
@@ -164,6 +164,7 @@ export default {
     border-radius: .75rem;
     border: 0;
     line-height: 1.5rem;
+    font-size: .7rem;
 }
 .b1{
     background: rgba(241, 241, 241, 1);

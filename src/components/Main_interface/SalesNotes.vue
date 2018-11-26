@@ -15,7 +15,7 @@
         </div>
         <div class="tit2">
             <p v-for="(item, index) in msgData.reviews" :key="index" v-text="item">有钱任性</p>
-            <div @click="navPath(2)">
+            <div @click="paths(2)">
                 <img src="@/assets/edit(1).png" alt="">
                 <span>编辑</span>
             </div>
@@ -25,11 +25,11 @@
             <button @click="navPath(1)" :class="!navBtn?'navBtn':''">销售足迹 <span v-text="msgData.footPrint_count"></span></button>
         </nav>
         <!-- <router-view :type="'SalesNotes'"></router-view> -->
-        <CuInfo ref="cuinfo" :type="'SalesNotes'" :show="navBtn"/>
-        <saleFootprint ref="saleFoot" :type="'SalesNotes'" :show="!navBtn"/>
+        <CuInfo ref="cuinfo" :type="'SalesNotes'" v-show="navBtn"/>
+        <saleFootprint ref="saleFoot" :type="'SalesNotes'" v-show="!navBtn"/>
         <div style="height:2.25rem;"></div>
         <div class="footer" v-if="navBtn">
-            <button @click="navPath(3)">编辑客户信息</button>
+            <button @click="paths(3)">编辑客户信息</button>
         </div>
         <div class="footer" v-else>
             <button @click="new_foot">新增足迹</button>
@@ -132,16 +132,20 @@ export default {
           _this.$refs.saleFoot.init(_this.que.com_id)
           _this.navBtn = false
           break
+      }
+    },
+    paths (num) {
+      switch (num) {
         case 2:
-          _this.$router.push({
+          this.$router.push({
             path: '/editComment',
             query: {
-              com_id: _this.que.com_id
+              com_id: this.que.com_id
             }
           })
           break
         case 3:
-          _this.$router.push({ path: '/MarkupCu', query: { type: 'edit', com_id: _this.que.com_id } })
+          this.$router.push({ path: '/MarkupCu', query: { type: 'edit', com_id: this.que.com_id } })
           break
       }
     },

@@ -1,5 +1,5 @@
 <template>
-    <div class="CuInfo" v-if="show">
+    <div class="CuInfo">
         <div v-if="type === 'CuHome'">
             <div class="contBox">
                 <div class="contTitle">
@@ -172,6 +172,26 @@
             </div>
             <div class="contBox">
                 <div class="contTitle">
+                    <div>客户关系</div>
+                    <div></div>
+                </div>
+                <div class="contcon">
+                    <div>
+                        <div>合作关系</div>
+                        <div v-text="msg.relation || '--'"></div>
+                    </div>
+                    <div>
+                        <div>决策链线索</div>
+                        <div v-text="msg.has_decision || '--'"></div>
+                    </div>
+                    <div>
+                        <div>线索部门</div>
+                        <div v-text="msg.department || '--'">1亿</div>
+                    </div>
+                </div>
+            </div>
+            <div class="contBox">
+                <div class="contTitle">
                     <div>联系人</div>
                     <div></div>
                 </div>
@@ -316,38 +336,34 @@ export default {
     }
   },
   methods: {
-    mol: function (num) {
+    mol (num) {
       this.$emit('mol', num)
     },
-    cardInfoInit: function (data) {
-      let _this = this
-      _this.api.getUserCard(data, function (res) {
-        console.log(res)
-        _this.msg = res.data
-      }, function (err) {
+    cardInfoInit (data) {
+      this.api.getUserCard(data, (res) => {
+        this.msg = res.data
+      }, (err) => {
         console.log(err)
       })
     },
-    cuHomeInit: function (id) {
-      let _this = this
+    cuHomeInit (id) {
       let str = 'company=' + id
-      _this.api.getCompanyInfo(str, function (res) {
-        console.log(res)
-        _this.msg = res.data
-        _this.msg.contact_list = JSON.parse(res.data.contact_list)
-        console.log(_this.msg)
-      }, function (err) {
+      this.api.getCompanyInfo(str, (res) => {
+        this.msg = res.data
+        this.msg.contact_list = JSON.parse(res.data.contact_list)
+      }, (err) => {
         console.log(err)
       })
     },
-    SalesNotesInit: function (id) {
-      let _this = this
-      _this.api.getMyCustomers(id, function (res) {
-        console.log(res)
-        _this.msg = res.data
-        _this.msg.contact_list = JSON.parse(_this.msg.contact_list)
-        console.log(_this.msg)
-      }, function (err) {
+    SalesNotesInit (id) {
+      this.api.getMyCustomers(id, (res) => {
+        let arr = ['有过合作', '正在合作', '有过跟进', '正在跟进']
+        let arr1 = ['有决策链线索', '无决策链线索']
+        this.msg = res.data
+        this.msg.contact_list = JSON.parse(this.msg.contact_list)
+        this.msg.relation = arr[this.msg.relation]
+        this.msg.has_decision = arr1[this.msg.has_decision]
+      }, (err) => {
         console.log(err)
       })
     }

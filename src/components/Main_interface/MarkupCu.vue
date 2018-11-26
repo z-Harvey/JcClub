@@ -19,23 +19,23 @@
             </div>
             <div class="contcon">
                 <div>
-                    <div>简称</div>
-                    <input type="text" v-model="upData.simple_name" placeholder="输入客户简称（必填）">
+                    <div>简称<span class="red">*</span></div>
+                    <input type="text" v-model="upData.simple_name" placeholder="输入客户简称">
                 </div>
                 <div>
-                    <div class="cheLeft">行业</div>
-                    <div @click="linkClick('hangye')" v-text="upData.industry || '当前所在行业（必填）'" class="checkBox"></div>
+                    <div class="cheLeft">行业<span class="red">*</span></div>
+                    <div @click="linkClick('hangye')" v-text="upData.industry || '当前所在行业'" class="checkBox"></div>
                 </div>
                 <div>
-                    <div class="cheLeft">类型</div>
-                    <div @click="linkClick('type')" v-text="upData.type || '选择客户企业类型（必填）'" class="checkBox"></div>
+                    <div class="cheLeft">类型<span class="red">*</span></div>
+                    <div @click="linkClick('type')" v-text="upData.type || '选择客户企业类型'" class="checkBox"></div>
                 </div>
                 <div>
                     <div>网址</div>
                     <input type="text" v-model="upData.net_url" placeholder="输入客户企业网址">
                 </div>
                 <div>
-                    <div>所在地(必选)</div>
+                    <div>所在地<span class="red">*</span></div>
                     <div class="xexBox">
                         <select v-model="area.a1" @change="areaClick(0)">
                             <option value="0" v-text="upData.province||'选择省'"></option>
@@ -69,7 +69,7 @@
                 </div>
                 <div>
                     <div>分支机构数</div>
-                    <input type="text" v-model="upData.fzjg_num" placeholder="输入客户">
+                    <input type="text" v-model="upData.fzjg_num" placeholder="输入分支机构数">
                 </div>
                 <div>
                     <div>营业额</div>
@@ -80,11 +80,11 @@
         <div class="contBox">
             <div class="contTitle">
                 <div>客户关系</div>
-                <div>必填</div>
+                <div></div>
             </div>
             <div class="contcon">
                 <div>
-                    <div>合作关系</div>
+                    <div>合作关系<span class="red">*</span></div>
                     <div class="btnList">
                         <span @click="nav1(0)" :class="navList1[0]?'atrCli':''">有过合作</span>
                         <span @click="nav1(1)" :class="navList1[1]?'atrCli':''">正在合作</span>
@@ -93,14 +93,14 @@
                     </div>
                 </div>
                 <div>
-                    <div>决策链线索</div>
+                    <div>决策链线索<span class="red">*</span></div>
                     <div class="btnLists">
                         <span @click="nav2(0)" :class="navList2[0]?'atrCli':''">是</span>
                         <span @click="nav2(1)" :class="navList2[1]?'atrCli':''">否</span>
                     </div>
                 </div>
                 <div>
-                    <div class="cheLeft">线索部门</div>
+                    <div class="cheLeft">线索部门<span class="red">*</span></div>
                     <div @click="linkClick('xiansuo')" v-text="upData.department || '选择线索部门（最多三个）'" class="checkBox"></div>
                 </div>
             </div>
@@ -112,16 +112,16 @@
             </div>
             <div class="contcon" v-for="(item, index) in contact_list" :key="index">
                 <div>
-                    <div>姓名</div>
-                    <input type="text" v-model="item.name" placeholder="输入联系人姓名（必填）">
+                    <div>姓名<span class="red">*</span></div>
+                    <input type="text" v-model="item.name" placeholder="输入联系人姓名">
                 </div>
                 <div>
-                    <div>职务</div>
-                    <input type="text" v-model="item.position" placeholder="输入联系人当前职务（必填）">
+                    <div>职务<span class="red">*</span></div>
+                    <input type="text" v-model="item.position" placeholder="输入联系人当前职务">
                 </div>
                 <div>
-                    <div>电话</div>
-                    <input type="number" v-model="item.phone" placeholder="输入联系人联系电话（必填）">
+                    <div>电话<span class="red">*</span></div>
+                    <input type="number" v-model="item.phone" placeholder="输入联系人联系电话">
                 </div>
                 <div>
                     <div>邮件</div>
@@ -630,7 +630,7 @@ export default {
     padding:.25rem .5rem;
 }
 .contcon>div>div:first-child{
-    color:#101010;
+    color:#888;
     float: left;
 }
 .contcon>div{
@@ -644,8 +644,9 @@ export default {
     margin-top:.325rem;
     border:0;
     text-align: right;
-    color:#ccc;
+    color:#2c2c2c;
     font-size: .7rem;
+    -webkit-appearance: none;
 }
 .btnList{
     width: 100%;
@@ -680,7 +681,7 @@ export default {
 }
 
 input::placeholder{
-    color:#ccc !important;
+    color:#2c2c2c !important;
 }
 .plus{
     padding-left:.5rem;
@@ -727,21 +728,24 @@ input::placeholder{
     vertical-align: top;
     border:0;
     font-size: .7rem;
-    color:#888;
+    color:#2c2c2c;
+    -webkit-appearance: none;
     background:#fff;
 }
 .checkBox{
     width:calc(100% - 3rem);
     padding-left:3rem;
-    /* float: right; */
     margin-top:.3rem;
     text-align: right;
     border: none;
     font-size: .7rem;
     line-height: 1.5rem;
-    color:#ccc;
+    color:#2c2c2c;
 }
 .cheLeft{
     line-height: 1.5rem;
+}
+.red{
+  color:red;
 }
 </style>

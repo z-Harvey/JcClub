@@ -11,26 +11,26 @@
                 </div>
             </div>
             <div class="contList">
-                <span>称号</span>
-                <input type="text" v-model="dataList.nickname" placeholder="bala">
+                <span>称号<span class="red">*</span></span>
+                <input type="text" v-model="dataList.nickname" placeholder="请输入称号">
             </div>
             <div class="contList">
-                <span>姓名</span>
-                <input type="text" v-model="dataList.name" placeholder="aaa">
+                <span>姓名<span class="red">*</span></span>
+                <input type="text" v-model="dataList.name" placeholder="请输入姓名" disabled>
             </div>
             <div class="contList sex">
-                <span>性别</span>
+                <span>性别<span class="red">*</span></span>
                 <div>
                     <button @click="gencli" :class="dataList.gender === 1? 'navbtn': ''">帅哥</button>
                     <button @click="gencli" :class="dataList.gender === 2? 'navbtn': ''">美女</button>
                 </div>
             </div>
             <div class="contList">
-                <span>电话</span>
-                <input type="text" v-model="dataList.mobile" placeholder="18888888888">
+                <span>电话<span class="red">*</span></span>
+                <input type="text" v-model="dataList.mobile" placeholder="请输入电话" disabled>
             </div>
             <div class="contList">
-                <span>所在地</span>
+                <span>所在地<span class="red">*</span></span>
                 <select v-model="pid.a1" @change="areaFn1()">
                     <option value="0" v-text="ara[0]">请选择</option>
                     <option v-for="(item, index) in pid1" :key="index" v-text="item.name" :value="item.id"></option>
@@ -46,20 +46,20 @@
             </div>
             <div class="contList">
                 <span>邮件</span>
-                <input type="text" v-model="dataList.email" placeholder="lqn@xiaoshoun.cn">
+                <input type="text" v-model="dataList.email" placeholder="请输入邮件">
             </div>
             <div class="contList">
-                <span>微信号</span>
-                <input type="text" v-model="dataList.wx_no" placeholder="lixiaomo">
+                <span>微信号<span class="red">*</span></span>
+                <input type="text" v-model="dataList.wx_no" placeholder="请输入微信号">
             </div>
             <div class="contList">
                 <span>生日</span>
-                <input type="date" v-model="dataList.birthday" placeholder="1992年6月3日">
+                <input type="date" v-model="dataList.birthday" value="'0000-00-00'">
             </div>
             <div class="contList">
-                <span>学历</span>
+                <span>学历<span class="red">*</span></span>
                 <select v-model="dataList.edu_background">
-                    <option value="">请选择</option>
+                    <option value="null">请选择</option>
                     <option value="小学">小学</option>
                     <option value="初中">初中</option>
                     <option value="中专">中专</option>
@@ -77,15 +77,16 @@
           <div class="subContent">
             <div class="contList">
                 <span>公司<span class="red">*</span></span>
-                <div @click="check('sea')" v-text="dataList.comname||'当前所在公司（必填）'" class="checkBox"></div>
+                <div v-text="dataList.comname||'当前所在公司'" class="checkBox"></div>
             </div>
             <div class="contList">
                 <span>行业<span class="red">*</span></span>
-                <div @click="check" v-text="dataList.industry||'当前所在行业（必填）'" class="checkBox"></div>
+                <!-- <div @click="check" v-text="dataList.industry||'当前所在行业（必填）'" class="checkBox"></div> -->
+                <div v-text="dataList.industry||'当前所在行业'" class="checkBox"></div>
             </div>
             <div class="contList">
                 <span>职业<span class="red">*</span></span>
-                <input type="text" v-model="dataList.position" placeholder="当前的职位（必填）">
+                <input type="text" v-model="dataList.position" placeholder="当前的职位" disabled>
             </div>
             <div class="contList">
                 <span>对接部门<span class="red">*</span></span>
@@ -111,7 +112,7 @@
             </div>
             <div class="contList">
                 <span>擅长领域<span class="red">*</span></span>
-                <div @click="check('duo')" v-text="dataList.scArea||'擅长的行业领域（多选、必填）'" class="checkBox"></div>
+                <div @click="check('duo')" v-text="dataList.scArea||'擅长的行业领域（多选）'" class="checkBox"></div>
             </div>
             <div class="subcontList">
                 <span>标杆客户<span class="red">*</span></span><span class="rightTex">至少一个</span>
@@ -610,9 +611,15 @@ div>span>.red{
     background:#fff;
     float: right;
     font-size: .7rem;
+    -webkit-appearance: none;
+    color:#2c2c2c;
+}
+.contList>input::placeholder{
+    color:#2c2c2c;
 }
 .contList>span{
     float: left;
+    color:#888;
 }
 .contList>select{
     width:100%;
@@ -620,9 +627,10 @@ div>span>.red{
     text-align: right;
     border:none;
     padding-left: 1rem;
-    color:#888;
+    color:#2c2c2c;
     background:#fff;
     font-size: .7rem;
+    -webkit-appearance: none;
 }
 .contList>div{
     width:calc(100% - 2.5rem);
@@ -630,7 +638,6 @@ div>span>.red{
     margin-top:.3rem;
     text-align: right;
     padding-left:2.5rem;
-    color:#888;
 }
 .sex>div{
     height:1.5rem;
@@ -679,7 +686,7 @@ div>span>.red{
     font-size: .7rem;
 }
 .flxBut>button[disabled]{
-    color: #888;
+    color: #2c2c2c;
     background:rgba(241, 241, 241, 1);
 }
 .flxBut>button::after{
@@ -736,9 +743,7 @@ div>span>.red{
     width: 70%;
     text-align: right;
     border: none;
-    text-align: left;
     float: left;
-    color:#101010;
 }
 .subcontList>div>button{
     height:1.5rem;
@@ -796,7 +801,14 @@ div>span>.red{
 .subcontList>div>input,button{
     font-size: .7rem;
 }
-.width_100inp{
-    font-size: .7rem
+.subcontList>div>.width_100inp,.subcontList>.width_100inp{
+    font-size: .7rem;
+    text-align: left;
+}
+.subcontList>span{
+  color:#888;
+}
+.contList>input[disabled]{
+  color:#2c2c2c;
 }
 </style>

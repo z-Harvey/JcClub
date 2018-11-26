@@ -1,7 +1,7 @@
 <script type="text/javascript">
 import axios from 'axios'
-const path = ''
-// const path = '/api'
+// const path = ''
+const path = '/api'
 
 let headerToken = (token) => {
   axios.defaults.headers.Authorization = 'JWT ' + token

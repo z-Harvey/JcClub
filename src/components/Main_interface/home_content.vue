@@ -73,11 +73,12 @@
                 <p class="name" v-text="item.nickname">昵称</p>
                 <p class="comName" v-text="(item.position || '职位') + '/' + (item.comname || '公司')">职位/公司</p>
                 <div class="tagBox">
-                    <div v-text="item.industry||'未选择行业'"></div>
                     <div v-text="'工作' + item.workyears + '年'">工作N年</div>
                     <div v-text="'客户' + item.mate_num">客户999</div>
                 </div>
-                <div class="regular">对接部门 <span v-text="item.department">此处显示部门名称</span></div>
+                <div class="regular">销售产品： <span v-text="item.product">此处显示部门名称</span></div>
+                <div class="regular">目标客户所在行业： <span v-text="item.mbkh_industry">此处显示部门名称</span></div>
+                <div class="regular">标杆客户： <span v-text="item.bg_customer">此处显示部门名称</span></div>
             </div>
             <div class="footer">
                 <div class="fooLeft">
@@ -85,8 +86,8 @@
                     <span v-text="item.club_name">北京酷牛仔俱乐部</span>
                 </div>
                 <div class="fooRight" v-if="!(myId === item.user)">
-                    <button class="guanzhu" v-if="item.is_collect === 0" @click="MyCollect(item)">关注Ta</button>
-                    <button class="yiguanzhu" v-else-if="item.is_collect === 1">已关注</button>
+                    <button class="guanzhu" v-if="item.is_collect === 0" @click="MyCollect(0, item)">关注Ta</button>
+                    <button class="yiguanzhu" v-else-if="item.is_collect === 1" @click="MyCollect(1, item)">已关注</button>
                 </div>
             </div>
         </div>
@@ -120,18 +121,30 @@ export default {
         console.log(err)
       })
     },
-    MyCollect: function (data) {
+    MyCollect: function (num, data) {
       let _this = this
-      let obj = {
-        puser: data.user
-      }
-      _this.api.MyCollect(obj, function (res) {
-        if (res.status === 201) {
-          data.is_collect = 1
+      if (num === 0) {
+        let obj = {
+          puser: data.user
         }
-      }, function (err) {
-        console.log(err)
-      })
+        _this.api.MyCollect(obj, function (res) {
+          data.collect_id = res.data.collect_id
+          if (res.status === 201) {
+            data.is_collect = 1
+          }
+        }, function (err) {
+          console.log(err)
+        })
+      } else if (num === 1) {
+        _this.api.delMyCollect(data.collect_id, function (res) {
+          console.log(res.data)
+          if (res.status === 204) {
+            data.is_collect = 0
+          }
+        }, function (err) {
+          console.log(err)
+        })
+      }
     },
     sorts: function (num) {
       let arr = [false, false]
@@ -330,22 +343,17 @@ export default {
 }
 .tagBox>div{
     padding: .1rem .4rem;
-    background: #ececec;
-    color:#888;
+    background: rgba(255, 152, 0, 1);
+    color:#fff;
     font-size: .5rem;
     display: inline-block;
+    border-radius: .1rem;
 }
 .regular{
-    font-size: .7rem;
-    line-height: 1rem;
-    font-weight: 600;
-    margin-bottom:.5rem;
-    color:#101010;
-    font-weight: 600;
-}
-.regular>span{
-    font-weight: 100;
-    color:#888;
+    font-size: .6rem;
+    line-height: .8rem;
+    color:#606060;
+    margin-bottom:.3rem;
 }
 .footer{
     height:1.5rem;
@@ -357,6 +365,7 @@ export default {
 .fooLeft{
     float: left;
     line-height: 1.5rem;
+    margin-left: 2.5rem;
 }
 .fooLeft>img{
     width:.6rem;

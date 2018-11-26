@@ -161,6 +161,7 @@ export default {
     float: right;
     align-self: center;position: absolute;
     right: .5rem;
+    font-size: .7rem;
 }
 .conBtns{
     background:rgba(255, 152, 0, 0.1);

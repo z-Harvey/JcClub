@@ -41,22 +41,22 @@
                 </div>
             </div>
             <div class="contList">
-                <span>姓名</span>
-                <input type="text" v-model="userInfo.name" placeholder="请输入真实姓名（必填）">
+                <span>姓名<span class="red">*</span></span>
+                <input type="text" v-model="userInfo.name" placeholder="请输入真实姓名">
             </div>
             <div class="contList sex">
-                <span>性别</span>
+                <span>性别<span class="red">*</span></span>
                 <div>
                     <button @click="sex(1)" :class="userInfo.gender == 1?'navBtn':''">帅哥</button>
                     <button @click="sex(2)" :class="userInfo.gender == 2?'navBtn':''">美女</button>
                 </div>
             </div>
             <div class="contList">
-                <span>电话</span>
-                <input type="text" v-model="userInfo.mobile" placeholder="请输入电话">
+                <span>电话<span class="red">*</span></span>
+                <input type="text" disabled v-model="userInfo.mobile" placeholder="请输入电话">
             </div>
             <div class="contLists">
-                <span>所在地(必填)</span>
+                <span>所在地<span class="red">*</span></span>
                 <div class="xexBox">
                     <select v-model="city.sel1" @change="selText('0')" >
                         <option value="0" v-text="sel3text[0]||'省'"></option>
@@ -79,18 +79,18 @@
                 <input type="email" v-model="userInfo.email" placeholder="请输入邮箱">
             </div>
             <div class="contList">
-                <span>微信号</span>
-                <input type="text" v-model="userInfo.wx_no" placeholder="请输入微信号（必填）">
+                <span>微信号<span class="red">*</span></span>
+                <input type="text" v-model="userInfo.wx_no" placeholder="请输入微信号">
             </div>
             <div class="contList">
                 <span>生日</span>
                 <input type="date" v-model="userInfo.birthday"/>
             </div>
             <div class="contLists">
-                <span>学历(必填)</span>
+                <span>学历<span class="red">*</span></span>
                 <div class="xexBox">
                     <select v-model="userInfo.edu_background" @change="selText">
-                        <option value="">请选择</option>
+                        <option value="null">请选择</option>
                         <option value="小学">小学</option>
                         <option value="初中">初中</option>
                         <option value="中专">中专</option>
@@ -109,15 +109,15 @@
           <div class="subContent">
             <div class="contList">
                 <span>公司<span class="red">*</span></span>
-                <div @click="check('sea')" v-text="workInfo.comname||'当前所在公司（必填）'" class="checkBox"></div>
+                <div @click="check('sea')" v-text="workInfo.comname||'当前所在公司'" class="checkBox"></div>
             </div>
             <div class="contList">
                 <span>职业<span class="red">*</span></span>
-                <input type="text" v-model="workInfo.position" placeholder="当前的职位（必填）">
+                <input type="text" v-model="workInfo.position" placeholder="当前的职位">
             </div>
             <div class="contList">
                 <span>行业<span class="red">*</span></span>
-                <div @click="check" v-text="workInfo.industry||'当前所在行业（必填）'" class="checkBox"></div>
+                <div @click="check" v-text="workInfo.industry||'当前所在行业'" class="checkBox"></div>
             </div>
             <div class="contList">
                 <span>对接部门<span class="red">*</span></span>
@@ -125,15 +125,15 @@
             </div>
             <div class="contList">
                 <span>工作年限<span class="red">*</span></span>
-                <input type="date" v-model="workInfo.workyears" placeholder="参加工作的年限（必填）"/>
+                <input type="date" v-model="workInfo.workyears" placeholder="参加工作的年限"/>
             </div>
             <div class="contList">
                 <span>销售年限<span class="red">*</span></span>
-                <input type="date" v-model="workInfo.salesyears" placeholder="做销售的工作年限（必填）"/>
+                <input type="date" v-model="workInfo.salesyears" placeholder="做销售的工作年限"/>
             </div>
             <div class="contList">
                 <span>行业年限<span class="red">*</span></span>
-                <input type="date" v-model="workInfo.industryyears" placeholder="目前所在行业的工作年限（必填）"/>
+                <input type="date" v-model="workInfo.industryyears" placeholder="目前所在行业的工作年限"/>
             </div>
           </div>
           <div class="subContent">
@@ -143,17 +143,17 @@
             </div>
             <div class="contList">
                 <span>擅长领域<span class="red">*</span></span>
-                <div @click="check('duo')" v-text="workInfo.scArea||'擅长的行业领域（多选、必填）'" class="checkBox" style="overflow: hidden;"></div>
+                <div @click="check('duo')" v-text="workInfo.scArea||'擅长的行业领域（多选）'" class="checkBox" style="overflow: hidden;"></div>
             </div>
             <div class="subcontList">
-                <span>标杆客户<span class="red">*</span></span><span class="rightTex">至少一个</span>
+                <span>标杆客户<span class="red">*</span></span><span class="rightTex">以下至少填写一项</span>
                 <input class="width_100inp" v-for="(item,index) in bg_customer" :key="index" v-model="item.key" type="text" placeholder="请输入产品名称">
                 <img class="plus" @click="subjia(3)" src="@/assets/plus.png" alt="">
             </div>
           </div>
           <div class="subContent">
             <div class="subcontList">
-                <span>销售产品<span class="red">*</span></span><span class="rightTex">至少一个</span>
+                <span>销售产品<span class="red">*</span></span><span class="rightTex">以下至少填写一项</span>
                 <input class="width_100inp" v-for="(item,index) in product" :key="index" v-model="item.key" type="text" placeholder="请输入产品名称">
                 <img class="plus" @click="subjia(1)" src="@/assets/plus.png" alt="">
             </div>
@@ -208,7 +208,7 @@ export default {
       edu: '',
       userInfo: {
         name: '', // 用户名  *
-        gender: '', // 性别 1男2女 *
+        gender: '3', // 性别 1男2女 *
         mobile: '', // 电话 *
         area: '', // 所在地 *
         email: '', // 邮箱
@@ -774,11 +774,11 @@ div>span>.red{
     align-self: center;
 }
 .subContent>.contList{
-    height:2.25rem;
+    height:2rem;
     text-align: left;
     padding:0rem .5rem;
     font-size: .7rem;
-    line-height: 2.25rem;
+    line-height: 2rem;
 }
 .contList>input{
     height:1.5rem;
@@ -789,6 +789,7 @@ div>span>.red{
     border: none;
     font-size: .7rem;
     background:#fff;
+    -webkit-appearance: none;
 }
 .contList>.checkBox{
     height:1.5rem;
@@ -815,7 +816,6 @@ div>span>.red{
     background: rgba(0,0,0,0);
     font-size: .7rem;
 }
-
 .contList>.seleBox{
     height:1.5rem;
     width:10.7rem;
@@ -1045,6 +1045,7 @@ div>span>.red{
     font-size: .7rem;
     color:#888;
     background: #fff;
+    -webkit-appearance: none;
 }
 .width_100inp{
   font-size: .7rem;

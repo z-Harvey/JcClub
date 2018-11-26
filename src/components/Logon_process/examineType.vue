@@ -19,7 +19,7 @@
     <div class="meContent" v-if="msg.status === 2||msg.status === '2'">
         <div class="mCtit">
             <p class="no_con">很遗憾，您未能通过审核~</p>
-            <span class="no_content">原因：此处显示未通过原因</span>
+            <span class="no_content">原因：<span v-text="msg.desc || '未填写拒绝原因'"></span></span>
         </div>
     </div>
     <!-- <p class="Rules" v-if="Success_or_failure">俱乐部准则</p> -->
@@ -77,10 +77,10 @@ export default {
     document.title = '酷牛仔'
     let _this = this
     _this.msg = this.$route.params
-    console.log(_this.msg)
     this.api.getApplyStatus((res) => {
       console.log(res)
       this.msg['club_num'] = res.data[0].club_num
+      this.msg['desc'] = res.data[0].desc
     }, (err) => {
       console.log(err)
     })

@@ -5,13 +5,13 @@
             <div class="imgBox">
                 <img :src="listData.avatarurl" alt="">
             </div>
-            <div class="tag" v-text="listData.industry||'- -'">互联网</div>
             <div class="nameBox">
                 <div class="name">
                     <img v-if="listData.gender === 1" src="@/assets/man.png" alt="">
                     <img v-else src="@/assets/woman.png" alt="">
                     <div v-text="listData.nickname||'- -'">云端飞扬</div>
                 </div>
+                <div class="cheName" v-text="listData.position + '/' + listData.company_name">北京酷牛仔俱乐部</div>
                 <div class="cikeName" v-text="listData.club_name||'- -'">北京酷牛仔俱乐部</div>
             </div>
             <div class="listNav">
@@ -30,20 +30,19 @@
             </div>
         </div>
         <nav>
-            <button @click="navPath(0)" :class="navBtn?'navBtn':''">个人信息</button>
-            <button @click="navPath(1)" :class="!navBtn?'navBtn':''">工作经验</button>
+            <!-- <button @click="navPath(0)" :class="navBtn?'navBtn':''">个人信息</button> -->
+            <!-- <button @click="navPath(1)" :class="!navBtn?'navBtn':''">工作经验</button> -->
         </nav>
-        <!-- <router-view :type="'cardInfo'"></router-view> -->
-        <CuInfo ref="CuInfo" :show='navBtn' :type="'cardInfo'"/>
-        <workEx ref="workEx" :show='!navBtn' :type="'cardInfo'"/>
+        <CuInfo ref="CuInfo" :type="'cardInfo'"/>
+        <workEx ref="workEx" :type="'cardInfo'"/>
         <div style="height:2.25rem;"></div>
         <div v-if="source === 'my'" class="footer">
-            <button v-if="navBtn" class="myCard" @click="navPath(5)">编辑个人信息</button>
-            <button v-else class="myCard" @click="navPath(6)">编辑工作经验</button>
+            <button class="myCards" @click="navPath(5)">编辑个人信息</button>
+            <button class="myCards" @click="navPath(6)">编辑工作经验</button>
         </div>
         <div v-else class="footer">
-            <button @click="myCard">查看我的名片</button>
-            <button v-if="listData.is_collect === 0" @click="MyCollect(0)">关注Ta</button>
+            <button class="mybutton" @click="myCard">查看我的名片</button>
+            <button class="myCards" v-if="listData.is_collect === 0" @click="MyCollect(0)">关注Ta</button>
             <button v-else @click="MyCollect(1)">取消关注</button>
         </div>
     </div>
@@ -185,7 +184,9 @@ export default {
     }
     _this.user_id = _this.que.user_id
     _this.$refs.CuInfo.cardInfoInit(_this.user_id)
+    _this.$refs.workEx.workInfoInit(_this.user_id)
     _this.api.getUserHeader(_this.user_id, function (res) {
+      console.log(res)
       _this.listData = res.data
     }, function (err) {
       console.log(err)
@@ -259,7 +260,12 @@ export default {
 }
 .cikeName{
     color:#101010;
-    font-size: .7rem;
+    font-size: .6rem;
+    margin-top:.2rem;
+}
+.cheName{
+    color:#888;
+    font-size: .6rem;
     margin-top:.2rem;
 }
 .listNav{
@@ -284,7 +290,7 @@ export default {
     background:#fff;
 }
 .footer>button{
-    width:8.25rem;
+    width:45%;
     height:1.75rem;
     border-radius:1.75rem;
     font-size: .7rem;
@@ -295,14 +301,10 @@ export default {
 .footer>button::after{
     border:0;
 }
-.footer>button:first-child{
+.footer>.mybutton{
     background: #fff;
     color:rgba(255, 152, 0, 1);
     border:1px solid rgba(255, 152, 0, 1);
-}
-.footer>button:last-child{
-    background: rgba(255, 152, 0, 1);
-    color:#fff;
 }
 nav{
     margin:2.25rem auto .5rem;
@@ -327,8 +329,14 @@ nav>button::after{
     color:#fff;
 }
 .footer>.myCard{
-    width:10rem;
-    height:1.75rem;
+    background: rgba(255, 152, 0, 1);
+    color:#fff;
+}
+.footer>button{
+  background:#f1f1f1;
+  color:#888;
+}
+.footer>.myCards{
     background: rgba(255, 152, 0, 1);
     color:#fff;
 }

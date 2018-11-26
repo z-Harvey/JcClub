@@ -1,6 +1,8 @@
 <template>
   <div id="app">
     <router-view/>
+    <span v-text="urlCode"></span>
+    <span v-text="error"></span>
     <!-- <button v-on:click="clicks">click</button> -->
   </div>
 </template>
@@ -10,7 +12,9 @@ export default {
   name: 'App',
   data () {
     return {
-      path: 1
+      path: 1,
+      urlCode: '',
+      error: ''
     }
   },
   mounted () {
@@ -32,13 +36,12 @@ export default {
     }
     let _this = this
     let obj = {
-      code: urlCode
+      code: '1'
     }
     _this.api.getToken(obj, (res) => {
       _this.api.headerToken(res.data.token)
       _this.Global.userInfo['token'] = res.data.token
       if (res.data.is_user === 1) {
-        console.log(res.data.step)
         switch (res.data.step) {
           case 0:
             _this.$router.push('/NoMember')
@@ -62,8 +65,9 @@ export default {
           params: {token: res.data.token}
         })
       }
-    }, function (err) {
-      console.log(err)
+    }, (err) => {
+      this.urlCode = 'postData : ' + err.config.data
+      this.error = '  : ' + JSON.stringify(err)
     })
   },
   methods: {
@@ -130,4 +134,14 @@ export default {
   text-align: center;
   color: #2c3e50;
 }
+/* select{
+  width:100%;
+  height:1.5rem;
+  vertical-align: top;
+  border:0;
+  font-size: .7rem;
+  color:#888;
+  background: #fff;
+  -webkit-appearance: none;
+} */
 </style>

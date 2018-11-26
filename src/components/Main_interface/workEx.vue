@@ -1,5 +1,5 @@
 <template>
-    <div class="CuInfo" v-if="show">
+    <div class="CuInfo">
         <h1 v-if="type == 'undefind'||type == ''" v-text="type"></h1>
         <div v-if="type === 'cardInfo'" class="contBox">
             <div class="contTitle">
@@ -102,7 +102,6 @@ export default {
         _this.dataList = res.data
         _this.dataList.honors = JSON.parse(res.data.honors)
         _this.dataList.product = JSON.parse(res.data.product)
-        console.log(_this.dataList.product)
         _this.dataList.bg_customer = JSON.parse(res.data.bg_customer)
         let arr = []
         _this.dataList.bg_customer.map((p1) => {
@@ -181,22 +180,26 @@ export default {
     border-top: 1px solid #f7f7f7;
     font-size: .7rem;
     padding:.25rem 0;
+    text-align: left;
 }
 .contcons>div{
     padding:.25rem .5rem;
-    height:.7rem;
+    min-height:.7rem;
     font-size: .7rem;
-    line-height: .7rem;
-}
-.contcons>div>div:first-child{
-    color:rgba(255, 152, 0, 1);
-    float: left;
-}
-.contcons>div>div:last-child{
-    float: right;
+    line-height: .9rem;
+    position: relative;
 }
 .contcons>div>div{
   display: flex;
+}
+.contcons>div>div:first-child{
+    color:rgba(255, 152, 0, 1);
+    padding-right:1.5rem;
+}
+.contcons>div>div:last-child{
+    position: absolute;
+    right:1rem;
+    top:.35rem;
 }
 .contcons>div>div>img{
     width:.7rem;

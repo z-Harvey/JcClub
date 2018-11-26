@@ -55,6 +55,14 @@ export default {
             btn: 0
           }
           _this.$refs.Toast.on_display(obj)
+        } else if (err.data.mobile[0] === '邀请者邀请名额已达上限') {
+          let obj = {
+            Title: '提示',
+            Content: '无法申请！邀请者邀请名额已达上限',
+            type: 1,
+            btn: 0
+          }
+          _this.$refs.Toast.on_display(obj)
         } else {
           alert(err.status)
         }
