@@ -2,6 +2,7 @@
   <div class="international"
     v-if="show"
     @scroll="onScroll($event)">
+    <sort ref="sort" :styles="'top:4.75rem;'"/>
     <Toast ref="Toast"/>
     <div class="srceach">
         <div class="inpBox">
@@ -10,58 +11,21 @@
         </div>
         <button class="srceBtn" @click="srceach">搜索</button>
     </div>
-    <div class="sort" style="display:none;">
+    <div class="sort">
         <div @click="sorts(0)">
-            <span>客户关系/线索</span>
+            <span>地区</span>
             <img v-if="sort[0]" src="@/assets/bot1.png">
             <img v-else src="@/assets/bot2.png">
         </div>
         <div @click="sorts(1)">
-            <span>默认排序</span>
-            <img v-if="sort[1]" class="pai" src="@/assets/pai1.png">
-            <img v-else class="pai" src="@/assets/pai2.png">
+            <span>行业</span>
+            <img v-if="sort[1]" src="@/assets/bot1.png">
+            <img v-else src="@/assets/bot2.png">
         </div>
-    </div>
-    <div class="Screening" v-if="sort[0]||sort[1]">
-        <div class="s1" v-if="sort[0]">
-            <div class="s1-tit">客户关系</div>
-            <div class="s1-btnbox">
-                <div>有过合作</div>
-                <div>正在合作</div>
-                <div>有过跟进</div>
-                <div>正在跟进</div>
-            </div>
-            <div class="s1-tit">决策链线索</div>
-            <div class="s1-btnbox">
-                <div>有</div>
-                <div>无</div>
-            </div>
-            <div class="s1-btnlist">
-                <button class="cz">重置</button>
-                <button class="qd">确定</button>
-            </div>
-        </div>
-        <div class="s2" v-if="sort[1]">
-            <div>
-                <p>默认排序</p>
-                <img src="@/assets/yes.png">
-            </div>
-            <div>
-                <p>按跟进人数由高到低排序</p>
-                <img src="@/assets/yes.png">
-            </div>
-            <div>
-                <p>按跟进人数由低到高排序</p>
-                <img src="@/assets/yes.png">
-            </div>
-            <div>
-                <p>按牛币价格由高到低排序</p>
-                <img src="@/assets/yes.png">
-            </div>
-            <div>
-                <p>按牛币价格由低到高排序</p>
-                <img src="@/assets/yes.png">
-            </div>
+        <div @click="sorts(2)">
+            <span>范围</span>
+            <img v-if="sort[2]" src="@/assets/bot1.png">
+            <img v-else src="@/assets/bot2.png">
         </div>
     </div>
     <div class="content">
@@ -121,21 +85,36 @@ export default {
     /**
      * 跳转到标记客户
      */
-    callMoldOk: function (data) {
+    callMoldOk (data) {
       this.$router.push({
         name: 'ApplyOpen'
       })
     },
-    sorts: function (num) {
+    sorts (num) {
       let arr = [false, false]
       if (this.sort[num]) {
         this.sort = arr
         return
       }
+      let obj = null
+      switch (num) {
+        case 0:
+          obj = {
+            type: 3,
+            success (data) {
+              console.log(data)
+            }
+          }
+          break
+        case 1:
+          break
+        case 2:
+          break
+      }
       arr[num] = true
       this.sort = arr
     },
-    path: function (typ, item) {
+    path (typ, item) {
       let _this = this
       if (_this.status === 0 || _this.status === 2 || _this.status === 3) {
         _this.init()
@@ -160,7 +139,7 @@ export default {
         _this.$refs.Toast.isUnlock(obj, item)
       }
     },
-    clltoa: function (data) {
+    clltoa (data) {
       let _this = this
       let x = 0
       if (data.is_deepunlock) {
@@ -180,11 +159,11 @@ export default {
             is_deepunlock: data.is_deepunlock,
             company: data.id
           }
-          _this.api.postCompanyUnlock(obj, function (res) {
+          _this.api.postCompanyUnlock(obj, (res) => {
             if (res.status === 201) {
               _this.path(0, data)
             }
-          }, function (err) {
+          }, (err) => {
             console.log(err)
           })
         } else {
@@ -205,12 +184,12 @@ export default {
     /**
      * 审核失败情况下跳转到我的客户
      */
-    fail: function () {
+    fail () {
       this.$refs.Toast.show = false
       this.Global.navListType = [false, false, true, false]
       this.$parent.navClick(2)
     },
-    init: function () {
+    init () {
       let _this = this
       let str = 'p=' + this.p + '&page_size=' + this.page_size
       _this.api.getCompanySeaList(str, function (res) {
@@ -218,7 +197,7 @@ export default {
       }, function (err) {
         console.log(err)
       })
-      _this.api.CompanySeaStatus(str, function (res) {
+      _this.api.CompanySeaStatus('', function (res) {
         let obj = {}
         _this.status = res.data.status
         _this.Global.stateList['status'] = res.data.status
@@ -380,9 +359,8 @@ export default {
     height:.75rem;
     vertical-align: text-top;
 }
-
 .content{
-    margin-top:2.5rem;
+    margin-top:4.75rem;
     background: #fff;
 }
 .contTit{

@@ -646,16 +646,6 @@ let getReviews = function (success, error) {
   })
 }
 /**
- * 搜索会员  search
- */
-let srchUser = function (data, success, error) {
-  axios.get(path + '/club_user/?link=' + Date.parse(new Date()) + '&' + data).then(function (res) {
-    success(res)
-  }, function (err) {
-    error(err.response)
-  })
-}
-/**
  * 搜索我的客户  search
  */
 let srchMyCompany = function (data, success, error) {
@@ -717,73 +707,72 @@ let postDataOk = function (success, error) {
 }
 
 export default{
-  srchUser,
-  srchMyCompany,
+  srchMyCompany, // 搜索我的客户
   headerToken,
-  login,
-  getVerifyCode,
-  getToken,
-  getMine,
-  getApplyClub,
-  getCompany,
-  getClubList,
-  getWorkNum,
-  getUserNum,
-  postUserInfo,
-  postWorkInfo,
-  getAreaList,
-  getSearchCompany,
-  getSearchIndustry,
-  getDepartmentList,
-  getApplyStatus,
-  getClubChoice,
-  postUserNickname,
-  getClubUser,
-  getUserHeader,
-  getUserCard,
-  getUserCardWork,
-  getUserCollect,
-  getUserCustomer,
-  getUserFans,
-  MyCollect,
-  delMyCollect,
-  getCompanySeaList,
-  getMyCustomer,
-  CompanySeaStatus,
-  CompanyPerm,
-  PostCompanyPerm,
-  PostMyCustomer,
-  getCompanytype,
-  getCompanyHeader,
-  getCompanyInfo,
-  getCompanyMark,
-  getCompanyBasic,
-  getCompanyScale,
-  getCompanyContact,
-  getCompanyUnlock,
-  postCompanyUnlock,
-  getMyCustomers,
-  getNotesHeader,
-  getFootPrint,
-  postFootPrint,
-  getMyCollect,
-  getMyFans,
-  getNiuzTask,
-  getNiuzDetail,
-  getMyCardInfo,
-  putMyCardInfo,
-  getMyInvited,
-  postMyInvited,
-  putWorkInfo,
-  putMyCustomers,
-  getReviews,
-  patchMyCustomers,
-  upImg,
-  markFileCheck,
-  SubFile,
-  qSubFile,
-  submitFileData,
-  postDataOk,
-  getCustomerIndustry
+  login, // 注册
+  getVerifyCode, // 获取验证码
+  getToken, // 用户进入界面  用code换取token  同时查看是不是用户  与当前状态
+  getMine, // 获取个人信息
+  getApplyClub, // 提交 邀请者手机号
+  getCompany, // 根据ID获取公司名字
+  getClubList, // 登陆流程中 获取俱乐部列表
+  getWorkNum, // 获取 未完成的 经验信息
+  getUserNum, // 获取 未完成的 基本信息
+  postUserInfo, // 提交 基本信息
+  postWorkInfo, // 提交 经验信息
+  getAreaList, // 获取城市列表
+  getSearchCompany, // 查询公司 搜索
+  getSearchIndustry, // 行业接口
+  getDepartmentList, // 获取部门列表
+  getApplyStatus, // 获取加入俱乐部的状态
+  getClubChoice, // 提交 想要加入的俱乐部ID
+  postUserNickname, // 为自己取一个酷酷的昵称
+  getClubUser, // 获取客户列表
+  getUserHeader, // 获取 名片 头部信息
+  getUserCard, // 获取 名片 中的 个人信息
+  getUserCardWork, // 获取 名片 工作经验
+  getUserCollect, // 获取 对方的关注
+  getUserCustomer, // 获取 对方的客户
+  getUserFans, // 获取 对方的粉丝
+  MyCollect, // 关注Ta
+  delMyCollect, // 取消关注
+  getCompanySeaList, // 公海List
+  getMyCustomer, // 我的客户List
+  CompanySeaStatus, // 是否有权限查看客户
+  CompanyPerm, // 获取当前标记了多少客户
+  PostCompanyPerm, // 申请开通权限
+  PostMyCustomer, // 标记客户 提交标记信息
+  getCompanytype, // 企业类型列表
+  getCompanyHeader, // 客户信息 头部
+  getCompanyInfo, // 客户信息
+  getCompanyMark, // 客户 的跟进会员
+  getCompanyBasic, // 客户 的 基本信息
+  getCompanyScale, // 客户 的 规模信息
+  getCompanyContact, // 客户 的 企业联系人
+  getCompanyUnlock, // 获取解锁需要的牛钻数
+  postCompanyUnlock, // 解锁这家公司
+  getMyCustomers, // 销售笔记 个人信息
+  getNotesHeader, // 销售笔记 头部
+  getFootPrint, // 销售笔记 获取足迹
+  postFootPrint, // 销售笔记 新增足迹
+  getMyCollect, // 我的关注
+  getMyFans, // 我的粉丝
+  getNiuzTask, // 牛钻任务列表
+  getNiuzDetail, // 牛钻记录
+  getMyCardInfo, // 修改我的名片时 获取我的信息
+  putMyCardInfo, // 修改我的名片
+  getMyInvited, // 获取邀请人审核列表
+  postMyInvited, // 是否同意 被邀请者 入会
+  putWorkInfo, // 编辑工作经验  提交
+  putMyCustomers, // 更新客户信息
+  getReviews, // 获取对公司进行评价的标签
+  patchMyCustomers, // 添加标签评价
+  upImg, // 文件上传
+  markFileCheck, // 数据确认 界面
+  SubFile, // 获取通过校验的列表
+  qSubFile, // 获取通过校验，信息详情
+  submitFileData, // 获取通过校验，信息详情
+  postDataOk, // 数据无误
+  getCustomerIndustry // 目标行业
 }
 </script>

@@ -81,7 +81,7 @@ export default {
         _this.api.MyCollect(obj, function (res) {
           if (res.status === 201) {
             _this.listData.collect_id = res.data.collect_id
-            _this.listData.fans_count += 1
+            // _this.listData.fans_count += 1
             _this.listData.is_collect = 1
           }
         }, function (err) {
@@ -90,7 +90,7 @@ export default {
       } else if (num === 1) {
         _this.api.delMyCollect(_this.listData.collect_id, function (res) {
           if (res.status === 204) {
-            _this.listData.fans_count -= 1
+            // _this.listData.fans_count -= 1
             _this.listData.is_collect = 0
           }
         }, function (err) {

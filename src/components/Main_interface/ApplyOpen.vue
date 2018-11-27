@@ -41,7 +41,7 @@ export default {
       let _this = this
       if (num === 0) {
         // _this.$refs.srcea.on_display()
-        _this.$router.push('/srceach')
+        _this.$router.push('/batchMarking')
       } else if (num === 1) {
         _this.api.PostCompanyPerm(function (res) {
           if (res.status === 201) {

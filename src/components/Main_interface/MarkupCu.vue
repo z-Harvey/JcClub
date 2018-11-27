@@ -446,7 +446,7 @@ export default {
         } else if (err.data.non_field_errors) {
           let obj = {
             Title: '提示',
-            Content: '标记过该客户，可进入客户首页编辑标记信息。',
+            Content: '请勿重复提交',
             type: 1,
             btn: 0
           }
@@ -485,7 +485,7 @@ export default {
     linkClick: function (typ) {
       let _this = this
       if (typ === 'hangye') {
-        _this.$refs.linkage.on_display({type: 'industry', Choice: 1})
+        _this.$refs.linkage.on_display({type: 'Cust', Choice: 1})
       } else if (typ === 'type') {
         _this.$refs.check.on_display({type: 2, Pattern: 1})
       } else if (typ === 'xiansuo') {

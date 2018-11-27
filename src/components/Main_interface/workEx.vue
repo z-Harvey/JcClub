@@ -49,7 +49,7 @@
                 </div>
             </div>
         </div>
-        <div v-if="type === 'cardInfo'" class="contBox">
+        <div v-if="type === 'cardInfo' && dataList.product[0].key !== ''" class="contBox">
             <div class="contTitle">
                 <div>销售产品</div>
                 <div></div>
@@ -61,7 +61,7 @@
                 </div>
             </div>
         </div>
-        <div v-if="type === 'cardInfo'" class="contBox">
+        <div v-if="type === 'cardInfo' && dataList.honors[0].key !== ''" class="contBox">
             <div class="contTitle">
                 <div>销售荣誉</div>
                 <div></div>

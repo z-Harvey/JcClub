@@ -1,5 +1,5 @@
 <template>
-  <div class="nav">
+  <div class="adminNav">
     <homePage v-if="navList[0]"/>
     <Member v-if="navList[1]"/>
     <examine v-if="navList[2]"/>
@@ -17,12 +17,12 @@
 </template>
 
 <script>
-import homePage from '@/components/Admin/homePage'
-import examine from '@/components/Admin/examine'
-import Member from '@/components/Admin/Member'
+import homePage from '@/components/Admin/homePage' // 俱乐部
+import examine from '@/components/Admin/examine' // 审核
+import Member from '@/components/Admin/Member' // 会员
 
 export default {
-  name: 'nav',
+  name: 'adminNav',
   components: {
     homePage,
     examine,
@@ -69,7 +69,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.nav{
+.adminNav{
     position: fixed;
     width:100%;
     height:100%;

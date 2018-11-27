@@ -69,17 +69,7 @@ export default {
       })
     },
     phonezz: function () {
-      let _this = this
-      if (!(/^1(3|4|5|7|8)\d{9}$/.test(_this.phone))) {
-        _this.btn = false
-        _this.res = false
-        setTimeout(() => {
-          _this.res = true
-        }, 2000)
-      } else {
-        _this.btn = true
-        console.log('chenggong')
-      }
+      this.btn = true
     }
   },
   mounted () {

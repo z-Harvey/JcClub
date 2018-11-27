@@ -1,8 +1,8 @@
 <template>
   <div id="app">
     <router-view/>
-    <span v-text="urlCode"></span>
-    <span v-text="error"></span>
+    <span class="ers" v-text="urlCode"></span>
+    <span class="ers" v-text="error"></span>
     <!-- <button v-on:click="clicks">click</button> -->
   </div>
 </template>
@@ -41,6 +41,8 @@ export default {
     _this.api.getToken(obj, (res) => {
       _this.api.headerToken(res.data.token)
       _this.Global.userInfo['token'] = res.data.token
+      // _this.$router.push('/NoMember')
+      // return
       if (res.data.is_user === 1) {
         switch (res.data.step) {
           case 0:
@@ -134,14 +136,7 @@ export default {
   text-align: center;
   color: #2c3e50;
 }
-/* select{
-  width:100%;
-  height:1.5rem;
-  vertical-align: top;
-  border:0;
-  font-size: .7rem;
-  color:#888;
-  background: #fff;
-  -webkit-appearance: none;
-} */
+.ers{
+  font-size: .6rem;
+}
 </style>

@@ -37,7 +37,7 @@
           </div>
       </div>
       <div class="content">
-           <div class="forCont">
+           <div class="forCont" @click="path">
                <div class="imgBox">
                    <img src="@/assets/touxiang.jpg" alt="">
                </div>
@@ -74,7 +74,9 @@ export default {
   components: {
   },
   methods: {
-
+    path () {
+      this.$router.push('/memberInfo')
+    }
   },
   mounted () {
   }

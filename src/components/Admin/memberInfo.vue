@@ -17,21 +17,21 @@
               </div>
           </div>
           <div class="Infobom">
-              <div>
+              <div @click="path(0)">
                   <div>99</div>
                   <div>关注</div>
               </div>
-              <div>
+              <div @click="path(1)">
                   <div>99</div>
                   <div>粉丝</div>
               </div>
-              <div>
+              <div @click="path(2)">
                   <div>99</div>
                   <div>客户</div>
               </div>
           </div>
       </div>
-      <div class="listBtn">
+      <div class="listBtn" @click="path(3)">
           <div>会员日志</div>
           <div>
               <span>已入会</span>
@@ -209,7 +209,22 @@ export default {
     }
   },
   methods: {
-
+    path (num) {
+      switch (num) {
+        case 0:
+          this.$router.push('/memberJournal')
+          break
+        case 1:
+          this.$router.push('/memberJournal')
+          break
+        case 2:
+          this.$router.push('/memberCustomer')
+          break
+        case 3:
+          this.$router.push('/memberJournal')
+          break
+      }
+    }
   },
   mounted () {
     document.title = '会员信息'

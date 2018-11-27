@@ -9,61 +9,24 @@
         </div>
         <button class="srceBtn" @click="srceach">搜索</button>
     </div>
-    <div class="sort" style="display:none;">
+    <div class="sort">
         <div @click="sorts(0)">
-            <span>客户关系/线索</span>
+            <span>行业</span>
             <img v-if="sort[0]" src="@/assets/bot1.png" alt="">
             <img v-else src="@/assets/bot2.png" alt="">
         </div>
         <div @click="sorts(1)">
+            <span>目标客户行业</span>
+            <img v-if="sort[1]" src="@/assets/bot1.png" alt="">
+            <img v-else src="@/assets/bot2.png" alt="">
+        </div>
+        <div @click="sorts(2)">
             <span>默认排序</span>
-            <img v-if="sort[1]" class="pai" src="@/assets/pai1.png" alt="">
+            <img v-if="sort[2]" class="pai" src="@/assets/pai1.png" alt="">
             <img v-else class="pai" src="@/assets/pai2.png" alt="">
         </div>
     </div>
-    <div class="Screening" v-if="sort[0]||sort[1]" style="display:none;">
-        <div class="s1" v-if="sort[0]">
-            <div class="s1-tit">客户关系</div>
-            <div class="s1-btnbox">
-                <div>有过合作</div>
-                <div>正在合作</div>
-                <div>有过跟进</div>
-                <div>正在跟进</div>
-            </div>
-            <div class="s1-tit">决策链线索</div>
-            <div class="s1-btnbox">
-                <div>有</div>
-                <div>无</div>
-            </div>
-            <div class="s1-btnlist">
-                <button class="cz">重置</button>
-                <button class="qd">确定</button>
-            </div>
-        </div>
-        <div class="s2" v-if="sort[1]">
-            <div>
-                <p>默认排序</p>
-                <img src="@/assets/yes.png" alt="">
-            </div>
-            <div>
-                <p>按跟进人数由高到低排序</p>
-                <img src="@/assets/yes.png" alt="">
-            </div>
-            <div>
-                <p>按跟进人数由低到高排序</p>
-                <img src="@/assets/yes.png" alt="">
-            </div>
-            <div>
-                <p>按牛币价格由高到低排序</p>
-                <img src="@/assets/yes.png" alt="">
-            </div>
-            <div>
-                <p>按牛币价格由低到高排序</p>
-                <img src="@/assets/yes.png" alt="">
-            </div>
-        </div>
-    </div>
-    <div style="height:2.5rem;"></div>
+    <div style="height:5rem;"></div>
     <div class="scll">
         <div class="content" v-for="(item, index) in dataList" :key="index">
             <div class="contImg" @click="path('info', item)">
@@ -93,6 +56,7 @@
         </div>
     </div>
     <div style="height:3rem;"></div>
+    <sort ref="sort" :styles="'top:4.75rem;'"/>
   </div>
 </template>
 
@@ -101,22 +65,23 @@ export default {
   name: 'home_content',
   data () {
     return {
-      sort: [false, false],
+      sort: [false, false, false],
       myId: '',
       dataList: [],
       src: null,
       page_size: 12,
       p: 1,
-      ps: true
+      ps: true,
+      srceachText: ''
     }
   },
   methods: {
     srceach () {
       let str = 'search=' + this.src
-      let _this = this
-      this.api.srchUser(str, (res) => {
+      this.srceachText = this.src
+      this.api.getClubUser(str, (res) => {
         console.log(res)
-        _this.dataList = res.data.results
+        this.dataList = res.data.results
       }, (err) => {
         console.log(err)
       })
@@ -137,7 +102,6 @@ export default {
         })
       } else if (num === 1) {
         _this.api.delMyCollect(data.collect_id, function (res) {
-          console.log(res.data)
           if (res.status === 204) {
             data.is_collect = 0
           }
@@ -147,10 +111,70 @@ export default {
       }
     },
     sorts: function (num) {
-      let arr = [false, false]
+      let _this = this
+      let arr = [false, false, false]
+      let sortDom = this.$refs.sort
+      let obj
       if (this.sort[num]) {
         this.sort = arr
+        sortDom.close()
         return
+      }
+      this.p = 1
+      switch (num) {
+        case 0:
+          obj = {
+            type: 3,
+            success (data) {
+              _this.srceachText = data
+              let str = 'search=' + data + '&p=' + _this.p + '&page_size=' + _this.page_size
+              _this.api.getClubUser(str, (res) => {
+                console.log(res)
+                _this.sort = [false, false, false]
+                _this.dataList = res.data.results
+              }, (err) => {
+                console.log(err)
+              })
+            }
+          }
+          sortDom.on_display(obj)
+          break
+        case 1:
+          obj = {
+            type: 3,
+            success (data) {
+              _this.srceachText = data
+              let str = 'search=' + data + '&p=' + _this.p + '&page_size=' + _this.page_size
+              _this.api.getClubUser(str, (res) => {
+                console.log(res)
+                _this.sort = [false, false, false]
+                _this.dataList = res.data.results
+              }, (err) => {
+                console.log(err)
+              })
+            }
+          }
+          sortDom.on_display(obj)
+          break
+        case 2:
+          obj = {
+            type: 2,
+            success (data) {
+              console.log(data)
+              _this.ordering = data
+              let str = 'search=' + _this.srceachText + '&p=' + _this.p + '&page_size=' + _this.page_size + '&ordering=' + _this.ordering
+              _this.api.getClubUser(str, (res) => {
+                console.log(res)
+                _this.sort = [false, false, false]
+                _this.dataList = res.data.results
+              }, (err) => {
+                console.log(err)
+              })
+              sortDom.on_display(obj)
+            }
+          }
+          sortDom.on_display(obj)
+          break
       }
       arr[num] = true
       this.sort = arr
@@ -184,7 +208,7 @@ export default {
         return
       }
       let _this = this
-      let str = 'p=' + this.p + '&page_size=' + this.page_size
+      let str = 'p=' + this.p + '&page_size=' + this.page_size + '&search=' + this.srceachText + '&ordering=' + _this.ordering
       _this.api.getClubUser(str, (res) => {
         _this.dataList = _this.dataList.concat(res.data.results)
         if (res.data.count === this.dataList.length) {
@@ -357,10 +381,10 @@ export default {
 }
 .footer{
     height:1.5rem;
-    padding:.5rem;
+    padding:.5rem .5rem 0;
     font-size: .6rem;
     vertical-align: top;
-    border-top: 1px solid #f7f7f7
+    border-top: 1px solid #f7f7f7;
 }
 .fooLeft{
     float: left;

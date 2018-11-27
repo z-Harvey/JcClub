@@ -421,7 +421,7 @@ export default {
     linkClick: function (typ) {
       let _this = this
       if (typ === 'hangye') {
-        _this.$refs.linkage.on_display({type: 'industry', Choice: 1})
+        _this.$refs.linkage.on_display({type: 'Cust', Choice: 1})
       } else if (typ === 'type') {
         _this.$refs.check.on_display({type: 2, Pattern: 1})
       } else if (typ === 'xiansuo') {

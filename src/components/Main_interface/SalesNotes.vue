@@ -58,6 +58,48 @@ export default {
     path: function (num, item) {
       let _this = this
       if (num === 0) {
+        // _this.api.CompanySeaStatus('', function (res) {
+        //   _this.Global.stateList['status'] = res.data.status
+        //   switch (res.data.status) {
+        //     case 0:
+        //       obj = {
+        //         Title: '提示',
+        //         Content: '您尚未开通查客户权限，是否立即申请开通？',
+        //         type: 1,
+        //         btn: 3,
+        //         No: '放弃申请',
+        //         Yes: '立即申请',
+        //         success: _this.callMoldOk
+        //       }
+        //       _this.$refs.Toast.on_display(obj)
+        //       break
+        //     case 2:
+        //       obj = {
+        //         Title: '提示',
+        //         Content: '您的查客户权限正在审核，请耐心等待~',
+        //         type: 1,
+        //         btn: 0,
+        //         No: '确认'
+        //       }
+        //       _this.$refs.Toast.on_display(obj)
+        //       break
+        //     case 3:
+        //       obj = {
+        //         Title: '提示',
+        //         Content: '原因：' + res.data.desc,
+        //         type: 1,
+        //         btn: 3,
+        //         No: '我的客户',
+        //         Yes: '申请开通',
+        //         success: _this.callMoldOk,
+        //         fail: _this.fail
+        //       }
+        //       _this.$refs.Toast.on_display(obj)
+        //       break
+        //   }
+        // }, function (err) {
+        //   console.log(err)
+        // })
         this.$router.push({
           path: '/CuHome',
           query: {

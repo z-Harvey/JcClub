@@ -68,20 +68,9 @@ export default {
     path: function (num) {
     }
   },
-  mounted (options) {
+  mounted () {
     let _this = this
-    document.title = 'Ta的客户'
-    _this.user_id = _this.$route.query.user_id
-    // let str = 'user=' + _this.user_id
-    let str = 'user=1'
-    _this.api.getUserCustomer(str, function (res) {
-      res.data.map(function (p1, p2) {
-        p1.add_time = Math.floor(Math.abs(Date.now() - new Date(p1.add_time).getTime()) / (3600 * 24 * 1e3))
-      })
-      _this.dataList = res.data
-    }, function (err) {
-      console.log(err)
-    })
+    document.title = '会员客户'
   }
 }
 </script>

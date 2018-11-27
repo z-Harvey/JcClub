@@ -2,7 +2,6 @@
 <template>
    <div class="linkage" v-if="show">
         <div class="cont-box">
-            <!-- <div class="tit">一级联动/二级联动/三级联动</div> -->
             <div class="cont-content">
                 <div>
                     <div v-for="(item,index) in listData" :key="index" @click="onlin(item)">

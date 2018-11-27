@@ -42,7 +42,7 @@ import dataConfirm from '@/components/Main_interface/dataConfirm' //  公司名�
 /**
  * 管理员模块 页面注册
  */
-import nav from '@/components/Admin/nav' //  管理员首页导航
+import adminNav from '@/components/Admin/nav' //  管理员首页导航
 import MemberList from '@/components/Admin/MemberList' //  会员列表
 import newClub from '@/components/Admin/newClub' //  创建俱乐部
 import memberInfo from '@/components/Admin/memberInfo' //  会员信息
@@ -86,7 +86,7 @@ export default new Router({
     /**
      * ------------------------------- Main_interface 文件夹下的文件
      */
-    { path: '/nav', name: 'nav', component: nav },
+    { path: '/adminNav', name: 'adminNav', component: adminNav },
     { path: '/MemberList', name: 'MemberList', component: MemberList },
     { path: '/newClub', name: 'newClub', component: newClub },
     { path: '/memberInfo', name: 'memberInfo', component: memberInfo },
