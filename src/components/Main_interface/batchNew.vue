@@ -57,7 +57,6 @@ export default {
         }
       }
       http.post('/markFile/', obj, config).then((res) => {
-        console.log(res)
         this.uptext = '完成'
       }, (err) => {
         alert(err)

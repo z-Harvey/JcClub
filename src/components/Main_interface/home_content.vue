@@ -160,8 +160,8 @@ export default {
           obj = {
             type: 2,
             success (data) {
-              console.log(data)
-              _this.ordering = data
+              let retArr = ['-add_time', 'user__user_work__workyears', 'user__user_work__salesyears', 'user__user_work__industryyears', '-user__mark_count']
+              _this.ordering = retArr[data]
               let str = 'search=' + _this.srceachText + '&p=' + _this.p + '&page_size=' + _this.page_size + '&ordering=' + _this.ordering
               _this.api.getClubUser(str, (res) => {
                 console.log(res)

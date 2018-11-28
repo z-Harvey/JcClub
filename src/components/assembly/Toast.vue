@@ -1,5 +1,5 @@
 <template name="Toast">
-  <div class="Toast" v-if="show">
+  <div class="Toast" v-if="show" @touchmove.prevent>
     <div class="alert_box">
         <div class="title" v-text="content.Title? content.Title:'标题'">是否确认提交？</div>
         <div class="content" v-if="content.type === 1 || content.type === 4" v-text="content.Content? content.Content:'内容'">请您确保您填写的信息准确无误，否则可能会影响审核结果</div>

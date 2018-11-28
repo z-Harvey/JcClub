@@ -36,6 +36,7 @@ export default {
       let _this = this
       let str = 'company=' + id
       _this.api.getFootPrint(str, function (res) {
+        console.log(res)
         _this.msgList = res.data.results
         _this.msgList.map(function (p1, p2) {
           if (p1.type === 0) {

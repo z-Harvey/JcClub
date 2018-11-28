@@ -79,8 +79,11 @@ export default {
       this.api.SubFile((res) => {
         this.msg = res.data.results
         this.msg.map((p1, p2) => {
-          if (p1.error_fields_count !== 0 && p1.non_fields_count !== 0) {
-            console.log(this.btnfal)
+          console.log(p1.error_fields_count !== 0)
+          console.log(p1.non_fields_count !== 0)
+          if (p1.error_fields_count !== 0) {
+            this.btnfal = false
+          } else if (p1.non_fields_count !== 0) {
             this.btnfal = false
           } else {
             this.btnfal = true

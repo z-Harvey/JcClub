@@ -1,5 +1,5 @@
 <template>
-    <div class="CuInfo">
+    <div class="CuInfo" v-if="show">
         <div v-if="type === 'CuHome'">
             <div class="contBox">
                 <div class="contTitle">
@@ -332,7 +332,8 @@ export default {
   data () {
     return {
       tapBur: true,
-      msg: {}
+      msg: {},
+      show: true
     }
   },
   methods: {
@@ -359,6 +360,7 @@ export default {
       this.api.getMyCustomers(id, (res) => {
         let arr = ['有过合作', '正在合作', '有过跟进', '正在跟进']
         let arr1 = ['有决策链线索', '无决策链线索']
+        this.show = true
         this.msg = res.data
         this.msg.contact_list = JSON.parse(this.msg.contact_list)
         this.msg.relation = arr[this.msg.relation]
@@ -366,13 +368,16 @@ export default {
       }, (err) => {
         console.log(err)
       })
+    },
+    close () {
+      this.show = false
     }
   },
   mounted (options) {
     console.log(this.type)
     document.title = '酷牛仔'
   },
-  props: ['type', 'show']
+  props: ['type']
 }
 </script>
 

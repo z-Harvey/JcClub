@@ -122,7 +122,7 @@
         </div>
         <div style="height:2.5rem;"></div>
         <div class="markFooter">
-            <button @click="submit">提交</button>
+            <button @click="submit">确认</button>
         </div>
         <linkage ref="linkage" @ok="cllLink" @ok1="linkCall"/>
         <Check ref="check" @ok="checkCall"/>
@@ -524,7 +524,7 @@ export default {
     padding:.25rem .5rem;
 }
 .contcon>div>div:first-child{
-    color:#101010;
+    color:#888;
     float: left;
 }
 .contcon>div{
@@ -538,7 +538,7 @@ export default {
     margin-top:.325rem;
     border:0;
     text-align: right;
-    color:#ccc;
+    color:#2c2c2c;
     font-size: .7rem;
 }
 .btnList{
@@ -574,7 +574,7 @@ export default {
 }
 
 input::placeholder{
-    color:#ccc !important;
+    color:#2c2c2c !important;
 }
 .plus{
     padding-left:.5rem;
@@ -611,7 +611,7 @@ input::placeholder{
     border: none;
     width: calc(100% - 1rem);
     padding:0 0 0 1rem;
-    color:#ccc;
+    color:#2c2c2c;
     background: #fff;
     font-size: .7rem;
 }
@@ -621,7 +621,7 @@ input::placeholder{
     vertical-align: top;
     border:0;
     font-size: .7rem;
-    color:#888;
+    color:#2c2c2c;
     background:#fff;
 }
 .checkBox{
@@ -633,7 +633,7 @@ input::placeholder{
     border: none;
     font-size: .7rem;
     line-height: 1.5rem;
-    color:#ccc;
+    color:#2c2c2c;
 }
 .cheLeft{
     line-height: 1.5rem;

@@ -2,7 +2,7 @@
     <div class="dataConfirm">
         <div class="title">
             <img src="@/assets/info.png" alt="">
-            <div>以下<span v-text="msg.error_count"></span>条数据数据匹配公司失败，请确认公司名称是否填写正确</div>
+            <div>以下 <span v-text="msg.error_count"></span> 条数据数据匹配公司失败，请确认公司名称是否填写正确</div>
         </div>
         <div>
             <div class="for" v-for="(item, index) in msg.error_data" :key="index">
@@ -61,7 +61,11 @@ export default {
   mounted (options) {
     document.title = '数据确认'
     this.api.markFileCheck((res) => {
+      console.log(res)
       this.msg = res.data
+      if (res.data.error_count === 0) {
+        this.$refs.dataStatis.on_display()
+      }
     }, (err) => {
       console.log(err)
     })

@@ -451,6 +451,26 @@ export default {
             btn: 0
           }
           _this.$refs.Toast.on_display(obj)
+        } else {
+          let obj = {
+            Title: '解锁成功',
+            Content: '新增成功',
+            type: 1,
+            btn: 2,
+            No: '我的客户',
+            Yes: '继续新增',
+            success: function (res) {
+              console.log(res)
+              _this.$router.go(-1)
+            },
+            fail: function () {
+              _this.Global.navListType = [false, false, true, false]
+              _this.$router.push({
+                path: '/home'
+              })
+            }
+          }
+          _this.$refs.Toast.on_display(obj)
         }
       })
     },

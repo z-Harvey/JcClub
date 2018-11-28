@@ -26,7 +26,7 @@ export default {
   data () {
     return {
       phone: null,
-      btn: false,
+      btn: true,
       res: true
     }
   },
@@ -39,6 +39,7 @@ export default {
       _this.api.getApplyClub(obj, function (res) {
         _this.$router.push('/membershipApp')
       }, function (err) {
+        console.log(err)
         if (err.data.mobile[0] === '邀请者未加入俱乐部') {
           let obj = {
             Title: '提示',
@@ -55,6 +56,14 @@ export default {
             btn: 0
           }
           _this.$refs.Toast.on_display(obj)
+        } else if (err.data.mobile[0] === '该字段不能为 null。') {
+          let obj = {
+            Title: '提示',
+            Content: '邀请者手机号不能为空',
+            type: 1,
+            btn: 0
+          }
+          _this.$refs.Toast.on_display(obj)
         } else if (err.data.mobile[0] === '邀请者邀请名额已达上限') {
           let obj = {
             Title: '提示',
@@ -64,7 +73,12 @@ export default {
           }
           _this.$refs.Toast.on_display(obj)
         } else {
-          alert(err.status)
+          let ss = ''
+          for (let i in err.data) {
+            ss += i + ':'
+            ss += err.data[i]
+          }
+          alert(ss)
         }
       })
     },

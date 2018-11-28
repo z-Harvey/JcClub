@@ -25,8 +25,8 @@
             <button @click="navPath(1)" :class="!navBtn?'navBtn':''">销售足迹 <span v-text="msgData.footPrint_count"></span></button>
         </nav>
         <!-- <router-view :type="'SalesNotes'"></router-view> -->
-        <CuInfo ref="cuinfo" :type="'SalesNotes'" v-show="navBtn"/>
-        <saleFootprint ref="saleFoot" :type="'SalesNotes'" v-show="!navBtn"/>
+        <CuInfo ref="cuinfo" :type="'SalesNotes'" :show="navBtn"/>
+        <saleFootprint ref="saleFoot" :type="'SalesNotes'" :show="!navBtn"/>
         <div style="height:2.25rem;"></div>
         <div class="footer" v-if="navBtn">
             <button @click="paths(3)">编辑客户信息</button>
@@ -58,53 +58,64 @@ export default {
     path: function (num, item) {
       let _this = this
       if (num === 0) {
-        // _this.api.CompanySeaStatus('', function (res) {
-        //   _this.Global.stateList['status'] = res.data.status
-        //   switch (res.data.status) {
-        //     case 0:
-        //       obj = {
-        //         Title: '提示',
-        //         Content: '您尚未开通查客户权限，是否立即申请开通？',
-        //         type: 1,
-        //         btn: 3,
-        //         No: '放弃申请',
-        //         Yes: '立即申请',
-        //         success: _this.callMoldOk
-        //       }
-        //       _this.$refs.Toast.on_display(obj)
-        //       break
-        //     case 2:
-        //       obj = {
-        //         Title: '提示',
-        //         Content: '您的查客户权限正在审核，请耐心等待~',
-        //         type: 1,
-        //         btn: 0,
-        //         No: '确认'
-        //       }
-        //       _this.$refs.Toast.on_display(obj)
-        //       break
-        //     case 3:
-        //       obj = {
-        //         Title: '提示',
-        //         Content: '原因：' + res.data.desc,
-        //         type: 1,
-        //         btn: 3,
-        //         No: '我的客户',
-        //         Yes: '申请开通',
-        //         success: _this.callMoldOk,
-        //         fail: _this.fail
-        //       }
-        //       _this.$refs.Toast.on_display(obj)
-        //       break
-        //   }
-        // }, function (err) {
-        //   console.log(err)
-        // })
-        this.$router.push({
-          path: '/CuHome',
-          query: {
-            com_id: _this.que.com_id
+        _this.api.CompanySeaStatus('', function (res) {
+          _this.Global.stateList['status'] = res.data.status
+          let obj
+          switch (res.data.status) {
+            case 0:
+              obj = {
+                Title: '提示',
+                Content: '您尚未开通查客户权限，是否立即申请开通？',
+                type: 1,
+                btn: 3,
+                No: '放弃申请',
+                Yes: '立即申请',
+                success (ress) {
+                  _this.$router.push({
+                    name: 'ApplyOpen'
+                  })
+                }
+              }
+              _this.$refs.Toast.on_display(obj)
+              return
+            case 2:
+              obj = {
+                Title: '提示',
+                Content: '您的查客户权限正在审核，请耐心等待~',
+                type: 1,
+                btn: 0,
+                No: '确认'
+              }
+              _this.$refs.Toast.on_display(obj)
+              return
+            case 3:
+              obj = {
+                Title: '提示',
+                Content: '原因：' + res.data.desc,
+                type: 1,
+                btn: 3,
+                No: '我的客户',
+                Yes: '重新申请',
+                success (ress) {
+                  _this.$router.push({
+                    name: 'ApplyOpen'
+                  })
+                },
+                fail (errs) {
+                  _this.$router.go(-1)
+                }
+              }
+              _this.$refs.Toast.on_display(obj)
+              return
           }
+          _this.$router.push({
+            path: '/CuHome',
+            query: {
+              com_id: _this.que.com_id
+            }
+          })
+        }, function (err) {
+          console.log(err)
         })
       } else if (num === 1) {
         console.log(item)
@@ -173,8 +184,10 @@ export default {
         case 1:
           _this.$refs.saleFoot.init(_this.que.com_id)
           _this.navBtn = false
+          // _this.$refs.CuInfo.close()
           break
       }
+      console.log(_this.navBtn)
     },
     paths (num) {
       switch (num) {

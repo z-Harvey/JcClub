@@ -42,15 +42,43 @@
                 <img v-if="s2[4]" src="@/assets/yes.png" alt="">
             </div>
         </div>
+        <div class="s2" v-if="msg.type === 21">
+            <div @click="s2Clik(0)">
+                <p>全部</p>
+                <img v-if="s2[0]" src="@/assets/yes.png" alt="">
+            </div>
+            <div @click="s2Clik(1)">
+                <p>仅看我关注的会员跟进的</p>
+                <img v-if="s2[1]" src="@/assets/yes.png" alt="">
+            </div>
+            <div @click="s2Clik(2)">
+                <p>仅看本俱乐部的会员跟进的</p>
+                <img v-if="s2[2]" src="@/assets/yes.png" alt="">
+            </div>
+        </div>
+        <div class="s2" v-if="msg.type === 22">
+            <div @click="s2Cliks(0)">
+                <p>默认排序</p>
+                <img v-if="s22[0]" src="@/assets/yes.png" alt="">
+            </div>
+            <div @click="s2Cliks(1)">
+                <p>标记人数从多到少</p>
+                <img v-if="s22[1]" src="@/assets/yes.png" alt="">
+            </div>
+            <div @click="s2Cliks(2)">
+                <p>标记人数从少到多</p>
+                <img v-if="s22[2]" src="@/assets/yes.png" alt="">
+            </div>
+        </div>
         <!-- <div class="s3" v-if="msg.type === 3" @touchmove.prevent="f1"> -->
         <div class="s3" v-if="msg.type === 3">
             <div>
                 <div>
-                    <div @click="type2Call(qb)">
+                    <div @click="type3Call(qb)">
                         <p>全部</p>
                         <img v-if="qb.show" src="@/assets/yes.png" alt="">
                     </div>
-                    <div v-for="(item, index) in s1List1" :key="index" @click="type2Init(item)">
+                    <div v-for="(item, index) in s1List1" :key="index" @click="type3Init(item)">
                         <p v-text="item.name"></p>
                         <img v-if="item.show" src="@/assets/yes.png" alt="">
                     </div>
@@ -58,7 +86,29 @@
             </div>
             <div>
                 <div>
-                    <div v-for="(item, index) in s1List2" :key="index" @click="type2Call(item)">
+                    <div v-for="(item, index) in s1List2" :key="index" @click="type3Call(item)">
+                        <p v-text="item.name"></p>
+                        <img v-if="item.show" src="@/assets/yes.png" alt="">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="s3" v-if="msg.type === 31">
+            <div>
+                <div>
+                    <div @click="type3Call(qb)">
+                        <p>全部</p>
+                        <img v-if="qb.show" src="@/assets/yes.png" alt="">
+                    </div>
+                    <div v-for="(item, index) in s1List1" :key="index" @click="type31Init(item)">
+                        <p v-text="item.name"></p>
+                        <img v-if="item.show" src="@/assets/yes.png" alt="">
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div>
+                    <div v-for="(item, index) in s1List2" :key="index" @click="type3Call(item)">
                         <p v-text="item.name"></p>
                         <img v-if="item.show" src="@/assets/yes.png" alt="">
                     </div>
@@ -80,6 +130,7 @@ export default {
         type: null
       },
       s2: [true, false, false, false, false],
+      s22: [true, false, false],
       s1List1: [],
       s1List2: [],
       show: false,
@@ -107,22 +158,32 @@ export default {
       this.msg = obj
       this.show = true
       if (obj.type === 3) {
-        this.type2Init()
+        this.type3Init()
+      } else if (obj.type === 31) {
+        this.type31Init()
       }
     },
     s2Clik (num) {
-      console.log(num)
       let arr = [false, false, false, false, false]
-      let retArr = ['-add_time', 'user__user_work__workyears', 'user__user_work__salesyears', 'user__user_work__industryyears', '-user__mark_count']
       arr[num] = !this.s2[num]
       if (!arr[num]) {
         arr[0] = true
       }
       this.s2 = arr
-      this.msg.success(retArr[num])
+      this.msg.success(num)
       this.close()
     },
-    type2Init (item) {
+    s2Cliks (num) {
+      let arr = [false, false, false, false, false]
+      arr[num] = !this.s2[num]
+      if (!arr[num]) {
+        arr[0] = true
+      }
+      this.s22 = arr
+      this.msg.success(num)
+      this.close()
+    },
+    type3Init (item) {
       let str = ''
       this.qb.show = false
       if (item) {
@@ -147,7 +208,32 @@ export default {
         console.log(err)
       })
     },
-    type2Call (item) {
+    type31Init (item) {
+      let str = ''
+      this.qb.show = false
+      if (item) {
+        this.s1List1.map((p1, p2) => {
+          p1['show'] = false
+        })
+        item.show = true
+        str = 'pid=' + item.id
+      } else {
+        str = 'pid=0'
+      }
+      this.api.getAreaList(str, (res) => {
+        res.data.map((p1, p2) => {
+          p1['show'] = false
+        })
+        if (item) {
+          this.s1List2 = res.data
+          return
+        }
+        this.s1List1 = res.data
+      }, (err) => {
+        console.log(err)
+      })
+    },
+    type3Call (item) {
       item.show = true
       this.s1List2 = []
       this.msg.success(item.name)
@@ -166,14 +252,14 @@ export default {
     position: fixed;
     width:100%;
     height:100%;
-    background: #f9f9f9;
-    background: rgba(0,0,0,.2)
+    background: rgba(0,0,0,0)
 }
 .Screening{
     position: fixed;
     left:0;
     width:100%;
     background:rgba(0,0,0,.2);
+    height:100%;
 }
 .s1{
     background:#fff;

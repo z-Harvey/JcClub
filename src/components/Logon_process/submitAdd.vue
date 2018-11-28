@@ -31,6 +31,7 @@
             </div>
           </div>
       </div>
+      <div class="srrTop"></div>
       <div class="subContentBox" v-if="cont_one">
         <div class="subContent">
             <div class="contImg">
@@ -424,9 +425,9 @@ export default {
       delete datas.club
       _this.api.postUserInfo(datas, function (res) {
         if (res.data.step === 2) {
-          document.getElementsByClassName('submitAdd')[0].scrollTop = 0
+          document.documentElement.scrollTop = 0
+          document.body.scrollTop = 0
           _this.cont_one = !_this.cont_one
-          document.getElementsByClassName('subContentBox')[0].scrollTop = 0
         }
       }, function (err) {
         console.log(err)
@@ -497,6 +498,8 @@ export default {
      * 点击 '上一步' 时界面切换
      */
     next_step: function (res) {
+      document.documentElement.scrollTop = 0
+      document.body.scrollTop = 0
       this.cont_one = !this.cont_one
     },
     /**

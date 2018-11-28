@@ -2,8 +2,6 @@
   <div class="international"
     v-if="show"
     @scroll="onScroll($event)">
-    <sort ref="sort" :styles="'top:4.75rem;'"/>
-    <Toast ref="Toast"/>
     <div class="srceach">
         <div class="inpBox">
             <img src="@/assets/srceach.png">
@@ -11,7 +9,7 @@
         </div>
         <button class="srceBtn" @click="srceach">搜索</button>
     </div>
-    <div class="sort">
+    <div class="sort" style="display:none;">
         <div @click="sorts(0)">
             <span>地区</span>
             <img v-if="sort[0]" src="@/assets/bot1.png">
@@ -28,6 +26,10 @@
             <img v-else src="@/assets/bot2.png">
         </div>
     </div>
+    <div class="sortRig" @click="sorts(3)" style="display:none;">
+      <img v-if="sort[3]" src="@/assets/pai1.png">
+      <img v-else src="@/assets/pai2.png">
+    </div>
     <div class="content">
         <div class="contFor" v-for="(item, index) in dataList" :key="index">
             <div class="tapBox">
@@ -42,7 +44,8 @@
                     </div>
                 </div>
                 <div class="ricTag">
-                    <div v-for="(item, index) in item.reviews_list" :key="index" v-text="item">有钱任性</div>
+                    <div v-text="item.industry"></div>
+                    <div v-text="item.type"></div>
                 </div>
                 <div class="forFuterr">
                     <div>内部跟进 <span v-text="item.club_mark_count"></span></div>
@@ -54,6 +57,7 @@
         </div>
     </div>
     <div style="height:2.75rem;"></div>
+    <sort ref="sort" :styles="'top:4.25rem;'"/>
     <Toast ref="Toast"/>
   </div>
 </template>
@@ -63,13 +67,17 @@ export default {
   name: 'international',
   data () {
     return {
-      sort: [false, false],
+      sort: [false, false, false, false],
       dataList: [],
       status: null,
       src: null,
       page_size: 12,
       p: 1,
-      ps: true
+      ps: true,
+      province: '',
+      Searching: '',
+      ordering: '',
+      type: ''
     }
   },
   methods: {
@@ -91,24 +99,67 @@ export default {
       })
     },
     sorts (num) {
-      let arr = [false, false]
+      let arr = [false, false, false, false]
+      let _this = this
       if (this.sort[num]) {
         this.sort = arr
+        this.$refs.sort.close()
         return
       }
       let obj = null
       switch (num) {
         case 0:
           obj = {
-            type: 3,
+            type: 31,
             success (data) {
+              arr = [false, false, false, false]
               console.log(data)
+              _this.province = data
+              _this.sortInit()
+              _this.sort = arr
             }
           }
+          this.$refs.sort.on_display(obj)
           break
         case 1:
+          obj = {
+            type: 3,
+            success (data) {
+              arr = [false, false, false, false]
+              console.log(data)
+              _this.Searching = data
+              _this.sortInit()
+              _this.sort = arr
+            }
+          }
+          this.$refs.sort.on_display(obj)
           break
         case 2:
+          obj = {
+            type: 21,
+            success (data) {
+              arr = [false, false, false, false]
+              console.log(data)
+              _this.type = data
+              _this.sortInit()
+              _this.sort = arr
+            }
+          }
+          this.$refs.sort.on_display(obj)
+          break
+        case 3:
+          obj = {
+            type: 22,
+            success (data) {
+              arr = [false, false, false, false]
+              let as = ['-company__mate_num', 'company__mate_num']
+              _this.ordering = as[data]
+              _this.sortInit()
+              console.log(data)
+              _this.sort = arr
+            }
+          }
+          this.$refs.sort.on_display(obj)
           break
       }
       arr[num] = true
@@ -231,7 +282,7 @@ export default {
               type: 1,
               btn: 3,
               No: '我的客户',
-              Yes: '申请开通',
+              Yes: '重新申请',
               success: _this.callMoldOk,
               fail: _this.fail
             }
@@ -247,7 +298,7 @@ export default {
         return
       }
       let _this = this
-      let str = 'p=' + this.p + '&page_size=' + this.page_size
+      let str = 'p=' + this.p + '&page_size=' + this.page_size + '&type=' + this.type + '&province=' + this.province + '&Searching=' + this.Searching + '&ordering=' + this.ordering
       _this.api.getCompanySeaList(str, (res) => {
         _this.dataList = _this.dataList.concat(res.data.results)
         if (res.data.count === this.dataList.length) {
@@ -263,6 +314,18 @@ export default {
         this.p++
         this.scll()
       }
+    },
+    sortInit () {
+      let _this = this
+      let str = 'p=' + this.p + '&page_size=' + this.page_size + '&type=' + this.type + '&province=' + this.province + '&Searching=' + this.Searching + '&ordering=' + this.ordering
+      _this.api.getCompanySeaList(str, (res) => {
+        _this.dataList = res.data.results
+        if (res.data.count === this.dataList.length) {
+          this.ps = false
+        }
+      }, function (err) {
+        console.log(err)
+      })
     }
   },
   mounted () {
@@ -339,12 +402,30 @@ export default {
     left:0;
     display: flex;
     justify-content:space-around;
-    height:2.75rem;
-    width:100%;
+    height:2.25rem;
+    width:calc(100% - 2.25rem);
     font-size: .6rem;
     color:#101010;
     background: #fff;
     border-bottom: 1px solid #f7f7f7;
+}
+.sortRig{
+    position: fixed;
+    top:2rem;
+    width:2.25rem;
+    right:0;
+    height:2.25rem;
+    font-size: .6rem;
+    color:#101010;
+    background: #fff;
+    border:1px solid #f7f7f7;
+    display: flex;
+}
+.sortRig>img{
+  width:.75rem;
+  height:.75rem;
+  margin:0 auto;
+  align-self: center;
 }
 .sort>div{
     height:2.75rem;
@@ -360,7 +441,7 @@ export default {
     vertical-align: text-top;
 }
 .content{
-    margin-top:4.75rem;
+    margin-top:2.75rem;
     background: #fff;
 }
 .contTit{
