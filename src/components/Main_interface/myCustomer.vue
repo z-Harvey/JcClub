@@ -58,6 +58,9 @@
             </div>
         </div>
     </div>
+    <div class="blank" v-if="dataList.length === 0">
+        <img src="@/assets/blank.png" alt="">
+    </div>
     <div style="height:2.75rem;"></div>
     <Toast ref="Toast"/>
   </div>
@@ -216,6 +219,16 @@ export default {
     left:0;
     overflow: auto;
     background: #f9f9f9;
+}
+.blank{
+    position: fixed;
+    width:100%;
+    height:calc(100% - 6.66rem);
+    top:6.66rem;
+}
+.blank>img{
+  width:6.66rem;
+  height:6.66rem;
 }
 .srceach{
     width:100%;

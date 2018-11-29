@@ -55,6 +55,9 @@
             </div>
         </div>
     </div>
+    <div class="blank" v-if="dataList.length === 0">
+        <img src="@/assets/blank.png" alt="">
+    </div>
     <div style="height:3rem;"></div>
     <sort ref="sort" :styles="'top:4.75rem;'"/>
   </div>
@@ -141,7 +144,7 @@ export default {
           break
         case 1:
           obj = {
-            type: 3,
+            type: 32,
             success (data) {
               _this.srceachText = data
               let str = 'search=' + data + '&p=' + _this.p + '&page_size=' + _this.page_size
@@ -247,6 +250,16 @@ export default {
     height:100%;
     background: #f9f9f9;
     overflow: auto;
+}
+.blank{
+    position: fixed;
+    width:100%;
+    height:calc(100% - 6.66rem);
+    top:6.66rem;
+}
+.blank>img{
+  width:6.66rem;
+  height:6.66rem;
 }
 .srceach{
     width:100%;

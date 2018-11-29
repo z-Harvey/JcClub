@@ -11,7 +11,10 @@
         <div class="res" :class="res?'reshei':''">手机号码错误</div>
     </div>
     <div class="nani">什么是酷牛仔？</div>
-    <div class="wayCj"></div>
+    <div class="wayCj">
+      <img src="@/assets/whatIsIt.jpg" alt="">
+    </div>
+    <div style="height:2.25rem;"></div>
     <div class="sqBtnBox">
         <button v-if="btn" class="sqBtn" @click="sqBtn">申请</button>
         <button v-else class="sqBtns" disabled>申请</button>
@@ -27,7 +30,11 @@ export default {
     return {
       phone: null,
       btn: true,
-      res: true
+      res: true,
+      errStatus: null,
+      errData: null,
+      errConfig: null,
+      errJson: null
     }
   },
   methods: {
@@ -39,7 +46,6 @@ export default {
       _this.api.getApplyClub(obj, function (res) {
         _this.$router.push('/membershipApp')
       }, function (err) {
-        console.log(err)
         if (err.data.mobile[0] === '邀请者未加入俱乐部') {
           let obj = {
             Title: '提示',
@@ -79,7 +85,13 @@ export default {
             ss += err.data[i]
           }
           alert(ss)
+          _this.errData = ss
         }
+        _this.api.errTest(JSON.stringify(err), (res) => {
+          console.log(res)
+        }, (err) => {
+          console.log(err)
+        })
       })
     },
     phonezz: function () {
@@ -104,6 +116,9 @@ export default {
     overflow: auto;
     width:100%;
     height:100%;
+}
+.errs{
+  font-size: .6rem
 }
 .res{
     color:red;
@@ -189,7 +204,10 @@ export default {
 .wayCj{
     width:92%;
     background:#F2F2F3 100%;
-    margin:2.4rem auto;
+    margin:1rem auto;
+}
+.wayCj>img{
+    width: 100%;
 }
 .nani{
     font-size: .7rem;

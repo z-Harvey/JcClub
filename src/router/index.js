@@ -39,6 +39,10 @@ import batchMarking from '@/components/Main_interface/batchMarking' //  标记�
 import batchNew from '@/components/Main_interface/batchNew' //  批量上传Excel
 import dataConfirm from '@/components/Main_interface/dataConfirm' //  公司名匹配失败  数据确认
 
+import homeContent from '@/components/Main_interface/home_content' // 会员
+import International from '@/components/Main_interface/International' // 公海
+import myCustomer from '@/components/Main_interface/myCustomer' // 我的客户 页面
+import my from '@/components/Main_interface/my' // 我的 页面
 /**
  * 管理员模块 页面注册
  */
@@ -83,6 +87,10 @@ export default new Router({
     { path: '/batchMarking', name: 'batchMarking', component: batchMarking },
     { path: '/batchNew', name: 'batchNew', component: batchNew },
     { path: '/dataConfirm', name: 'dataConfirm', component: dataConfirm },
+    { path: '/homeContent', name: 'homeContent', component: homeContent },
+    { path: '/International', name: 'International', component: International },
+    { path: '/myCustomer', name: 'myCustomer', component: myCustomer },
+    { path: '/my', name: 'my', component: my },
     /**
      * ------------------------------- Main_interface 文件夹下的文件
      */

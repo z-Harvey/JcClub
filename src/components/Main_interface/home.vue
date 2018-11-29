@@ -1,84 +1,94 @@
 <template>
   <div class="home">
     <Toast ref="Toast" @confirm="alert_ok"></Toast>
-    <!-- <router-view ref="homeContent" @navClick="navClick"/> -->
-    <homeContent ref="c0" :show="nav_list[0]"/>
-    <International ref="c1" :show="nav_list[1]"/>
-    <myCustomer ref="c2" :show="nav_list[2]"/>
-    <my ref="c3" :show="nav_list[3]"/>
+    <div class="navBox">
+      <div class="navRow">
+        <div @click="navClick(3)">
+          <img class="imgTit" src="@/assets/friend.png" alt="">
+          <p>会员</p>
+          <div class="rig">
+            <img src="@/assets/right_bai.png" alt="">
+          </div>
+        </div>
+        <div @click="navClick(4)">
+          <img class="imgTit" src="@/assets/friend.png" alt="">
+          <p>公海</p>
+          <div class="rig">
+            <img src="@/assets/right_bai.png" alt="">
+          </div>
+        </div>
+      </div>
+      <div class="navRow">
+        <div @click="navClick(5)">
+          <img class="imgTit" src="@/assets/friend.png" alt="">
+          <p>商机</p>
+          <div class="rig">
+            <img src="@/assets/right_bai.png" alt="">
+          </div>
+        </div>
+        <div @click="navClick(6)">
+          <img class="imgTit" src="@/assets/friend.png" alt="">
+          <p>需求</p>
+          <div class="rig">
+            <img src="@/assets/right_bai.png" alt="">
+          </div>
+        </div>
+      </div>
+    </div>
     <nav>
-        <div @click="navClick(0)" class="link_tou">
-            <img v-if="nav_list[0]" src="@/assets/friend.png" alt="">
-            <img v-else src="@/assets/friend_a.png" alt="">
-            <p :class="nav_list[0]?'pcole':''">会员</p>
-        </div>
-        <div @click="navClick(1)" class="link_tou">
-            <img v-if="nav_list[1]" src="@/assets/navTar.png" alt="">
+        <div class="link_tou">
+            <img v-if="nav_list[0]" src="@/assets/navTar.png" alt="">
             <img v-else src="@/assets/navTar_a.png" alt="">
-            <p :class="nav_list[1]?'pcole':''">公海</p>
+            <p :class="nav_list[0]?'pcole':''">牛盟</p>
         </div>
-        <div class="centerBtn" @click="navClick(4)">
+        <div class="centerBtn" @click="navClick(2)">
           <img src="@/assets/home_navImg.png" alt="">
         </div>
-        <div @click="navClick(2)" class="link_tou">
-            <img v-if="nav_list[2]" src="@/assets/medal.png" alt="">
-            <img v-else src="@/assets/medal_a.png" alt="">
-            <p :class="nav_list[2]?'pcole':''">我的客户</p>
-        </div>
-        <div @click="navClick(3)" class="link_tou">
-            <img v-if="nav_list[3]" src="@/assets/people.png" alt="">
+        <div @click="navClick(1)" class="link_tou">
+            <img v-if="nav_list[1]" src="@/assets/people.png" alt="">
             <img v-else src="@/assets/people_a.png" alt="">
-            <p :class="nav_list[3]?'pcole':''">我</p>
+            <p :class="nav_list[1]?'pcole':''">我</p>
         </div>
     </nav>
   </div>
 </template>
 
 <script>
-import homeContent from '@/components/Main_interface/home_content'
-import International from '@/components/Main_interface/International'
-import myCustomer from '@/components/Main_interface/myCustomer' // 我的客户 页面
-import my from '@/components/Main_interface/my' // 我的 页面
+
 
 export default {
   name: 'home',
-  components: {
-    homeContent,
-    International,
-    myCustomer,
-    my
-  },
   data () {
     return {
-      nav_list: [true, false, false, false]
+      nav_list: [true, false]
     }
   },
   methods: {
     navClick: function (num) {
-      let arr = [false, false, false, false]
       let _this = this
       switch (num) {
         case 0:
-          _this.$refs.c0.init()
+          this.$router.push('/batchMarking')
           break
         case 1:
-          _this.$refs.c1.init()
+          this.$router.push('/my')
           break
         case 2:
-          _this.$refs.c2.init()
+          this.$router.push('/batchMarking')
           break
         case 3:
-          _this.$refs.c3.init()
+          this.$router.push('/home_content')
           break
         case 4:
+          this.$router.push('/International')
+          break
+        case 5:
           this.$router.push('/batchMarking')
-          arr[0] = true
-          this.nav_list = arr
-          return
+          break
+        case 6:
+          this.$router.push('/batchMarking')
+          break
       }
-      arr[parseInt(num)] = true
-      this.nav_list = arr
-      this.Global.navListType = arr
     },
     // 点击确认后响应的函数
     alert_ok: function () {
@@ -89,15 +99,9 @@ export default {
   mounted () {
     document.title = '酷牛仔'
     let _this = this
-    _this.nav_list = _this.Global.navListType
-    _this.nav_list.map(function (p1, p2) {
-      if (p1) {
-        _this.navClick(p2)
-      }
-    })
-    _this.api.getMine(function (res) {
-      _this.Global.userInfo.myId = res.data.id
-    }, function (err) {
+    this.api.getMine((res) => {
+      this.Global.userInfo.myId = res.data.id
+    },(err) => {
       console.log(err)
     })
   }
@@ -106,6 +110,14 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.home{
+    background:#f9f9f9;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top:0;
+    left:0;
+}
 a{
     text-decoration:none;
     color:#101010;
@@ -144,5 +156,40 @@ nav>div{
 }
 .pcole{
     color:rgba(255, 152, 0, 1);
+}
+.navRow{
+  display: flex;
+  justify-content: space-evenly;
+  font-size: .8rem;
+  line-height: .8rem;
+  margin-top:.5rem;
+}
+.navRow>div{
+    width:8.25rem;
+    height:12rem;
+    background:#fff;
+    border-radius: .25rem;
+}
+.navRow>div>p{
+    margin-top:.75rem;
+}
+.imgTit{
+    width:1.5rem;
+    height:1.5rem;
+    margin-top:2.5rem;
+}
+.rig{
+    width:1rem;
+    height:1rem;
+    display: flex;
+    background: rgba(255, 172, 55, 0.3);
+    border-radius: 50%;
+    margin:4rem auto 0;
+}
+.rig>img{
+    width:.6rem;
+    height:.6rem;
+    align-self: center;
+    margin:0 auto;
 }
 </style>

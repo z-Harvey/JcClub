@@ -51,10 +51,10 @@
                 <p>仅看我关注的会员跟进的</p>
                 <img v-if="s2[1]" src="@/assets/yes.png" alt="">
             </div>
-            <div @click="s2Clik(2)">
+            <!-- <div @click="s2Clik(2)">
                 <p>仅看本俱乐部的会员跟进的</p>
                 <img v-if="s2[2]" src="@/assets/yes.png" alt="">
-            </div>
+            </div> -->
         </div>
         <div class="s2" v-if="msg.type === 22">
             <div @click="s2Cliks(0)">
@@ -115,6 +115,28 @@
                 </div>
             </div>
         </div>
+        <div class="s3" v-if="msg.type === 32">
+            <div>
+                <div>
+                    <div @click="type3Call(qb)">
+                        <p>全部</p>
+                        <img v-if="qb.show" src="@/assets/yes.png" alt="">
+                    </div>
+                    <div v-for="(item, index) in s1List1" :key="index" @click="type32Init(item)">
+                        <p v-text="item.name"></p>
+                        <img v-if="item.show" src="@/assets/yes.png" alt="">
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div>
+                    <div v-for="(item, index) in s1List2" :key="index" @click="type3Call(item)">
+                        <p v-text="item.name"></p>
+                        <img v-if="item.show" src="@/assets/yes.png" alt="">
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
   </div>
 </template>
@@ -161,6 +183,8 @@ export default {
         this.type3Init()
       } else if (obj.type === 31) {
         this.type31Init()
+      } else if (obj.type === 32) {
+        this.type32Init()
       }
     },
     s2Clik (num) {
@@ -174,7 +198,7 @@ export default {
       this.close()
     },
     s2Cliks (num) {
-      let arr = [false, false, false, false, false]
+      let arr = [false, false, false]
       arr[num] = !this.s2[num]
       if (!arr[num]) {
         arr[0] = true
@@ -185,6 +209,7 @@ export default {
     },
     type3Init (item) {
       let str = ''
+      this.s1List2 = []
       this.qb.show = false
       if (item) {
         this.s1List1.map((p1, p2) => {
@@ -208,8 +233,35 @@ export default {
         console.log(err)
       })
     },
+    type32Init (item) {
+      let str = ''
+      this.s1List2 = []
+      this.qb.show = false
+      if (item) {
+        this.s1List1.map((p1, p2) => {
+          p1['show'] = false
+        })
+        item.show = true
+        str = 'pid=' + item.id
+      } else {
+        str = 'pid=0'
+      }
+      this.api.getSearchIndustry(str, (res) => {
+        res.data.map((p1, p2) => {
+          p1['show'] = false
+        })
+        if (item) {
+          this.s1List2 = res.data
+          return
+        }
+        this.s1List1 = res.data
+      }, (err) => {
+        console.log(err)
+      })
+    },
     type31Init (item) {
       let str = ''
+      this.s1List2 = []
       this.qb.show = false
       if (item) {
         this.s1List1.map((p1, p2) => {

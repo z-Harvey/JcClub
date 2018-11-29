@@ -10,6 +10,16 @@ let headerToken = (token) => {
 /**
  * 用户进入界面  用code换取token  同时查看是不是用户  与当前状态
  */
+let errTest = function (data, success, error) {
+  axios.post(path + '/test/', data).then(function (res) {
+    success(res)
+  }, function (err) {
+    error(err.response)
+  })
+}
+/**
+ * 用户进入界面  用code换取token  同时查看是不是用户  与当前状态
+ */
 let getToken = function (data, success, error) {
   axios.post(path + '/public_login/', data).then(function (res) {
     success(res)
@@ -707,6 +717,7 @@ let postDataOk = function (success, error) {
 }
 
 export default{
+  errTest,
   srchMyCompany, // 搜索我的客户
   headerToken,
   login, // 注册

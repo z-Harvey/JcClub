@@ -9,7 +9,7 @@
         </div>
         <button class="srceBtn" @click="srceach">搜索</button>
     </div>
-    <div class="sort" style="display:none;">
+    <div class="sort">
         <div @click="sorts(0)">
             <span>地区</span>
             <img v-if="sort[0]" src="@/assets/bot1.png">
@@ -26,7 +26,7 @@
             <img v-else src="@/assets/bot2.png">
         </div>
     </div>
-    <div class="sortRig" @click="sorts(3)" style="display:none;">
+    <div class="sortRig" @click="sorts(3)">
       <img v-if="sort[3]" src="@/assets/pai1.png">
       <img v-else src="@/assets/pai2.png">
     </div>
@@ -56,6 +56,9 @@
             </div>
         </div>
     </div>
+    <div class="blank" v-if="dataList.length === 0">
+        <img src="@/assets/blank.png" alt="">
+    </div>
     <div style="height:2.75rem;"></div>
     <sort ref="sort" :styles="'top:4.25rem;'"/>
     <Toast ref="Toast"/>
@@ -75,7 +78,7 @@ export default {
       p: 1,
       ps: true,
       province: '',
-      Searching: '',
+      industry: '',
       ordering: '',
       type: ''
     }
@@ -114,6 +117,7 @@ export default {
             success (data) {
               arr = [false, false, false, false]
               console.log(data)
+              _this.p = 1
               _this.province = data
               _this.sortInit()
               _this.sort = arr
@@ -127,7 +131,8 @@ export default {
             success (data) {
               arr = [false, false, false, false]
               console.log(data)
-              _this.Searching = data
+              _this.p = 1
+              _this.industry = data
               _this.sortInit()
               _this.sort = arr
             }
@@ -140,6 +145,7 @@ export default {
             success (data) {
               arr = [false, false, false, false]
               console.log(data)
+              _this.p = 1
               _this.type = data
               _this.sortInit()
               _this.sort = arr
@@ -153,6 +159,7 @@ export default {
             success (data) {
               arr = [false, false, false, false]
               let as = ['-company__mate_num', 'company__mate_num']
+              _this.p = 1
               _this.ordering = as[data]
               _this.sortInit()
               console.log(data)
@@ -298,7 +305,7 @@ export default {
         return
       }
       let _this = this
-      let str = 'p=' + this.p + '&page_size=' + this.page_size + '&type=' + this.type + '&province=' + this.province + '&Searching=' + this.Searching + '&ordering=' + this.ordering
+      let str = 'p=' + this.p + '&page_size=' + this.page_size + '&type=' + this.type + '&province=' + this.province + '&industry=' + this.industry + '&ordering=' + this.ordering
       _this.api.getCompanySeaList(str, (res) => {
         _this.dataList = _this.dataList.concat(res.data.results)
         if (res.data.count === this.dataList.length) {
@@ -317,7 +324,7 @@ export default {
     },
     sortInit () {
       let _this = this
-      let str = 'p=' + this.p + '&page_size=' + this.page_size + '&type=' + this.type + '&province=' + this.province + '&Searching=' + this.Searching + '&ordering=' + this.ordering
+      let str = 'p=' + this.p + '&page_size=' + this.page_size + '&type=' + this.type + '&province=' + this.province + '&industry=' + this.industry + '&ordering=' + this.ordering
       _this.api.getCompanySeaList(str, (res) => {
         _this.dataList = res.data.results
         if (res.data.count === this.dataList.length) {
@@ -344,6 +351,16 @@ export default {
     left:0;
     top:0;
     overflow: auto
+}
+.blank{
+    position: fixed;
+    width:100%;
+    height:calc(100% - 6.66rem);
+    top:6.66rem;
+}
+.blank>img{
+  width:6.66rem;
+  height:6.66rem;
 }
 .srceach{
     width:100%;
@@ -418,7 +435,8 @@ export default {
     font-size: .6rem;
     color:#101010;
     background: #fff;
-    border:1px solid #f7f7f7;
+    border-bottom:1px solid #f7f7f7;
+    border-left:1px solid #f7f7f7;
     display: flex;
 }
 .sortRig>img{
@@ -441,7 +459,7 @@ export default {
     vertical-align: text-top;
 }
 .content{
-    margin-top:2.75rem;
+    margin-top:4.75rem;
     background: #fff;
 }
 .contTit{
