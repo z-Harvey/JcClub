@@ -1,5 +1,5 @@
 <script type="text/javascript">
-let navListType = [true, false, false, false]
+let navListType = [true, false]
 let userInfo = {
   myId: null // 我的个人 ID
 }

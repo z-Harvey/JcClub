@@ -1,6 +1,5 @@
 <template>
   <div class="home_content"
-    v-if="show"
     @scroll="onScroll($event)">
     <div class="srceach">
         <div class="inpBox">
@@ -235,8 +234,9 @@ export default {
   },
   mounted () {
     document.title = '会员'
-  },
-  props: ['show']
+    this.init()
+    console.log('color:res;', this.$el)
+  }
 }
 </script>
 

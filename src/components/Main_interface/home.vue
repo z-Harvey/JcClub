@@ -1,7 +1,8 @@
 <template>
   <div class="home">
     <Toast ref="Toast" @confirm="alert_ok"></Toast>
-    <div class="navBox">
+    <my ref="my" :show="nav_list[1]"/>
+    <div class="navBox" v-show="nav_list[0]">
       <div class="navRow">
         <div @click="navClick(3)">
           <img class="imgTit" src="@/assets/friend.png" alt="">
@@ -36,7 +37,7 @@
       </div>
     </div>
     <nav>
-        <div class="link_tou">
+        <div @click="navClick(0)" class="link_tou">
             <img v-if="nav_list[0]" src="@/assets/navTar.png" alt="">
             <img v-else src="@/assets/navTar_a.png" alt="">
             <p :class="nav_list[0]?'pcole':''">牛盟</p>
@@ -54,36 +55,42 @@
 </template>
 
 <script>
-
+import my from '@/components/Main_interface/my' // 我的 页面
 
 export default {
   name: 'home',
   data () {
     return {
-      nav_list: [true, false]
+      nav_list: [false, false]
     }
+  },
+  components:{
+    my
   },
   methods: {
     navClick: function (num) {
       let _this = this
       switch (num) {
         case 0:
-          this.$router.push('/batchMarking')
+          this.nav_list = [true, false]
+          this.Global.navListType = [true, false]
           break
         case 1:
-          this.$router.push('/my')
+          this.$refs.my.init()
+          this.nav_list = [false, true]
+          this.Global.navListType = [false, true]
           break
         case 2:
           this.$router.push('/batchMarking')
           break
         case 3:
-          this.$router.push('/home_content')
+          this.$router.push('/homeContent')
           break
         case 4:
           this.$router.push('/International')
           break
         case 5:
-          this.$router.push('/batchMarking')
+          this.$router.push('/buOppo')
           break
         case 6:
           this.$router.push('/batchMarking')
@@ -99,6 +106,12 @@ export default {
   mounted () {
     document.title = '酷牛仔'
     let _this = this
+    this.nav_list = this.Global.navListType
+    this.nav_list.map((p1, p2) => {
+      if (p1) {
+        this.navClick(p2)
+      }
+    })
     this.api.getMine((res) => {
       this.Global.userInfo.myId = res.data.id
     },(err) => {

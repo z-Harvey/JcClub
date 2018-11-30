@@ -1,6 +1,5 @@
 <template>
   <div class="international"
-    v-if="show"
     @scroll="onScroll($event)">
     <div class="srceach">
         <div class="inpBox">
@@ -337,8 +336,8 @@ export default {
   },
   mounted () {
     document.title = '公海'
-  },
-  props: ['show']
+    this.init()
+  }
 }
 </script>
 
