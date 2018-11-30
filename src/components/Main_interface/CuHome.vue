@@ -30,8 +30,8 @@
             <button @click="path(1)" :class="!aftBtn?'aftBtn':''">跟进会员 <span v-text="msg.mark_count"></span></button>
         </div>
         <!-- <router-view :type="'CuHome'" @alert="alert" @mol="mol_2"/> -->
-        <CuInfo ref="cuinfo" :show="aftBtn" :type="'CuHome'" @alert="alert" @mol="mol_2"/>
-        <FollowNumber ref="follo" :show="!aftBtn" :type="'CuHome'" @alert="alert" @mol="mol_2"/>
+        <CuInfo ref="cuinfo" v-show="aftBtn" :type="'CuHome'" @alert="alert" @mol="mol_2"/>
+        <FollowNumber ref="follo" v-show="!aftBtn" :type="'CuHome'" @alert="alert" @mol="mol_2"/>
     </div>
 </template>
 

@@ -26,6 +26,7 @@
                 <button @click="ok1" v-if="Choice === 1" class="btn qr">确认</button>
                 <button @click="ok2" v-if="Choice === 2" class="btn qr">确认</button>
                 <button @click="ok3" v-if="Choice === 3" class="btn qr">确认</button>
+                <button @click="ok4" v-if="Choice === 'n'" class="btn qr">确认</button>
             </div>
         </div>
    </div>
@@ -42,6 +43,8 @@ export default {
       dataList: [],
       listData: [],
       listDatas: [],
+      http2list: {},
+      dqId: null,
       msg: {},
       Choice: 0 // 选择类型  单选 多选
     }
@@ -55,6 +58,8 @@ export default {
         _this.linges(item)
       } else if (this.Choice === 3) {
         _this.linges(item)
+      } else if (this.Choice === 'n') {
+        _this.lingess(item)
       }
     },
     onlin: function (ite) {
@@ -67,12 +72,18 @@ export default {
         }
         arr.push(p1)
       })
+      this.dqId = ite.id
+      if (_this.http2list[ite.id]) {
+        _this.listDatas = _this.http2list[ite.id]
+        return
+      }
       if (this.msg.type === 'industry') {
         _this.api.getSearchIndustry('pid=' + ite.id, function (res) {
           _this.listDatas = res.data
           _this.listDatas.map(function (p1, p2) {
             p1['show'] = false
           })
+          _this.http2list[ite.id] = _this.listDatas
         }, function (err) {
           console.log(err)
         })
@@ -82,6 +93,8 @@ export default {
           _this.listDatas.map(function (p1, p2) {
             p1['show'] = false
           })
+          _this.http2list[ite.id] = _this.listDatas
+          console.log(_this.http2list)
         }, function (err) {
           console.log(err)
         })
@@ -154,6 +167,56 @@ export default {
         }
       }
     },
+    lingess: function (str) {
+      let _this = this
+      let arr = []
+      let jishu = 0
+      if (!str.show) {
+        _this.dataList.map(function (p1, p2) {
+          p1.cont.map(function (n1, n2) {
+            if (n1.show) {
+              jishu += 1
+            }
+          })
+        })
+      }
+      _this.listDatas.map(function (p1, p2) {
+        if (p1.id === str.id) {
+          p1.show = !str.show
+        }
+        arr.push(p1)
+      })
+      _this.listDatas = arr
+      let bur = false
+      if (_this.dataList.length === 0) {
+        let obj = {
+          key: _this.currList,
+          cont: _this.listDatas
+        }
+        _this.dataList.push(obj)
+      } else {
+        _this.dataList.map(function (p1, p2) {
+          if (p1.key !== _this.currList) {
+            bur = true
+          } else {
+            bur = false
+          }
+        })
+        if (bur) {
+          let obj = {
+            key: _this.currList,
+            cont: _this.listDatas
+          }
+          _this.dataList.push(obj)
+        } else {
+          _this.dataList.map(function (p1, p2) {
+            if (p1.key === _this.currList) {
+              p1.cont = _this.listDatas
+            }
+          })
+        }
+      }
+    },
     close: function () {
       this.show = false
     },
@@ -182,7 +245,6 @@ export default {
       } else if (typ === 'Cust') {
         str = 'pid=0'
         this.api.getCustomerIndustry(str, (res) => {
-          console.log(res)
           _this.listData = res.data
           _this.listData.map(function (p1, p2) {
             p1['show'] = false
@@ -238,6 +300,25 @@ export default {
         type: 'duo'
       }
       _this.$emit('ok1', obj)
+      _this.close()
+      _this.listDatas = []
+      _this.dataList = []
+    },
+    ok4: function () {
+      let _this = this
+      let arr = []
+      _this.dataList.map(function (p1, p2) {
+        p1.cont.map(function (f1, f2) {
+          if (f1.show) {
+            arr.push(f1.name)
+          }
+        })
+      })
+      let obj = {
+        name: arr.join('、'),
+        type: 'duo'
+      }
+      _this.msg.success(obj)
       _this.close()
       _this.listDatas = []
       _this.dataList = []

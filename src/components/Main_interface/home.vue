@@ -64,12 +64,11 @@ export default {
       nav_list: [false, false]
     }
   },
-  components:{
+  components: {
     my
   },
   methods: {
     navClick: function (num) {
-      let _this = this
       switch (num) {
         case 0:
           this.nav_list = [true, false]
@@ -93,7 +92,7 @@ export default {
           this.$router.push('/buOppo')
           break
         case 6:
-          this.$router.push('/batchMarking')
+          this.$router.push('/demand')
           break
       }
     },
@@ -105,7 +104,6 @@ export default {
   },
   mounted () {
     document.title = '酷牛仔'
-    let _this = this
     this.nav_list = this.Global.navListType
     this.nav_list.map((p1, p2) => {
       if (p1) {
@@ -114,7 +112,7 @@ export default {
     })
     this.api.getMine((res) => {
       this.Global.userInfo.myId = res.data.id
-    },(err) => {
+    }, (err) => {
       console.log(err)
     })
   }

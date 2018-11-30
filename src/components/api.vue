@@ -715,8 +715,52 @@ let postDataOk = function (success, error) {
     error(err.response)
   })
 }
+/**
+ * 获取商机池
+ */
+let getBusinessSea = function (data, success, error) {
+  axios.get(path + '/BusinessSea/?link=' + Date.parse(new Date()) + '&' + data).then(function (res) {
+    success(res)
+  }, function (err) {
+    error(err.response)
+  })
+}
+/**
+ * 获取商机详情
+ */
+let getBusinessOpportunity = function (id, success, error) {
+  axios.get(path + '/BusinessOpportunity/' + id + '/?link=' + Date.parse(new Date())).then(function (res) {
+    success(res)
+  }, function (err) {
+    error(err.response)
+  })
+}
+/**
+ * 获取需求池
+ */
+let getDemandSea = function (data, success, error) {
+  axios.get(path + '/DemandSea/?link=' + Date.parse(new Date()) + '&' + data).then(function (res) {
+    success(res)
+  }, function (err) {
+    error(err.response)
+  })
+}
+/**
+ * 获取需求详情
+ */
+let getDemand = function (id, success, error) {
+  axios.get(path + '/Demand/' + id + '/?link=' + Date.parse(new Date())).then(function (res) {
+    success(res)
+  }, function (err) {
+    error(err.response)
+  })
+}
 
 export default{
+  getDemand, // 需求详情
+  getDemandSea, // 获取需求池
+  getBusinessOpportunity, // 商机详情
+  getBusinessSea, // 获取商机池
   errTest,
   srchMyCompany, // 搜索我的客户
   headerToken,

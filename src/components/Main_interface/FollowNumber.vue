@@ -1,5 +1,5 @@
 <template>
-    <div class="FollowNumber" v-if="show">
+    <div class="FollowNumber" v-if="!show">
         <nav style="display:none;">
             <div>
                 <span>客户关系</span>
@@ -169,6 +169,7 @@ export default {
         })
       }
       _this.api.getCompanyMark(str, function (res) {
+        console.log(res)
         _this.dataList = res.data.results
         _this.dataList.map(function (p1, p2) {
           if (p1.user === _this.Global.userInfo.myId) {

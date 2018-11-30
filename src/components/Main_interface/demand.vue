@@ -1,5 +1,5 @@
 <template>
-  <div class="buOppo">
+  <div class="demand">
     <div class="srceach">
         <div class="inpBox">
             <img src="@/assets/srceach.png">
@@ -33,12 +33,12 @@
                 <div class="userInfo">
                     <div class="info">
                         <div class="name" v-text="item.nickname || '--'"></div>
-                        <div class="nickName" v-text="item.position || '--' + '/' +item.company_name || '--'">CEO/北京聚牛天下网络科技有限公司</div>
+                        <div class="nickName" v-text="(item.position || '--') + '/' + (item.company_name || '--')">CEO/北京聚牛天下网络科技有限公司</div>
                     </div>
+                    <span class="maner" v-text="item.money"></span>
                 </div>
                 <div class="tap">
-                    <div v-text="'#' + item.company_name || '--' + '#'">#此处显示公司名称#</div>
-                    <div v-text="'#' + item.product || '--' + '#'">#此处显示产品名称#</div>
+                    <div v-text="'#' + (item.company_name || '--') + '#'">#此处显示公司名称#</div>
                 </div>
                 <div class="innerText" v-text="item.desc"></div>
                 <div class="tag">
@@ -64,7 +64,7 @@
 
 <script>
 export default {
-  name: 'buOppo',
+  name: 'demand',
   data () {
     return {
       sort: [false, false, false],
@@ -96,7 +96,7 @@ export default {
     },
     path (item) {
       this.$router.push({
-        path: '/buOppoInfo',
+        path: '/demandInfo',
         query: {
           id: item.id
         }
@@ -104,9 +104,9 @@ export default {
     }
   },
   mounted () {
-    document.title = '商机'
+    document.title = '需求'
     let str = ''
-    this.api.getBusinessSea(str, (res) => {
+    this.api.getDemandSea(str, (res) => {
       console.log(res.data)
       this.dataList = res.data.results
     }, (err) => {
@@ -118,7 +118,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.buOppo{
+.demand{
     position: fixed;
     width: 100%;
     height: 100%;
@@ -126,6 +126,14 @@ export default {
     top:0;
     left:0;
     background:#f9f9f9;
+}
+.maner{
+    color:rgba(255, 152, 0, 1);
+    float: right;
+    position: absolute;
+    top:.4rem;
+    right:0;
+    font-size: .7rem;
 }
 .srceach{
     width:100%;
@@ -252,6 +260,7 @@ export default {
     text-align: left;
     display: flex;
     padding-left:.4rem;
+    position: relative;
 }
 .info{
     align-self: center

@@ -69,7 +69,6 @@ export default {
     }
   },
   mounted () {
-    let _this = this
     document.title = '会员客户'
   }
 }

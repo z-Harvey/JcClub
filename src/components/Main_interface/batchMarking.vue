@@ -1,17 +1,33 @@
 <template>
     <div class="batchMarking">
         <div class="content">
-            <div class="nav nav1">
-                <div @click="path(0)">
-                    <img src="@/assets/Alone_a.png" alt="">
+            <div>
+                <div class="nav nav1">
+                    <div @click="path(0)">
+                        <img src="@/assets/Alone_a.png" alt="">
+                    </div>
+                    <p>新增客户</p>
                 </div>
-                <p>新增客户</p>
+                <div class="nav nav2">
+                    <div @click="path(1)">
+                        <img src="@/assets/Alone.png" alt="">
+                    </div>
+                    <p>批量新增客户</p>
+                </div>
             </div>
-            <div class="nav nav2">
-                <div @click="path(1)">
-                    <img src="@/assets/Alone.png" alt="">
+            <div>
+                <div class="nav nav1">
+                    <div @click="path(2)">
+                        <img src="@/assets/newXuqiu.png" alt="">
+                    </div>
+                    <p>新增需求</p>
                 </div>
-                <p>批量新增客户</p>
+                <div class="nav nav2">
+                    <div @click="path(3)">
+                        <img src="@/assets/creative.png" alt="">
+                    </div>
+                    <p>新增商机</p>
+                </div>
             </div>
         </div>
     </div>
@@ -54,14 +70,16 @@ export default {
 }
 .content{
     width:92%;
-    height:5.2rem;
+    min-height:5.2rem;
     background:#fff;
     border-radius: .25rem;
-    display: flex;
-    justify-content: space-around;
     margin: .5rem auto;
 }
 .content>div{
+    display: flex;
+    justify-content: space-around;
+}
+.content>div>div{
     width: 50%;
     height:5.2rem;
 }
