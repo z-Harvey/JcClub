@@ -43,8 +43,6 @@ export default {
       dataList: [],
       listData: [],
       listDatas: [],
-      http2list: {},
-      dqId: null,
       msg: {},
       Choice: 0 // 选择类型  单选 多选
     }
@@ -72,10 +70,11 @@ export default {
         }
         arr.push(p1)
       })
-      this.dqId = ite.id
-      if (_this.http2list[ite.id]) {
-        _this.listDatas = _this.http2list[ite.id]
-        return
+      for (let i = 0; i < this.dataList.length; i++) {
+        if (this.dataList[i].key === ite.id) {
+          _this.listDatas = this.dataList[i].cont
+          return
+        }
       }
       if (this.msg.type === 'industry') {
         _this.api.getSearchIndustry('pid=' + ite.id, function (res) {
@@ -83,7 +82,6 @@ export default {
           _this.listDatas.map(function (p1, p2) {
             p1['show'] = false
           })
-          _this.http2list[ite.id] = _this.listDatas
         }, function (err) {
           console.log(err)
         })
@@ -93,8 +91,6 @@ export default {
           _this.listDatas.map(function (p1, p2) {
             p1['show'] = false
           })
-          _this.http2list[ite.id] = _this.listDatas
-          console.log(_this.http2list)
         }, function (err) {
           console.log(err)
         })
@@ -171,6 +167,7 @@ export default {
       let _this = this
       let arr = []
       let jishu = 0
+      console.log(str)
       if (!str.show) {
         _this.dataList.map(function (p1, p2) {
           p1.cont.map(function (n1, n2) {

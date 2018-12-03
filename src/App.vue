@@ -41,8 +41,8 @@ export default {
     _this.api.getToken(obj, (res) => {
       _this.api.headerToken(res.data.token)
       _this.Global.userInfo['token'] = res.data.token
-      _this.$router.push('/buOppoNew')
-      return
+      // _this.$router.push('/buOppoNew')
+      // return
       if (res.data.is_user === 1) {
         switch (res.data.step) {
           case 0:

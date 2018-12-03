@@ -5,14 +5,14 @@
     <div class="navBox" v-show="nav_list[0]">
       <div class="navRow">
         <div @click="navClick(3)">
-          <img class="imgTit" src="@/assets/friend.png" alt="">
+          <img class="imgTit" src="@/assets/group.png" alt="">
           <p>会员</p>
           <div class="rig">
             <img src="@/assets/right_bai.png" alt="">
           </div>
         </div>
         <div @click="navClick(4)">
-          <img class="imgTit" src="@/assets/friend.png" alt="">
+          <img class="imgTit" src="@/assets/navTar.png" alt="">
           <p>公海</p>
           <div class="rig">
             <img src="@/assets/right_bai.png" alt="">
@@ -21,14 +21,14 @@
       </div>
       <div class="navRow">
         <div @click="navClick(5)">
-          <img class="imgTit" src="@/assets/friend.png" alt="">
+          <img class="imgTit" src="@/assets/creative.png" alt="">
           <p>商机</p>
           <div class="rig">
             <img src="@/assets/right_bai.png" alt="">
           </div>
         </div>
         <div @click="navClick(6)">
-          <img class="imgTit" src="@/assets/friend.png" alt="">
+          <img class="imgTit" src="@/assets/my_demand.png" alt="">
           <p>需求</p>
           <div class="rig">
             <img src="@/assets/right_bai.png" alt="">
@@ -38,8 +38,8 @@
     </div>
     <nav>
         <div @click="navClick(0)" class="link_tou">
-            <img v-if="nav_list[0]" src="@/assets/navTar.png" alt="">
-            <img v-else src="@/assets/navTar_a.png" alt="">
+            <img v-if="nav_list[0]" src="@/assets/qiu.png" alt="">
+            <img v-else src="@/assets/qiu_a.png" alt="">
             <p :class="nav_list[0]?'pcole':''">牛盟</p>
         </div>
         <div class="centerBtn" @click="navClick(2)">

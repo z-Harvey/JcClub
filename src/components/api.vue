@@ -726,6 +726,17 @@ let getBusinessSea = function (data, success, error) {
   })
 }
 /**
+ * 获取 我的商机 and Ta的商机
+ */
+let myAndYouOppoList = function (data, success, error) {
+  axios.get(path + '/BusinessOpportunity/?link=' + Date.parse(new Date()) + '&' + data).then(function (res) {
+    success(res)
+  }, function (err) {
+    error(err.response)
+  })
+}
+
+/**
  * 获取商机详情
  */
 let getBusinessOpportunity = function (id, success, error) {
@@ -735,6 +746,27 @@ let getBusinessOpportunity = function (id, success, error) {
     error(err.response)
   })
 }
+/**
+ * 编辑商机
+ */
+let putBusinessOpportunity = function (id, data, success, error) {
+  axios.put(path + '/BusinessOpportunity/' + id + '/?link=' + Date.parse(new Date()), data).then(function (res) {
+    success(res)
+  }, function (err) {
+    error(err.response)
+  })
+}
+/**
+ * 发布商机
+ */
+let postBusinessOpportunity = function (data, success, error) {
+  axios.post(path + '/BusinessOpportunity/?link=' + Date.parse(new Date()), data).then(function (res) {
+    success(res)
+  }, function (err) {
+    error(err.response)
+  })
+}
+
 /**
  * 获取需求池
  */
@@ -755,8 +787,44 @@ let getDemand = function (id, success, error) {
     error(err.response)
   })
 }
+/**
+ * 获取 我的需求 and Ta的需求
+ */
+let myAndYouDemand = function (data, success, error) {
+  axios.get(path + '/Demand/?link=' + Date.parse(new Date()) + '&' + data).then(function (res) {
+    success(res)
+  }, function (err) {
+    error(err.response)
+  })
+}
+/**
+ * 发布需求
+ */
+let postDemand = function (data, success, error) {
+  axios.post(path + '/Demand/?link=' + Date.parse(new Date()), data).then(function (res) {
+    success(res)
+  }, function (err) {
+    error(err.response)
+  })
+}
+/**
+ * 编辑需求
+ */
+let putDemand = function (id, data, success, error) {
+  axios.put(path + '/Demand/' + id + '/?link=' + Date.parse(new Date()), data).then(function (res) {
+    success(res)
+  }, function (err) {
+    error(err.response)
+  })
+}
 
 export default{
+  putDemand, // 编辑需求
+  postDemand, // 发布需求
+  putBusinessOpportunity, // 编辑商机
+  myAndYouDemand, // 获取 我的需求 and Ta的需求
+  myAndYouOppoList, // 获取 我的商机 and Ta的商机
+  postBusinessOpportunity, // 发布商机
   getDemand, // 需求详情
   getDemandSea, // 获取需求池
   getBusinessOpportunity, // 商机详情

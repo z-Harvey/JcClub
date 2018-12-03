@@ -1,5 +1,5 @@
 <template>
-  <div class="my" v-if="show">
+    <div class="my" v-if="show">
     <div class="myBody">
         <div class="titleImg">
         <div class="titBox">
@@ -24,6 +24,18 @@
         </div>
     </div>
     <div class="btnList">
+        <div class="listLi" @click="path(6)">
+            <div class="listLiLeft"><img src="@/assets/my_Customer.png" alt=""><span>我的客户</span></div>
+            <div class="listLiRight"><span v-text="msg.niuz">1</span><img src="@/assets/right.png" alt=""></div>
+        </div>
+        <div class="listLi" @click="path(7)">
+            <div class="listLiLeft"><img src="@/assets/creative.png" alt=""><span>我的商机</span></div>
+            <div class="listLiRight"><span v-text="msg.niuz">1</span><img src="@/assets/right.png" alt=""></div>
+        </div>
+        <div class="listLi" @click="path(8)">
+            <div class="listLiLeft"><img src="@/assets/my_demand.png" alt=""><span>我的需求</span></div>
+            <div class="listLiRight"><span v-text="msg.niuz">1</span><img src="@/assets/right.png" alt=""></div>
+        </div>
         <div class="listLi" @click="path(2)">
             <div class="listLiLeft"><img src="@/assets/choiceness.png" alt=""><span>我的牛钻</span></div>
             <div class="listLiRight"><span v-text="msg.niuz">400颗</span><img src="@/assets/right.png" alt=""></div>
@@ -101,6 +113,15 @@ export default {
               user_id: _this.msg.inviter_id
             }
           })
+          break
+        case 6:
+          _this.$router.push('/myCustomer')
+          break
+        case 7:
+          _this.$router.push('/myCustomer')
+          break
+        case 8:
+          _this.$router.push('/myCustomer')
           break
       }
     },

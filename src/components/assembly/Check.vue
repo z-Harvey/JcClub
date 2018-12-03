@@ -51,12 +51,11 @@ export default {
           arr.push(p1.name)
         }
       })
-      if (_this.que.type === 'xiansuo') {
-        _this.que.success(arr.join('、'))
-        _this.close()
-        return
+      try {
+        _this.que.success(arr.join('、'))        
+      } catch (err) {
+        _this.$emit('ok', arr.join('、'))
       }
-      _this.$emit('ok', arr.join('、'))
       _this.close()
     },
     httpQuery: function (num) {
@@ -98,6 +97,13 @@ export default {
             if (p1.id === item.id) {
               p1.show = !p1.show
             }
+          }
+          arrs.push(p1)
+        })
+      } else if (_this.que.type === '0') {
+        _this.arr.map(function (p1, p2) {
+          if (p1.id === item.id) {
+            p1.show = !p1.show
           }
           arrs.push(p1)
         })

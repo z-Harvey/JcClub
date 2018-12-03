@@ -37,24 +37,24 @@
                     </div>
                 </div>
                 <div class="tap">
-                    <div v-text="'#' + item.company_name || '--' + '#'">#此处显示公司名称#</div>
-                    <div v-text="'#' + item.product || '--' + '#'">#此处显示产品名称#</div>
+                    <div v-if="item.company_name" v-text="'#' + (item.company_name || '--') + '#'"></div>
+                    <div v-for="(items, index) in item.product" :key="index" v-if="index < 3" v-text="'#' + (items.key || '--') + '#'"></div>
                 </div>
                 <div class="innerText" v-text="item.desc"></div>
                 <div class="tag">
-                    <div v-text="item.industry || '--'">IT互联网</div>
-                    <div v-text="item.type || '--'">中小企业</div>
-                    <div v-text="item.department || '--'">技术部门</div>
+                    <div v-if="item.industry[0]" v-text="item.industry[0]">IT互联网</div>
+                    <div v-if="item.type" v-text="item.type">中小企业</div>
+                    <div v-if="item.department" v-text="item.department">技术部门</div>
                 </div>
             </div>
             <div class="forFoot">
                 <div class="footLef">
                     <img src="@/assets/timeg.png" alt="">
-                    <span v-text="'剩余' + item.residue_time || '--' + '天'"></span>
+                    <span v-text="'剩余' + (item.residue_time || '--') + '天'"></span>
                 </div>
                 <div class="footRig">
                     <img src="@/assets/eyeg.png" alt="">
-                    <div v-text="item.see_num || '--'"></div>
+                    <div v-text="item.see_num"></div>
                 </div>
             </div>
         </div>
@@ -108,6 +108,11 @@ export default {
     let str = ''
     this.api.getBusinessSea(str, (res) => {
       console.log(res.data)
+      res.data.results.map((p1) => {
+        console.log(p1)
+        p1.product = JSON.parse(p1.product)
+        p1.industry = p1.industry.split('、')
+      })
       this.dataList = res.data.results
     }, (err) => {
       console.log(err)
@@ -270,6 +275,14 @@ export default {
     color:#101010;
     text-align: left;
     margin-top:.4rem;
+    line-height: 1rem;
+    max-height: 2rem;
+    text-overflow: -o-ellipsis-lastline;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
 }
 .tap{
     color:rgba(255, 152, 0, 1);
@@ -277,9 +290,6 @@ export default {
     margin-top:.4rem;
     padding-left:2.9rem;
     text-align: left;
-}
-.tap>div{
-    display: inline-block;
 }
 .tag{
     padding-left: 2.9rem;

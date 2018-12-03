@@ -24,7 +24,7 @@
                 </div>
                 <div class="nav nav2">
                     <div @click="path(3)">
-                        <img src="@/assets/creative.png" alt="">
+                        <img src="@/assets/creative_a.png" alt="">
                     </div>
                     <p>新增商机</p>
                 </div>
@@ -48,6 +48,12 @@ export default {
           break
         case 1:
           this.$router.push('/batchNew')
+          break
+        case 2:
+          this.$router.push('/demandNew')
+          break
+        case 3:
+          this.$router.push('/buOppoNew')
           break
       }
     }

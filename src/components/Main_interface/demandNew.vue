@@ -1,8 +1,8 @@
 <template>
-    <div class="buOppoNew">
+    <div class="demandNew">
         <div class="areaBox">
             <div class="tit">
-                <span>商机描述<span class="redSp">*</span></span>
+                <span>需求描述<span class="redSp">*</span></span>
             </div>
             <div class="inpCont">
                 <textarea v-model="obj.desc"></textarea>
@@ -10,7 +10,7 @@
         </div>
         <div class="inpuList">
             <div class="tit">
-                <span>商机信息</span>
+                <span>需求信息</span>
             </div>
             <div class="inpCont">
                 <!-- <div class="inp">
@@ -37,17 +37,22 @@
                         <div @click="linkClick('type')" v-text="obj.type || '选择企业类型'"></div>
                     </div>
                 </div>
+                <div class="inp">
+                    <div class="inpLef">需求部门</div>
+                    <div class="inpRig">
+                        <div @click="linkClick('xiansuo')" v-text="obj.department || '选择需求部门'"></div>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="btnList">
             <div class="tit">
-                <span>相关产品<span class="redSp">*</span></span><span class="titRig">至少一个</span>
+                <span>成交佣金<span class="redSp">*</span><span class="hui">(仅展示)</span></span>
             </div>
-            <div class="inpForListBox">
-                <input type="text" v-for="(item, index) in obj.product" :key="index" v-model="item.key" placeholder="请输入产品名称">
-                <div class="inpForimgBox">
-                    <img @click="plus" src="@/assets/plus.png" alt="">
-                </div>
+            <div class="AreachB">
+                <input type="number" v-model="obj.min_money" placeholder="￥0.00">
+                <span> - </span>
+                <input type="number" v-model="obj.max_money" placeholder="￥0.00">
             </div>
         </div>
         <div class="btnList" v-if="!que.id">
@@ -67,7 +72,7 @@
         </div>
         <linkage ref="linkage"/>
         <search ref="search" @ok="cllSrceach"/>
-        <Check ref="check" @ok="checkCall"/>
+        <Check ref="check"/>
         <Toast ref="Toast"/>
     </div>
 </template>
@@ -76,17 +81,19 @@
 import search from '@/components/Logon_process/srceach'
 
 export default {
-  name: 'buOppoNew',
+  name: 'demandNew',
   data () {
     return {
       nickName: null,
       obj: {
+        department: null, // 需求部门
+        min_money: null, // 最小佣金
+        max_money: null, // 最大佣金
         desc: null, // 商机描述 str
         customer: null, // 客户名称 str
         industry: null, // 行业 str
         product: [{key: ''}], // 销售产品 arr.obj
         type: null, // 类型 str
-        // department: null, // 对接部门 str
         term: 1 // 天数  int
       },
       que: {}
@@ -96,10 +103,6 @@ export default {
     search
   },
   methods: {
-    checkCall (res) {
-      console.log(res)
-      this.obj.type = res
-    },
     path (num) {
       switch (num) {
         case 0:
@@ -121,7 +124,22 @@ export default {
           }
         })
       } else if (typ === 'type') {
-        _this.$refs.check.on_display({type: 2, Pattern: 1})
+        _this.$refs.check.on_display({
+          type: 2,
+          Pattern: 1,
+          success: (res) => {
+            console.log(res)
+            _this.obj.type = res
+          }
+        })
+      } else if (typ === 'xiansuo') {
+        _this.$refs.check.xiansuo({
+          type: '0',
+          Pattern: 1,
+          success: function (res) {
+            _this.obj.department = res
+          }
+        })
       }
     },
     plus () {
@@ -136,10 +154,6 @@ export default {
     subMit () {
       console.log(this.obj)
       let _this = this
-      let arrStr = []
-      _this.obj.product.map((p1) => {
-        arrStr.push(p1.key)
-      })
       if (_this.obj.desc === null || _this.obj.desc === '') {
         let obj = {
           Title: '提示',
@@ -156,27 +170,35 @@ export default {
           btn: 0
         }
         this.$refs.Toast.on_display(obj)
-      } else if (arrStr.join('') === '') {
+      } else if (_this.obj.min_money === null) {
         let obj = {
           Title: '提示',
-          Content: '至少一个相关产品',
+          Content: '请输入最小成交佣金',
+          type: 1,
+          btn: 0
+        }
+        this.$refs.Toast.on_display(obj)
+      } else if (_this.obj.max_money === null || _this.obj.max_money === '0' || _this.obj.max_money === '') {
+        let obj = {
+          Title: '提示',
+          Content: '请输入最大成交佣金',
           type: 1,
           btn: 0
         }
         this.$refs.Toast.on_display(obj)
       } else if (this.que.id) {
-        
         let obj = {
           Title: '提示',
-          Content: '是否确认发布商机？',
+          Content: '是否确认发布需求？',
           type: 1,
           btn: 2,
           success () {
             let datas = JSON.parse(JSON.stringify(_this.obj))
-            datas.product = JSON.stringify(datas.product)
-            _this.api.putBusinessOpportunity(_this.que.id, datas, (res) => {
+            _this.api.putDemand(_this.que.id, datas, (res) => {
               if (res.status === 200) {
-                _this.$router.go(-1)
+                setTimeout(() => {
+                  _this.$router.go(-1)
+                })
               }
             }, (err) => {
               console.log(err)
@@ -185,21 +207,21 @@ export default {
         }
         this.$refs.Toast.on_display(obj)
       } else {
+        console.log(_this.obj.max_money)
         let obj = {
           Title: '提示',
-          Content: '是否确认发布商机？',
+          Content: '是否确认发布需求？',
           type: 1,
           btn: 2,
           success () {
             let data = JSON.parse(JSON.stringify(_this.obj))
-            data.product = JSON.stringify(data.product)
-            _this.api.postBusinessOpportunity(data, (res) => {
+            _this.api.postDemand(data, (res) => {
               console.log(res)
               if (res.status === 201) {
                 let obj = {
                   Title: '提示',
                   Content: '发布成功',
-                  No: '3S后自动调转到‘我的商机’哦...',
+                  No: '3S后自动调转到‘我的需求’哦...',
                   type: 1,
                   btn: 0
                 }
@@ -217,9 +239,9 @@ export default {
       }
     },
     editInit () {
-      this.api.getBusinessOpportunity(this.que.id, (res) => {
+      this.api.getDemand(this.que.id, (res) => {
         console.log(res)
-        res.data.product = JSON.parse(res.data.product)
+        // res.data.product = JSON.parse(res.data.product)
         this.obj = res.data
       }, (err) => {
         console.log(err)
@@ -227,7 +249,7 @@ export default {
     }
   },
   mounted () {
-    document.title = '新增商机'
+    document.title = '新增需求'
     this.que = this.$route.query
     if (this.que.id) {
       this.editInit()
@@ -238,7 +260,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.buOppoNew{
+.demandNew{
     position: fixed;
     width:100%;
     height:100%;
@@ -253,6 +275,10 @@ export default {
 .titRig{
     float: right;
     font-weight: 400;
+}
+.hui{
+    color:#888;
+    font-weight: 300
 }
 .inpForListBox>input{
     width:calc(100% - 1rem);
@@ -290,8 +316,21 @@ export default {
 .inpCont{
     padding:0 .5rem 0;
 }
-.inpCont>.inp{
-
+.AreachB{
+    text-align: left;
+    padding:.5rem .5rem;
+}
+.AreachB>input{
+    background: rgba(241, 241, 241, 1);
+    color:#888;
+    width: 30%;
+    height:1.5rem;
+    border-radius: .15rem;
+    border: none;
+    font-size: .7rem;
+}
+.AreachB>input::after{
+    border: none;
 }
 .inpCont>.inp>.inpLef{
     float: left;
@@ -366,6 +405,7 @@ export default {
     border:none;
     align-self: center;
     margin: 0 auto;
+    font-size: .7rem;
 }
 .subBtn>button::after{
     border:none;

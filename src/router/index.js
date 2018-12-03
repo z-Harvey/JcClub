@@ -49,6 +49,7 @@ import demand from '@/components/Main_interface/demand' // 需求
 import demandInfo from '@/components/Main_interface/demandInfo' // 需求详情
 
 import buOppoNew from '@/components/Main_interface/buOppoNew' // 新增商机
+import demandNew from '@/components/Main_interface/demandNew' // 新增商机
 
 /**
  * 管理员模块 页面注册
@@ -102,6 +103,8 @@ export default new Router({
     { path: '/demand', name: 'demand', component: demand },
     { path: '/demandInfo', name: 'demandInfo', component: demandInfo },
     { path: '/buOppoNew', name: 'buOppoNew', component: buOppoNew },
+    { path: '/demandNew', name: 'demandNew', component: demandNew },
+    
     /**
      * ------------------------------- Main_interface 文件夹下的文件
      */

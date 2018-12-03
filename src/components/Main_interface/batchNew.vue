@@ -56,7 +56,7 @@ export default {
           _this.complete = complete
         }
       }
-      http.post('/markFile/', obj, config).then((res) => {
+      http.post('/api/markFile/', obj, config).then((res) => {
         this.uptext = '完成'
       }, (err) => {
         alert(err)

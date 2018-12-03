@@ -30,15 +30,20 @@
             </div>
         </div>
         <nav>
-            <!-- <button @click="navPath(0)" :class="navBtn?'navBtn':''">个人信息</button> -->
-            <!-- <button @click="navPath(1)" :class="!navBtn?'navBtn':''">工作经验</button> -->
+            <button @click="navPath(0)" :class="navBtn[0]?'navBtn':''">个人信息</button>
+            <button @click="navPath(7)" :class="navBtn[1]?'navBtn':''" v-text="source === 'my'? '我的商机': 'Ta的商机'"></button>
+            <button @click="navPath(8)" :class="navBtn[2]?'navBtn':''" v-text="source === 'my'? '我的需求': 'Ta的需求'"></button>
         </nav>
-        <CuInfo ref="CuInfo" :type="'cardInfo'"/>
-        <workEx ref="workEx" :type="'cardInfo'"/>
+        <CuInfo ref="CuInfo" v-show="navBtn[0]" :type="'cardInfo'"/>
+        <workEx ref="workEx" v-show="navBtn[0]" :type="'cardInfo'"/>
+        <buOppoList ref="buOppoList" v-show="navBtn[1]" />
+        <demandList ref="demandList" v-show="navBtn[2]" />
         <div style="height:2.25rem;"></div>
         <div v-if="source === 'my'" class="footer">
-            <button class="myCards" @click="navPath(5)">编辑个人信息</button>
-            <button class="myCards" @click="navPath(6)">编辑工作经验</button>
+            <button v-if="navBtn[0]" class="myCards" @click="navPath(5)">编辑个人信息</button>
+            <button v-if="navBtn[0]" class="myCards" @click="navPath(6)">编辑工作经验</button>
+            <button v-if="navBtn[1]" class="myCards" @click="navPath(9)">新增商机</button>
+            <button v-if="navBtn[2]" class="myCards" @click="navPath(10)">新增需求</button>
         </div>
         <div v-else class="footer">
             <button class="mybutton" @click="myCard">查看我的名片</button>
@@ -52,17 +57,21 @@
 <script>
 import CuInfo from '@/components/Main_interface/CuInfo' // 个人信息
 import workEx from '@/components/Main_interface/workEx' // 工作经验
+import buOppoList from '@/components/Main_interface/buOppoList' // 商机
+import demandList from '@/components/Main_interface/demandList' // 商机
 
 export default {
   name: 'cardInfo',
   components: {
     CuInfo,
     workEx,
-    msg: null
+    msg: null,
+    buOppoList,
+    demandList
   },
   data () {
     return {
-      navBtn: true,
+      navBtn: [true, false, false],
       source: null,
       dataList: null,
       listData: {},
@@ -100,13 +109,15 @@ export default {
     },
     navPath: function (num) {
       let _this = this
+      let arr = [false, false, false]
       switch (num) {
         case 0:
           _this.$refs.CuInfo.cardInfoInit(_this.user_id)
-          _this.navBtn = true
+          _this.$refs.workEx.workInfoInit(_this.user_id)
+          _this.navBtn = arr
+          _this.navBtn[0] = true
           break
         case 1:
-          _this.$refs.workEx.workInfoInit(_this.user_id)
           _this.navBtn = false
           break
         case 2:
@@ -148,6 +159,23 @@ export default {
           _this.$router.push({name: 'editInfo', query: {type: 'personal'}})
           break
         case 6:
+          _this.$router.push({name: 'editInfo', query: {type: 'exper'}})
+          break
+        case 7:
+          _this.$refs.buOppoList.on_display()
+          _this.navBtn = arr
+          _this.navBtn[1] = true
+          break
+        case 8:
+          // _this.$router.push({name: 'editInfo', query: {type: 'exper'}})
+          _this.$refs.demandList.on_display()
+          _this.navBtn = arr
+          _this.navBtn[2] = true
+          break
+        case 9:
+          _this.$router.push('/buOppoNew')
+          break
+        case 10:
           _this.$router.push({name: 'editInfo', query: {type: 'exper'}})
           break
       }

@@ -1,5 +1,5 @@
 <template>
-  <div class="home_content" v-if="show" @scroll="onScroll($event)">
+  <div class="home_content" @scroll="onScroll($event)">
     <div class="srceach">
         <div class="inpBox">
             <img src="@/assets/srceach.png" alt="">
@@ -204,8 +204,8 @@ export default {
   },
   mounted () {
     document.title = '我的客户'
-  },
-  props: ['show']
+    this.init()
+  }
 }
 </script>
 
