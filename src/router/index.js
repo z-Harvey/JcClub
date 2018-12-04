@@ -29,7 +29,7 @@ import HisFans from '@/components/Main_interface/HisFans' // Ta的粉丝
 import HisFollow from '@/components/Main_interface/HisFollow' // Ta的关注
 import MarkupCu from '@/components/Main_interface/MarkupCu' // 标记客户 、新增客户
 import srceach from '@/components/Main_interface/srceach' // 搜索客户
-import SalesNotes from '@/components/Main_interface/SalesNotes' // 销售笔记
+import SalesNotes from '@/components/Main_interface/SalesNotes' // 客户笔记
 import editComment from '@/components/Main_interface/editComment' // 编辑点评标记
 import myNiuzuan from '@/components/Main_interface/myNiuzuan' // 我的牛钻
 import NiuzuanRecord from '@/components/Main_interface/NiuzuanRecord' // 牛钻记录

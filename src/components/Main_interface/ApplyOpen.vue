@@ -1,22 +1,41 @@
 <template>
   <div class="ApplyOpen">
     <div class="title">
-        <p>开通条件</p>
-        <p>标记<span v-text="dataList.need_count"></span>家有决策链线索的客户</p>
+      <p>开通条件</p>
+      <p>标记<span v-text="dataList.need_count"></span>家有决策链线索的客户</p>
     </div>
     <div class="cont">
-        <div>
-            <span>当前已标记</span>
-            <span v-text="dataList.mark_count + '家'"></span>
-        </div>
-        <div>
-            <span>还需要标记</span>
-            <span v-text="dataList.also_need_count + '家'"></span>
-        </div>
+      <div>
+        <span>当前已完善</span>
+        <span v-text="dataList.mark_count + '家'"></span>
+      </div>
+      <div>
+        <span>还需要完善</span>
+        <span v-text="dataList.also_need_count + '家'"></span>
+      </div>
     </div>
     <button class="btn" @click="path(0)">去标记</button>
     <div class="flxBom">
-        <button @click="path(1)">申请开通</button>
+      <button :class="dataList.mark_count < dataList.also_need_count? 'noYes': ''" @click="path(1)">申请开通</button>
+    </div>
+    <div class="btnMot" v-show="newList">
+      <div class="motCont">
+        <div>
+          <div @click="path(2)">
+            <div>
+              <img src="@/assets/Alone_a.png" alt="">
+            </div>
+            <div>新增客户</div>
+          </div>
+          <div @click="path(3)">
+            <div>
+              <img src="@/assets/Alone.png" alt="">
+            </div>
+            <div>批量新增客户</div>
+          </div>
+        </div>
+        <div class="btnQx" @click="path(0)">取消</div>
+      </div>
     </div>
     <srceachMol ref="srcea"/>
     <Toast ref="Toast" />
@@ -30,7 +49,8 @@ export default {
   name: 'ApplyOpen',
   data () {
     return {
-      dataList: {}
+      dataList: {},
+      newList: false
     }
   },
   components: {
@@ -40,8 +60,7 @@ export default {
     path: function (num) {
       let _this = this
       if (num === 0) {
-        // _this.$refs.srcea.on_display()
-        _this.$router.push('/batchMarking')
+        _this.newList = !_this.newList
       } else if (num === 1) {
         _this.api.PostCompanyPerm(function (res) {
           if (res.status === 201) {
@@ -66,6 +85,10 @@ export default {
             })
           }
         })
+      } else if (num === 2) {
+        _this.$router.push('/MarkupCu')
+      } else if (num === 3) {
+        _this.$router.push('/batchNew')
       }
     }
   },
@@ -89,6 +112,39 @@ export default {
     width:100%;
     height:100%;
     background:#f9f9f9;
+}
+.btnMot{
+    position: fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(15, 15, 15, .55);
+}
+.motCont{
+    width:14rem;
+    background:#fff;
+    border-radius: .2rem;
+    margin: 10rem auto 0;
+    font-size: .7rem;
+}
+.motCont>div{
+    display: flex;
+    justify-content: space-around;
+}
+.motCont>div>div{
+    width:50%;
+    padding:.75rem 0;
+}
+.motCont>div>div>div>img{
+    width: 1.5rem;
+    height: 1.5rem;
+}
+.btnQx{
+    color:#888;
+    font-size: .7rem;
+    height:2rem;
+    line-height: 2rem;
 }
 .title{
     height:2.25rem;
@@ -156,5 +212,9 @@ export default {
 }
 .flxBom>button::after{
     border:0;
+}
+.flxBom>.noYes{
+    background:#ccc;
+    color:#fff;
 }
 </style>

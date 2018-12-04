@@ -9,7 +9,14 @@
             </div>
             <img class="righ" src="@/assets/right.png" alt="">
         </div>
-        <div class="btnBox">
+        <div class="blank" v-if="msg.length <= 0">
+          <img src="@/assets/blank.png" alt="">
+          <div>您上传的模板内容为空，请重新上传</div>
+        </div>
+        <div class="btnBox" v-if="msg.length <= 0">
+            <button class="qx" @click="qx(1)">重新上传</button>
+        </div>
+        <div class="btnBox" v-else>
             <button class="qx" @click="qx">重新上传</button>
             <button class="qr" v-if="btnfal" @click="qr">提交</button>
             <button class="qrs" v-else @click="qr">提交</button>
@@ -35,7 +42,11 @@ export default {
     editNewCustomer
   },
   methods: {
-    qx () {
+    qx (num) {
+      if (num === 1) {
+        this.$router.go(-1)
+        return
+      }
       let obj = {
         Title: '提示',
         Content: '注意，重新上传当前数据不做保留，是否继续？',
@@ -75,17 +86,15 @@ export default {
       this.show = false
     },
     on_display () {
+      this.btnfal = true
       this.show = true
       this.api.SubFile((res) => {
-        console.log(res)
         this.msg = res.data.results
         this.msg.map((p1, p2) => {
           if (p1.error_fields_count !== 0) {
             this.btnfal = false
           } else if (p1.non_fields_count !== 0) {
             this.btnfal = false
-          } else {
-            this.btnfal = true
           }
         })
       }, (err) => {
@@ -172,5 +181,19 @@ export default {
     background:#f1f1f1;
     color:#888;
     border:none;
+}
+.blank{
+    position: fixed;
+    width:100%;
+    height:100%;
+    top:0;
+    left:0;
+    font-size: .7rem;
+    line-height: 1.5rem;
+}
+.blank>img{
+    margin-top:6.66rem;
+    width: 6.66rem;
+    height:6.66rem;
 }
 </style>

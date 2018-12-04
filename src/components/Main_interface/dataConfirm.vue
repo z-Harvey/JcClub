@@ -1,22 +1,48 @@
 <template>
     <div class="dataConfirm">
-        <div class="title" v-if="!stat">
-            <img src="@/assets/info.png" alt="">
-            <div>以下 <span v-text="msg.error_count"></span> 条数据数据匹配公司失败，请确认公司名称是否填写正确</div>
-        </div>
-        <div v-if="!stat">
-            <div class="for" v-for="(item, index) in msg.error_data" :key="index">
-                <img src="@/assets/membershipApp_shu.png" alt="">
-                <div v-text="item.company_name"></div>
+        <div v-if="htSt">
+            <div class="title" v-if="!stat">
+                <img src="@/assets/info.png" alt="">
+                <div>以下 <span v-text="msg.error_count"></span> 条数据数据匹配公司失败，请确认公司名称是否填写正确</div>
+            </div>
+            <div v-if="!stat">
+                <div class="for" v-for="(item, index) in msg.error_data" :key="index">
+                    <img src="@/assets/membershipApp_shu.png" alt="">
+                    <div v-text="item.company_name"></div>
+                </div>
+            </div>
+            <div class="blank" v-if="stat">
+                <img src="@/assets/blank.png" alt="">
+                <div>您上传的模板内容为空，请重新上传</div>
+            </div>
+            <div style="height:3rem;"></div>
+            <div class="btnBox">
+                <button class="qx" @click="qx">重新上传</button>
+                <button class="qr" @click="qrs" v-if="!stat">忽略</button>
             </div>
         </div>
-        <div class="blank" v-if="stat">
-            <img src="@/assets/blank.png" alt="">
-            <div>您上传的模板内容为空，请重新上传</div>
-        </div>
-        <div class="btnBox">
-            <button class="qx" @click="qx">重新上传</button>
-            <button class="qr" @click="qr" v-if="!stat">忽略</button>
+        <div v-else>
+            <div class="title" v-if="!stat">
+                <img src="@/assets/info.png" alt="">
+                <div>以下 <span v-text="msg2.length"></span> 个客户是您新增过的客户，可以选择忽略或覆盖原有数据</div>
+            </div>
+            <div v-if="!stat">
+                <div class="for" v-for="(item, index) in msg2" :key="index">
+                    <img src="@/assets/membershipApp_shu.png" alt="">
+                    <div v-text="item.company_name"></div>
+                    <div class="baif" v-text="'完善度' + item.completion + '%'"></div>
+                </div>
+            </div>
+            <div class="blank" v-if="stat">
+                <img src="@/assets/blank.png" alt="">
+                <div>您上传的模板内容为空，请重新上传</div>
+            </div>
+            <div class="footTaps">完善度指当前系统中的客户数据完善程度</div>
+            <div style="height:3rem;"></div>
+            <div class="btnBox">
+                <button class="qx" @click="qxs">覆盖数据</button>
+                <button class="qr" @click="qr" v-if="!stat">忽略</button>
+            </div>
         </div>
         <Toast ref="Toast"/>
         <dataStatistics ref="dataStatis"/>
@@ -31,13 +57,46 @@ export default {
   data () {
     return {
       msg: {},
-      stat: false
+      stat: false,
+      msg2: [],
+      htSt: true
     }
   },
   components: {
     dataStatistics
   },
   methods: {
+    qrs () {
+      let obj = {
+        Title: '提示',
+        Content: '忽略后匹配失败的数据将不进行上传，是否继续？',
+        type: 1,
+        btn: 2,
+        success: () => {
+          this.htSt = false
+        }
+      }
+      this.$refs.Toast.on_display(obj)
+    },
+    qxs () {
+      let obj = {
+        Title: '提示',
+        Content: '注意，确认后之前标记的数据将被当前上传的数据覆盖，是否确认？',
+        type: 1,
+        btn: 2,
+        success: () => {
+          this.api.postFileRepeat((res) => {
+            console.log(res)
+            if (res.status === 201) {
+              this.$refs.dataStatis.on_display()
+            }
+          }, (err) => {
+            console.log(err)
+          })
+        }
+      }
+      this.$refs.Toast.on_display(obj)
+    },
     qx () {
       if (this.stat) {
         this.$router.go(-1)
@@ -77,6 +136,13 @@ export default {
       } else if (res.data.error_count === 0) {
         this.stat = true
       }
+      this.api.getFileRepeat((res) => {
+        console.log('重复数据')
+        console.log(res)
+        this.msg2 = res.data
+      }, (err) => {
+        console.log(err)
+      })
     }, (err) => {
       console.log(err)
       this.stat = true
@@ -95,6 +161,10 @@ export default {
     height:100%;
     overflow: auto;
     background:#fafafa;
+}
+.footTaps{
+    color:#ccc;
+    font-size: .6rem
 }
 .title{
     background:rgba(255, 152, 0, 1);
@@ -119,6 +189,15 @@ export default {
     margin:.5rem auto;
     background:#fff;
     border-radius: .25rem;
+    position: relative;
+}
+.for>.baif{
+    position: absolute;
+    right:0;
+    padding:.65rem .5rem;
+    top:0;
+    color:#888;
+    font-size: .6rem;
 }
 .for>img{
     width:.7rem;

@@ -1,7 +1,7 @@
 <template name="Toast">
   <div class="Toast" v-if="show" @touchmove.prevent>
     <div class="alert_box">
-        <div class="title" v-text="content.Title? content.Title:'标题'">是否确认提交？</div>
+        <div class="title" v-text="content.Title? content.Title:'标题'"></div>
         <div class="content" v-if="content.type === 1 || content.type === 4" v-text="content.Content? content.Content:'内容'">请您确保您填写的信息准确无误，否则可能会影响审核结果</div>
         <div class="contents" v-if="content.type === 2">
             <div class="xuanze">
@@ -47,6 +47,9 @@
         </div>
         <div class="content" v-if="content.type === 5">
             <input type="text" v-model="t4">
+        </div>
+        <div class="content" v-if="content.type === 6">
+            <textarea class="typ6Text" v-model="t4" placeholder="请填写拒绝的原因"></textarea>
         </div>
         <div style="height:2.5rem;"></div>
         <div class="butList" v-if="content.btn === 0">
@@ -122,6 +125,12 @@ export default {
         data = _this.typ2
       } else if (this.content.type === 5) {
         data = _this.t4
+      } else if (this.content.type === 6) {
+        if (_this.t4 === '' || _this.t4 === null) {
+          alert('请填写拒绝的原因')
+          return
+        }
+        data = _this.t4
       }
       this.content.success(data)
       this.show = false
@@ -174,6 +183,15 @@ export default {
     height:2.45rem;
     font-size: .9rem;
     line-height: 2.45rem;
+}
+.typ6Text{
+    width:95%;
+    min-height:5rem;
+    border:none;
+    background:rgba(242, 242, 243, 1);
+    color:#888;
+    line-height: 1rem;
+    margin-bottom: 1rem;
 }
 .content{
     width:90%;

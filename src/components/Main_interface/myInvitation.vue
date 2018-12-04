@@ -41,12 +41,11 @@ export default {
       switch (num) {
         case 0:
           obj = {
-            Title: '提示',
-            Content: '是否确认拒绝邀请此会员？',
-            type: 1,
+            Title: '拒绝确认',
+            type: 6,
             btn: 2,
-            success: () => {
-              _this.callSuccess(num, item)
+            success: (tres) => {
+              _this.callSuccess(num, item, tres)
             }
           }
           this.$refs.Toast.on_display(obj)
@@ -65,10 +64,11 @@ export default {
           break
       }
     },
-    callSuccess (num, item) {
+    callSuccess (num, item, desc) {
       let obj = {
         user: item.puser,
-        is_agree: num
+        is_agree: num,
+        desc: desc || ''
       }
       this.api.postMyInvited(obj, (res) => {
         if (res.status === 201) {

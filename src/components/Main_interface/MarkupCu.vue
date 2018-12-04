@@ -20,10 +20,10 @@
             <div class="contcon">
                 <div>
                     <div>简称<span class="red">*</span></div>
-                    <input type="text" v-model="upData.simple_name" placeholder="输入客户简称">
+                    <input type="text" v-model="upData.simple_name" v-on:change="scoreFn" placeholder="输入客户简称">
                 </div>
                 <div>
-                    <div class="cheLeft">行业<span class="red">*</span></div>
+                    <div class="cheLeft">客户行业<span class="red">*</span></div>
                     <div @click="linkClick('hangye')" v-text="upData.industry || '当前所在行业'" class="checkBox"></div>
                 </div>
                 <div>
@@ -32,7 +32,7 @@
                 </div>
                 <div>
                     <div>网址</div>
-                    <input type="text" v-model="upData.net_url" placeholder="输入客户企业网址">
+                    <input type="text" v-model="upData.net_url" v-on:change="scoreFn" placeholder="输入客户企业网址">
                 </div>
                 <div>
                     <div>所在地<span class="red">*</span></div>
@@ -53,7 +53,7 @@
                 </div>
                 <div>
                     <div>详细地址</div>
-                    <input type="text" v-model="upData.address" placeholder="填写详细地址">
+                    <input type="text" v-model="upData.address" v-on:change="scoreFn" placeholder="填写详细地址">
                 </div>
             </div>
         </div>
@@ -65,15 +65,15 @@
             <div class="contcon">
                 <div>
                     <div>人数</div>
-                    <input type="text" v-model="upData.people_num" placeholder="输入客户企业人数">
+                    <input type="text" v-model="upData.people_num" v-on:change="scoreFn" placeholder="输入客户企业人数">
                 </div>
                 <div>
                     <div>分支机构数</div>
-                    <input type="text" v-model="upData.fzjg_num" placeholder="输入分支机构数">
+                    <input type="text" v-model="upData.fzjg_num" v-on:change="scoreFn" placeholder="输入分支机构数">
                 </div>
                 <div>
                     <div>营业额</div>
-                    <input type="text" v-model="upData.turnover" placeholder="输入客户营业额">
+                    <input type="text" v-model="upData.turnover" v-on:change="scoreFn" placeholder="输入客户营业额">
                 </div>
             </div>
         </div>
@@ -113,15 +113,15 @@
             <div class="contcon" v-for="(item, index) in contact_list" :key="index">
                 <div>
                     <div>姓名<span class="red">*</span></div>
-                    <input type="text" v-model="item.name" placeholder="输入联系人姓名">
+                    <input type="text" v-model="item.name" v-on:change="scoreFn" placeholder="输入联系人姓名">
                 </div>
                 <div>
                     <div>职务<span class="red">*</span></div>
-                    <input type="text" v-model="item.position" placeholder="输入联系人当前职务">
+                    <input type="text" v-model="item.position" v-on:change="scoreFn" placeholder="输入联系人当前职务">
                 </div>
                 <div>
                     <div>电话<span class="red">*</span></div>
-                    <input type="number" v-model="item.phone" placeholder="输入联系人联系电话">
+                    <input type="number" v-model="item.phone" v-on:change="scoreFn" placeholder="输入联系人联系电话">
                 </div>
                 <div>
                     <div>邮件</div>
@@ -132,7 +132,8 @@
                 <img @click="contactPush" src="@/assets/plus.png" alt="">
             </div>
         </div>
-        <div style="height:2.5rem;"></div>
+        <div style="height:3.5rem;"></div>
+        <div class="score" v-text="'完善度：' + score + '%'"></div>
         <div class="markFooter">
             <button @click="submit">提交</button>
         </div>
@@ -150,6 +151,7 @@ export default {
   name: 'MarkupCu',
   data () {
     return {
+      score: 0,
       tapBur: true,
       navList1: [true, false, false, false],
       navList2: [true, false],
@@ -200,6 +202,41 @@ export default {
   methods: {
     cllSrceach (call) {
       this.comCont = call
+    },
+    scoreFn () {
+      let scores = 0
+      let datas = this.upData
+      if (datas.simple_name !== '') {
+        scores += 5
+      }
+      if (datas.industry !== '') {
+        scores += 5
+      }
+      if (datas.type !== '') {
+        scores += 5
+      }
+      if (datas.net_url !== '') {
+        scores += 5
+      }
+      if (datas.address !== '') {
+        scores += 5
+      }
+      if (datas.people_num !== '' || datas.fzjg_num !== '' || datas.turnover !== '') {
+        scores += 10
+      }
+      if (datas.department !== '') {
+        scores += 30
+      }
+      if (this.area.a3 !== 0 || datas.area !== '') {
+        scores += 5
+      }
+      for (let i = 0; i < this.contact_list.length; i++) {
+        if (this.contact_list[i].name !== '' && this.contact_list[i].position !== '' && this.contact_list[i].phone !== '') {
+          scores += 30
+          break
+        }
+      }
+      this.score = scores
     },
     contactPush: function () {
       let obj = {
@@ -446,7 +483,7 @@ export default {
         } else if (err.data.non_field_errors) {
           let obj = {
             Title: '提示',
-            Content: '请勿重复提交',
+            Content: '此客户是您新增过的客户，请重新选择',
             type: 1,
             btn: 0
           }
@@ -477,6 +514,7 @@ export default {
     cllLink: function (res) {
       console.log(res)
       this.upData.industry = res.name
+      this.scoreFn()
     },
     nav1: function (num) {
       let arr = [false, false, false, false]
@@ -498,9 +536,11 @@ export default {
     },
     checkCall: function (res) {
       this.upData.type = res
+      this.scoreFn()
     },
     linkCall: function (res) {
       this.upData.department = res.name
+      this.scoreFn()
     },
     linkClick: function (typ) {
       let _this = this
@@ -514,6 +554,7 @@ export default {
           Pattern: 1,
           success: function (res) {
             _this.upData.department = res
+            _this.scoreFn()
           }
         })
       }
@@ -530,12 +571,13 @@ export default {
       let _this = this
       if (num === 0) {
         _this.area.a2 = 0
-        console.log(_this.area.a1)
         _this.area.a3 = 0
         _this.areaList('pid2', _this.area.a1)
       } else if (num === 1) {
         _this.area.a3 = 0
         _this.areaList('pid3', _this.area.a2)
+      } else if (num === 2) {
+        _this.scoreFn()
       }
     },
     areaList: function (el, num) {
@@ -585,6 +627,17 @@ export default {
     height:2rem;
     background:rgba(255, 152, 0, 1);
     margin-bottom: .5rem;
+}
+.score{
+  background: rgba(255, 152, 0, 0.47);
+  color:#fff;
+  height:1.5rem;
+  line-height: 1.5rem;
+  font-size: .7rem;
+  width:100%;
+  position: fixed;
+  bottom: 2.25rem;
+  left:0rem;
 }
 .title>.meiyou>div{
    color:#fff;

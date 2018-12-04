@@ -36,6 +36,7 @@
         </div>
       </div>
     </div>
+    <div style="height:4.25rem;"></div>
     <nav>
         <div @click="navClick(0)" class="link_tou">
             <img v-if="nav_list[0]" src="@/assets/qiu.png" alt="">
@@ -128,6 +129,7 @@ export default {
     height: 100%;
     top:0;
     left:0;
+    overflow: auto;
 }
 a{
     text-decoration:none;
@@ -176,7 +178,7 @@ nav>div{
   margin-top:.5rem;
 }
 .navRow>div{
-    width:8.25rem;
+    width:47%;
     height:12rem;
     background:#fff;
     border-radius: .25rem;

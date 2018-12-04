@@ -1,10 +1,10 @@
 <template>
     <div class="buOppoList" v-if="show">
-        <div class="fors" v-for="(item, index) in dataList" :key="index">
+        <div class="fors" v-for="(item, index) in dataList" :key="index" @click.stop="path(item)">
             <div class="forList">
                 <div class="ciPro">
                     <div v-if="item.customer" v-text="'#' + item.customer + '#'"></div>
-                    <div v-for="(items, index) in item.product" :key="index" v-text="'#' + items.key + '#'">#sdfffff#</div>
+                    <div v-for="(items, index) in item.product" :key="index" v-text="'#' + items.key + '#'"></div>
                 </div>
                 <div class="eas" v-text="item.desc"></div>
                 <div class="tapList">
@@ -24,7 +24,7 @@
                     </div>
                 </div>
                 <div class="footBtnBox">
-                    <button @click="edit(item)">编辑</button>
+                    <button v-if="shei === 'my'" @click="edit(item)">编辑</button>
                 </div>
             </div>
         </div>
@@ -37,7 +37,8 @@ export default {
   data () {
     return {
       show: false,
-      dataList: []
+      dataList: [],
+      shei: false
     }
   },
   methods: {
@@ -45,6 +46,9 @@ export default {
       console.log(this.$route.query)
       this.show = true
       let str = 'user=' + this.$route.query.user_id
+      if (parseInt(this.Global.userInfo.myId) === parseInt(this.$route.query.user_id)) {
+        this.shei = 'my'
+      }
       this.api.myAndYouOppoList(str, (res) => {
         console.log(res)
         res.data.results.map((p1) => {
@@ -55,6 +59,9 @@ export default {
       }, (err) => {
         console.log(err)
       })
+    },
+    path (item) {
+      this.$router.push({name: 'buOppoInfo', query: {id: item.id}})
     },
     edit (ite) {
       this.$router.push({name: 'buOppoNew', query: {id: ite.id}})
@@ -72,7 +79,7 @@ export default {
     width: calc(92% - 1.5rem);
     background:#fff;
     margin:0 auto;
-    border-bottom:.1rem solid rgba(240, 239, 245, 1);
+    border-bottom:1px solid rgba(240, 239, 245, 1);
 }
 .fors{
     margin-bottom: .5rem;

@@ -14,7 +14,7 @@
                         <span>外部跟进 <span v-text="msg.out_mark_count"></span></span>
                     </div>
                 </div>
-                <button v-if="msg.is_mark !== 0" @click="path(2, msg.id)">我的销售笔记</button>
+                <button v-if="msg.is_mark !== 0" @click="path(2, msg.id)">我的客户笔记</button>
             </div>
             <div class="tagBox" v-if="msg.reviews_list.length > 0">
                 <div class="tagBoxs" :class="tapBur?'tagBoxs1':'tagBoxs2'">

@@ -36,7 +36,7 @@ export default {
     }
     let _this = this
     let obj = {
-      code: '1'
+      code: urlCode
     }
     _this.api.getToken(obj, (res) => {
       _this.api.headerToken(res.data.token)

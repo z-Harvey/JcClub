@@ -1,7 +1,7 @@
 <script type="text/javascript">
 import axios from 'axios'
-// const path = ''
-const path = '/api'
+const path = ''
+// const path = '/api'
 
 let headerToken = (token) => {
   axios.defaults.headers.Authorization = 'JWT ' + token
@@ -282,7 +282,7 @@ let getUserCustomer = function (data, success, error) {
 }
 
 /**
- * 关注Ta   ( p=id )
+ * 关注Ta   ( puser:id )
  */
 let MyCollect = function (data, success, error) {
   axios.post(path + '/my_collect/?link=' + Date.parse(new Date()), data).then(function (res) {
@@ -485,7 +485,7 @@ let postCompanyUnlock = function (data, success, error) {
   })
 }
 /**
- * 销售笔记 头部   ( id=** )
+ * 客户笔记 头部   ( id=** )
  */
 let getNotesHeader = function (data, success, error) {
   axios.get(path + '/notes_header/?link=' + Date.parse(new Date()) + '&' + data).then(function (res) {
@@ -495,7 +495,7 @@ let getNotesHeader = function (data, success, error) {
   })
 }
 /**
- * 销售笔记 个人信息   ( company = id )
+ * 客户笔记 个人信息   ( company = id )
  */
 let getMyCustomers = function (data, success, error) {
   axios.get(path + '/my_customer/' + data + '/?link=' + Date.parse(new Date())).then(function (res) {
@@ -525,7 +525,7 @@ let patchMyCustomers = function (id, data, success, error) {
   })
 }
 /**
- * 销售笔记 获取足迹   ( company = id )
+ * 客户笔记 获取足迹   ( company = id )
  */
 let getFootPrint = function (data, success, error) {
   axios.get(path + '/foot_print/?link=' + Date.parse(new Date()) + '&' + data).then(function (res) {
@@ -535,7 +535,7 @@ let getFootPrint = function (data, success, error) {
   })
 }
 /**
- * 销售笔记 新增足迹   ( company = id )
+ * 客户笔记 新增足迹   ( company = id )
  */
 let postFootPrint = function (data, success, error) {
   axios.post(path + '/foot_print/?link=' + Date.parse(new Date()), data).then(function (res) {
@@ -716,6 +716,26 @@ let postDataOk = function (success, error) {
   })
 }
 /**
+ * 获取重复数据
+ */
+let getFileRepeat = function (success, error) {
+  axios.get(path + '/file_repeat/?link=' + Date.parse(new Date())).then(function (res) {
+    success(res)
+  }, function (err) {
+    error(err.response)
+  })
+}
+/**
+ * 覆盖重复数据
+ */
+let postFileRepeat = function (success, error) {
+  axios.post(path + '/file_repeat/?link=' + Date.parse(new Date())).then(function (res) {
+    success(res)
+  }, function (err) {
+    error(err.response)
+  })
+}
+/**
  * 获取商机池
  */
 let getBusinessSea = function (data, success, error) {
@@ -766,7 +786,6 @@ let postBusinessOpportunity = function (data, success, error) {
     error(err.response)
   })
 }
-
 /**
  * 获取需求池
  */
@@ -819,6 +838,8 @@ let putDemand = function (id, data, success, error) {
 }
 
 export default{
+  getFileRepeat, // 获取重复数据
+  postFileRepeat, // 确认覆盖
   putDemand, // 编辑需求
   postDemand, // 发布需求
   putBusinessOpportunity, // 编辑商机
@@ -874,10 +895,10 @@ export default{
   getCompanyContact, // 客户 的 企业联系人
   getCompanyUnlock, // 获取解锁需要的牛钻数
   postCompanyUnlock, // 解锁这家公司
-  getMyCustomers, // 销售笔记 个人信息
-  getNotesHeader, // 销售笔记 头部
-  getFootPrint, // 销售笔记 获取足迹
-  postFootPrint, // 销售笔记 新增足迹
+  getMyCustomers, // 客户笔记 个人信息
+  getNotesHeader, // 客户笔记 头部
+  getFootPrint, // 客户笔记 获取足迹
+  postFootPrint, // 销售客户笔记笔记 新增足迹
   getMyCollect, // 我的关注
   getMyFans, // 我的粉丝
   getNiuzTask, // 牛钻任务列表

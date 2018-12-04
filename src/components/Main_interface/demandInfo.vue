@@ -10,8 +10,8 @@
                     <div class="name" v-text="msg.nickname || '--'">袁邦阳（云端飞扬）</div>
                     <div class="nickName" v-text="(msg.position || '--') + '/' + (msg.company_name || '--')"></div>
                 </div>
-                <div class="userBtn gz" v-if="msg.is_collect === 0">关注</div>
-                <div class="userBtn ygz" v-else>已关注</div>
+                <div class="userBtn gz" v-if="msg.is_collect === 0" @click="guanzhu(0)">关注</div>
+                <div class="userBtn ygz" v-else @click="guanzhu(1)">已关注</div>
             </div>
             <div class="userInner" v-text="msg.desc || '--'">~</div>
         </div>
@@ -61,12 +61,39 @@ export default {
     }
   },
   methods: {
+    guanzhu (num) {
+      if (num === 0) {
+        let obj = {
+            puser: this.msg.user
+        }
+        this.api.MyCollect(obj, (res) => {
+            if (res.status === 201) {
+            this.msg.is_collect = 1
+            this.msg.collect_id = res.data.collect_id
+            } else {
+            alert(res.status)
+            }
+        }, (err) => {
+            console.log(err)
+        })
+      } else if (num === 1) {
+        this.api.delMyCollect(this.msg.collect_id, (res) => {
+          if (res.status === 204) {
+            this.msg.is_collect = 0
+          } else {
+            alert(res.status)
+          }
+        }, (err) => {
+          console.log(err)
+          alert(err.status)
+        })
+      }
+    }
   },
   mounted () {
     document.title = '需求详情'
     this.que = this.$route.query
     this.api.getDemand(this.que.id, (res) => {
-      console.log(res)
       this.msg = res.data
     }, (err) => {
       console.log(err)
@@ -152,7 +179,7 @@ export default {
     text-align: left;
     vertical-align: text-top;
     line-height: .6rem;
-    border-top: .1rem solid rgba(240, 239, 245, 1);
+    border-top: 1px solid rgba(240, 239, 245, 1);
     margin-top:.4rem;
 }
 .titUserFoot>.yan>img{

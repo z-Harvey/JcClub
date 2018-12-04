@@ -7,7 +7,7 @@
         </div>
         <button class="srceBtn" @click="srceach">搜索</button>
     </div>
-    <div class="sort">
+    <div class="sort" style="display:none;">
         <div @click="sorts(0)">
             <span>行业</span>
             <img v-if="sort[0]" src="@/assets/bot1.png">
@@ -194,6 +194,7 @@ export default {
     color:#101010;
     background: #fff;
     border-bottom: 1px solid #f7f7f7;
+    z-index: 9;
 }
 .sortRig{
     position: fixed;
@@ -228,7 +229,8 @@ export default {
     vertical-align: text-top;
 }
 .content{
-    margin-top:4.5rem;
+    /* margin-top:4.5rem; */
+    margin-top:2.5rem;
 }
 .contFor{
     margin-bottom: .5rem;
@@ -308,7 +310,7 @@ export default {
     width:calc(92% - 4.2rem);
     margin:0 auto;
     border-radius: 0 0 .25rem .25rem;
-    border-top:.1rem solid rgba(240, 239, 245, 1);
+    border-top:1px solid rgba(240, 239, 245, 1);
     text-align: left;
     height:1rem;
     background: #fff;

@@ -30,7 +30,7 @@
             </div>
         </div>
         <nav>
-            <button @click="navPath(0)" :class="navBtn[0]?'navBtn':''">个人信息</button>
+            <button @click="navPath(0)" :class="navBtn[0]?'navBtn':''">会员信息</button>
             <button @click="navPath(7)" :class="navBtn[1]?'navBtn':''" v-text="source === 'my'? '我的商机': 'Ta的商机'"></button>
             <button @click="navPath(8)" :class="navBtn[2]?'navBtn':''" v-text="source === 'my'? '我的需求': 'Ta的需求'"></button>
         </nav>
@@ -41,7 +41,7 @@
         <div style="height:2.25rem;"></div>
         <div v-if="source === 'my'" class="footer">
             <button v-if="navBtn[0]" class="myCards" @click="navPath(5)">编辑个人信息</button>
-            <button v-if="navBtn[0]" class="myCards" @click="navPath(6)">编辑工作经验</button>
+            <button v-if="navBtn[0]" class="myCards" @click="navPath(6)">编辑工作信息</button>
             <button v-if="navBtn[1]" class="myCards" @click="navPath(9)">新增商机</button>
             <button v-if="navBtn[2]" class="myCards" @click="navPath(10)">新增需求</button>
         </div>
@@ -176,7 +176,7 @@ export default {
           _this.$router.push('/buOppoNew')
           break
         case 10:
-          _this.$router.push({name: 'editInfo', query: {type: 'exper'}})
+          _this.$router.push('/demandNew')
           break
       }
     },
@@ -210,11 +210,18 @@ export default {
     if (parseInt(_this.que.user_id) === parseInt(_this.gl.myId)) {
       _this.source = 'my'
     }
+    switch (_this.que.typ) {
+      case 1:
+        this.navPath(7)
+        break
+      case 2:
+        this.navPath(8)
+        break
+    }
     _this.user_id = _this.que.user_id
     _this.$refs.CuInfo.cardInfoInit(_this.user_id)
     _this.$refs.workEx.workInfoInit(_this.user_id)
     _this.api.getUserHeader(_this.user_id, function (res) {
-      console.log(res)
       _this.listData = res.data
     }, function (err) {
       console.log(err)

@@ -5,7 +5,7 @@
                 <span>需求描述<span class="redSp">*</span></span>
             </div>
             <div class="inpCont">
-                <textarea v-model="obj.desc"></textarea>
+                <textarea v-model="obj.desc" maxlength="300"></textarea>
             </div>
         </div>
         <div class="inpuList">
@@ -68,7 +68,8 @@
         </div>
         <div style="height:2.5rem;"></div>
         <div class="subBtn">
-            <button @click="subMit">发布</button>
+            <button v-if="noSubs" @click="subMit">发布</button>
+            <button v-else class="noSub" disabled>发布</button>
         </div>
         <linkage ref="linkage"/>
         <search ref="search" @ok="cllSrceach"/>
@@ -85,6 +86,7 @@ export default {
   data () {
     return {
       nickName: null,
+      noSubs: true,
       obj: {
         department: null, // 需求部门
         min_money: null, // 最小佣金
@@ -218,6 +220,7 @@ export default {
             _this.api.postDemand(data, (res) => {
               console.log(res)
               if (res.status === 201) {
+                _this.noSubs = false
                 let obj = {
                   Title: '提示',
                   Content: '发布成功',
@@ -227,8 +230,15 @@ export default {
                 }
                 _this.$refs.Toast.on_display(obj)
                 setTimeout(() => {
-                  _this.$router.push('')
-                })
+                  _this.$router.push({
+                    path: '/cardInfo',
+                    query: {
+                    source: 'my',
+                    user_id: _this.Global.userInfo.myId,
+                    typ: 2
+                    }
+                  })
+                }, 3000)
               }
             }, (err) => {
               console.log(err)
@@ -409,5 +419,9 @@ export default {
 }
 .subBtn>button::after{
     border:none;
+}
+.subBtn>.noSub{
+    background:#ccc;
+    color:#fff;
 }
 </style>

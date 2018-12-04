@@ -26,15 +26,15 @@
     <div class="btnList">
         <div class="listLi" @click="path(6)">
             <div class="listLiLeft"><img src="@/assets/my_Customer.png" alt=""><span>我的客户</span></div>
-            <div class="listLiRight"><span v-text="msg.niuz">1</span><img src="@/assets/right.png" alt=""></div>
+            <div class="listLiRight"><span v-text="msg.mark_count">1</span><img src="@/assets/right.png" alt=""></div>
         </div>
         <div class="listLi" @click="path(7)">
             <div class="listLiLeft"><img src="@/assets/creative.png" alt=""><span>我的商机</span></div>
-            <div class="listLiRight"><span v-text="msg.niuz">1</span><img src="@/assets/right.png" alt=""></div>
+            <div class="listLiRight"><span v-text="msg.business_count">1</span><img src="@/assets/right.png" alt=""></div>
         </div>
         <div class="listLi" @click="path(8)">
             <div class="listLiLeft"><img src="@/assets/my_demand.png" alt=""><span>我的需求</span></div>
-            <div class="listLiRight"><span v-text="msg.niuz">1</span><img src="@/assets/right.png" alt=""></div>
+            <div class="listLiRight"><span v-text="msg.demand_count">1</span><img src="@/assets/right.png" alt=""></div>
         </div>
         <div class="listLi" @click="path(2)">
             <div class="listLiLeft"><img src="@/assets/choiceness.png" alt=""><span>我的牛钻</span></div>
@@ -50,6 +50,7 @@
         </div>
     </div>
     </div>
+    <div style="height:6.5rem;"></div>
     <div class="adminBtn" style="display:none;">
         <span>管理中心</span>
         <img src="@/assets/right1.png" alt="">
@@ -118,10 +119,24 @@ export default {
           _this.$router.push('/myCustomer')
           break
         case 7:
-          _this.$router.push('/myCustomer')
+          _this.$router.push({
+            path: '/cardInfo',
+            query: {
+              source: 'my',
+              user_id: _this.Global.userInfo.myId,
+              typ: 1
+            }
+          })
           break
         case 8:
-          _this.$router.push('/myCustomer')
+          _this.$router.push({
+            path: '/cardInfo',
+            query: {
+              source: 'my',
+              user_id: _this.Global.userInfo.myId,
+              typ: 2
+            }
+          })
           break
       }
     },
@@ -147,11 +162,12 @@ export default {
 .my{
     position: fixed;
     width: 100%;
-    height:100%;
+    height:calc(100% - 2.25rem);
     background: rgba(249, 249, 249, 1);
     overflow: auto;
     display: flex;
     flex-direction: column;
+    overflow: auto;
 }
 .myBody{
     flex: 1;

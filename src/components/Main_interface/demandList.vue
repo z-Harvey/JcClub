@@ -1,7 +1,8 @@
 <template>
     <div class="buOppoList" v-if="show">
-        <div class="fors" v-for="(item, index) in dataList" :key="index">
+        <div class="fors" v-for="(item, index) in dataList" :key="index" @click.stop="path(item)">
             <div class="forList">
+                <div class="ciPro" v-text="item.money"></div>
                 <div class="ciPro">
                     <div v-if="item.customer" v-text="'#' + item.customer + '#'"></div>
                     <div v-for="(items, index) in item.product" :key="index" v-text="'#' + items.key + '#'">#sdfffff#</div>
@@ -23,8 +24,8 @@
                         <span v-text="item.see_num">999</span>
                     </div>
                 </div>
-                <div class="footBtnBox" v-if="shei === 'my'">
-                    <button v-if="shei === 'my'" @click="edit(item)">编辑</button>
+                <div class="footBtnBox">
+                    <button v-if="shei === 'my'" @click.stop="edit(item)">编辑</button>
                 </div>
             </div>
         </div>
@@ -45,10 +46,11 @@ export default {
     on_display () {
       this.show = true
       let str = 'user=' + this.$route.query.user_id
-      if (this.Global.userInfo.myId === this.$route.query.user_id) {
+      if (parseInt(this.Global.userInfo.myId) === parseInt(this.$route.query.user_id)) {
         this.shei = 'my'
       }
       this.api.myAndYouDemand(str, (res) => {
+        console.log(res)
         res.data.results.map((p1) => {
           p1.industry = p1.industry.split('、')
         })
@@ -56,6 +58,10 @@ export default {
       }, (err) => {
         console.log(err)
       })
+    },
+    path (item) {
+      console.log(item)
+      this.$router.push({name: 'demandInfo', query: {id: item.id}})
     },
     edit (ite) {
       this.$router.push({name: 'demandNew', query: {id: ite.id}})
@@ -73,7 +79,7 @@ export default {
     width: calc(92% - 1.5rem);
     background:#fff;
     margin:0 auto;
-    border-bottom:.1rem solid rgba(240, 239, 245, 1);
+    border-bottom:1px solid rgba(240, 239, 245, 1);
 }
 .fors{
     margin-bottom: .5rem;
@@ -82,6 +88,7 @@ export default {
     font-size: .7rem;
     text-align: left;
     color:rgba(255, 152, 0, 1);
+    line-height: 1rem;
 }
 .eas{
     font-size: .7rem;

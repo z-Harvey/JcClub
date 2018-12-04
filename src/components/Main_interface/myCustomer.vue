@@ -41,25 +41,51 @@
                     </div>
                 </div>
                 <div class="ricTag">
+                    <span v-if="item.has_decision === 0">#有决策链线索#</span>
+                    <span v-if="item.has_decision === 1">#无决策链线索#</span>
                     <span v-if="item.relation === 0">#有过合作#</span>
                     <span v-if="item.relation === 1">#正在合作#</span>
                     <span v-if="item.relation === 2">#有过跟进#</span>
                     <span v-if="item.relation === 3">#正在跟进#</span>
-                    <span v-if="item.has_decision === 0">#有决策链线索#</span>
-                    <span v-if="item.has_decision === 1">#无决策链线索#</span>
                 </div>
                 <div class="forFuterr">
                     <div>
                         <img src="@/assets/foter.png" alt="">
                         <span>足迹 <span v-text="item.footPrint_count"></span></span>
                     </div>
-                    <button @click="path(0, item)">销售笔记</button>
+                    <div>
+                        <img src="@/assets/ceaseImg.png" alt="">
+                        <span>完善度 <span v-text="item.completion"></span>%</span>
+                    </div>
+                    <button @click="path(0, item)">我的客户笔记</button>
                 </div>
             </div>
         </div>
     </div>
+    <div class="btnMot" v-show="newList">
+      <div class="motCont">
+        <div>
+          <div @click="path(4)">
+            <div>
+              <img src="@/assets/Alone_a.png" alt="">
+            </div>
+            <div>新增客户</div>
+          </div>
+          <div @click="path(5)">
+            <div>
+              <img src="@/assets/Alone.png" alt="">
+            </div>
+            <div>批量新增客户</div>
+          </div>
+        </div>
+        <div class="btnQx" @click="path(3)">取消</div>
+      </div>
+    </div>
     <div class="blank" v-if="dataList.length === 0">
         <img src="@/assets/blank.png" alt="">
+    </div>
+    <div class="footBtn">
+        <button @click="path(3)">新增客户</button>
     </div>
     <div style="height:2.75rem;"></div>
     <Toast ref="Toast"/>
@@ -75,7 +101,8 @@ export default {
       src: null,
       p: 1,
       page_size: 12,
-      ps: true
+      ps: true,
+      newList: false
     }
   },
   methods: {
@@ -134,7 +161,7 @@ export default {
         case 1:
           if (item.is_unlock === 0) {
             let obj = {
-              Title: '解锁客户数据',
+              Title: '解锁客户主页',
               type: 2,
               btn: 3,
               No: '放弃解锁',
@@ -151,6 +178,15 @@ export default {
               }
             })
           }
+          break
+        case 3:
+          this.newList = !this.newList
+          break
+        case 4:
+          this.$router.push('/MarkupCu')
+          break
+        case 5:
+          this.$router.push('/batchNew')
           break
       }
     },
@@ -419,17 +455,69 @@ export default {
     vertical-align: text-top;
 }
 .forFuterr>button{
-    width:4rem;
-    height:1.5rem;
     border-radius:.75rem;
     border:0;
-    line-height: 1.5rem;
     font-size: .6rem;
     color:rgba(255, 152, 0, 1);
     background:rgba(255, 152, 0, 0.1);
     float: right;
+    padding:.3rem .5rem;
 }
 .forFuterr>button::after{
     border:0;
+}
+.footBtn{
+    height:2.25rem;
+    width:100%;
+    background:#fff;
+    position: fixed;
+    bottom: 0rem;
+    left:0rem;
+}
+.footBtn>button{
+    width:10rem;
+    height:1.75rem;
+    border-radius: 1rem;
+    background:rgba(255, 152, 0, 1);
+    color:#fff;
+    border:none;
+    font-size: .7rem;
+    margin-top:.25rem;
+}
+.footBtn>button::active{
+    border: none;
+}
+.btnMot{
+    position: fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(15, 15, 15, .55);
+}
+.motCont{
+    width:14rem;
+    background:#fff;
+    border-radius: .2rem;
+    margin: 10rem auto 0;
+    font-size: .7rem;
+}
+.motCont>div{
+    display: flex;
+    justify-content: space-around;
+}
+.motCont>div>div{
+    width:50%;
+    padding:.75rem 0;
+}
+.motCont>div>div>div>img{
+    width: 1.5rem;
+    height: 1.5rem;
+}
+.btnQx{
+    color:#888;
+    font-size: .7rem;
+    height:2rem;
+    line-height: 2rem;
 }
 </style>

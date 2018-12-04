@@ -121,7 +121,7 @@ export default {
         console.log(item)
         // this.$router.push('/CuHome')
         let obj = {
-          Title: '解锁客户数据',
+          Title: '解锁客户主页',
           type: 2,
           btn: 3,
           No: '放弃解锁',
@@ -228,7 +228,7 @@ export default {
   },
   mounted () {
     try {
-      document.title = '销售笔记'
+      document.title = '客户笔记'
       let _this = this
       _this.que = _this.$route.query
       let str = 'id=' + _this.que.com_id
