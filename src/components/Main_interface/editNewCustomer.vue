@@ -8,7 +8,7 @@
             <div class="contcon">
                 <div>
                     <div>简称</div>
-                    <input type="text" v-model="upData.simple_name" placeholder="输入客户简称（必填）">
+                    <input type="text" v-model="upData.simple_name" @blur="blurs($event)" placeholder="输入客户简称（必填）">
                 </div>
                 <div>
                     <div class="cheLeft">行业</div>
@@ -20,20 +20,20 @@
                 </div>
                 <div>
                     <div>网址</div>
-                    <input type="text" v-model="upData.net_url" placeholder="输入客户企业网址">
+                    <input type="text" v-model="upData.net_url" @blur="blurs($event)" placeholder="输入客户企业网址">
                 </div>
                 <div>
                     <div>所在地(必选)</div>
                     <div class="xexBox">
-                        <select v-model="area.a1" @change="areaClick(0)">
+                        <select v-model="area.a1" @change="areaClick(0)" @blur="blurs($event)">
                             <option value="0" v-text="upData.province||'选择省'"></option>
                             <option v-for="(item, index) in pid1" :key="index" :value="item.id" v-text="item.name"></option>
                         </select>
-                        <select v-model="area.a2" @change="areaClick(1)">
+                        <select v-model="area.a2" @change="areaClick(1)" @blur="blurs($event)">
                             <option value="0" v-text="upData.city||'选择市'"></option>
                             <option v-for="(item, index) in pid2" :key="index" :value="item.id" v-text="item.name">市</option>
                         </select>
-                        <select v-model="area.a3" @change="areaClick(2)">
+                        <select v-model="area.a3" @change="areaClick(2)" @blur="blurs($event)">
                             <option value="0" v-text="upData.area||'选择区'"></option>
                             <option v-for="(item, index) in pid3" :key="index" :value="item.id" v-text="item.name">区</option>
                         </select>
@@ -41,7 +41,7 @@
                 </div>
                 <div>
                     <div>详细地址</div>
-                    <input type="text" v-model="upData.address" placeholder="填写详细地址">
+                    <input type="text" v-model="upData.address" @blur="blurs($event)" placeholder="填写详细地址">
                 </div>
             </div>
         </div>
@@ -53,15 +53,15 @@
             <div class="contcon">
                 <div>
                     <div>人数</div>
-                    <input type="text" v-model="upData.people_num" placeholder="输入客户企业人数">
+                    <input type="text" v-model="upData.people_num" @blur="blurs($event)" placeholder="输入客户企业人数">
                 </div>
                 <div>
                     <div>分支机构数</div>
-                    <input type="text" v-model="upData.fzjg_num" placeholder="输入客户">
+                    <input type="text" v-model="upData.fzjg_num" @blur="blurs($event)" placeholder="输入客户">
                 </div>
                 <div>
                     <div>营业额</div>
-                    <input type="text" v-model="upData.turnover" placeholder="输入客户营业额">
+                    <input type="text" v-model="upData.turnover" @blur="blurs($event)" placeholder="输入客户营业额">
                 </div>
             </div>
         </div>
@@ -101,19 +101,19 @@
             <div class="contcon" v-for="(item, index) in contact_list" :key="index">
                 <div>
                     <div>姓名</div>
-                    <input type="text" v-model="item.name" placeholder="输入联系人姓名（必填）">
+                    <input type="text" v-model="item.name" @blur="blurs($event)" placeholder="输入联系人姓名（必填）">
                 </div>
                 <div>
                     <div>职务</div>
-                    <input type="text" v-model="item.position" placeholder="输入联系人当前职务（必填）">
+                    <input type="text" v-model="item.position" @blur="blurs($event)" placeholder="输入联系人当前职务（必填）">
                 </div>
                 <div>
                     <div>电话</div>
-                    <input type="number" v-model="item.phone" placeholder="输入联系人联系电话（必填）">
+                    <input type="number" v-model="item.phone" @blur="blurs($event)" pattern="[0-9]*" placeholder="输入联系人联系电话（必填）">
                 </div>
                 <div>
                     <div>邮件</div>
-                    <input type="email" v-model="item.email" placeholder="点此输入联系人邮件">
+                    <input type="email" v-model="item.email" @blur="blurs($event)" placeholder="点此输入联系人邮件">
                 </div>
             </div>
             <div class="plus">
@@ -188,6 +188,10 @@ export default {
     search
   },
   methods: {
+    blurs (e) {
+      document.documentElement.scrollTop = document.documentElement.scrollTop
+      document.body.scrollTop = document.body.scrollTop
+    },
     close () {
       this.show = false
     },
@@ -381,17 +385,10 @@ export default {
           this.close()
         }
       }, (err) => {
-        console.log(err)
-        let str = ''
-        for (let i in err.data) {
-          str += i + ':'
-          str += err.data[i]
-        }
-        alert(str)
+        this.errMotl(err)
       })
     },
     cllLink: function (res) {
-      console.log(res)
       this.upData.industry = res.name
     },
     nav1: function (num) {
@@ -460,7 +457,7 @@ export default {
       _this.api.getAreaList(str, function (res) {
         _this[el] = res.data
       }, function (err) {
-        console.log(err)
+        _this.errMotl(err)
       })
     },
     init (id) {
@@ -474,10 +471,24 @@ export default {
           this.contact_list = this.upData.contact_list
         }
       }, (err) => {
-        alert(err.status)
-        console.log(err)
+        this.errMotl(err)
       })
       this.areaList('pid1', 0)
+    },
+    errMotl (errData) {
+      let errStr = ''
+      let tit = this.Global.HTTPStatusCode[errData.status]
+      for (let i in errData.data) {
+        errStr += i +' : '
+        errStr += errData.data[i]
+      }
+      let obj = {
+        Title: tit,
+        Content: errStr||'无错误内容提示',
+        type: 1,
+        btn: 0
+      }
+      this.$refs.Toast.on_display(obj)
     }
   },
   mounted () {

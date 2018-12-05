@@ -60,7 +60,6 @@ export default {
   },
   methods: {
     Unlock: function () {
-      console.log('解锁')
       this.$refs.toast.close()
     },
     onScroll (e) {
@@ -99,7 +98,7 @@ export default {
           }
           _this.$refs.modal.on_display(res.data, _this.que.com_id)
         }, function (err) {
-          console.log(err)
+          _this.errMotl(err)
         })
       } else if (num === 1) {
         _this.api.getCompanyScale(str, function (res) {
@@ -116,7 +115,7 @@ export default {
           }
           _this.$refs.modal.on_display(res.data, _this.que.com_id)
         }, function (err) {
-          console.log(err)
+          _this.errMotl(err)
         })
       } else if (num === 2) {
         _this.api.getCompanyContact(str, function (res) {
@@ -133,7 +132,7 @@ export default {
           }
           _this.$refs.modal.on_display(res.data, _this.que.com_id)
         }, function (err) {
-          console.log(err)
+          _this.errMotl(err)
         })
       }
     },
@@ -157,9 +156,22 @@ export default {
             }
           })
           break
-        default:
-          console.log('bum:' + bum)
       }
+    },
+    errMotl (errData) {
+      let errStr = ''
+      let tit = this.Global.HTTPStatusCode[errData.status]
+      for (let i in errData.data) {
+        errStr += i +' : '
+        errStr += errData.data[i]
+      }
+      let obj = {
+        Title: tit,
+        Content: errStr||'无错误内容提示',
+        type: 1,
+        btn: 0
+      }
+      this.$refs.Toast.on_display(obj)
     }
   },
   mounted () {
@@ -170,10 +182,9 @@ export default {
     _this.$refs.cuinfo.cuHomeInit(_this.que.com_id)
     _this.api.getCompanyHeader(str, function (res) {
       _this.msg = res.data[0]
-      console.log(_this.msg)
       _this.Global.temporary = res.data[0].is_deepunlock
     }, function (err) {
-      console.log(err)
+      _this.errMotl(err)
     })
   }
 }

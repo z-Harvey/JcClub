@@ -20,6 +20,7 @@
               <button @click="mberApp(item)">加入</button>
           </div>
       </div>
+      <Toast ref="Toast"/>
   </div>
 </template>
 
@@ -32,23 +33,33 @@ export default {
     }
   },
   methods: {
-    mberApp: function (data) {
+    mberApp (data) {
       let _this = this
       let obj = {
         club: data.id
       }
-      _this.api.getClubChoice(obj, function (res) {
-        console.log(res)
+      _this.api.getClubChoice(obj, (res) => {
         _this.$router.push({
           path: '/submitAdd'
         })
-      }, function (err) {
-        console.log(err)
+      }, (err) => {
+        this.errMotl(err)
       })
-    //   this.$router.push({
-    //     path: '/submitAdd',
-    //     query: data
-    //   })
+    },
+    errMotl (errData) {
+      let errStr = ''
+      let tit = this.Global.HTTPStatusCode[errData.status]
+      for (let i in errData.data) {
+        errStr += i +' : '
+        errStr += errData.data[i]
+      }
+      let obj = {
+        Title: tit,
+        Content: errStr||'无错误内容提示',
+        type: 1,
+        btn: 0
+      }
+      this.$refs.Toast.on_display(obj)
     }
   },
   mounted () {

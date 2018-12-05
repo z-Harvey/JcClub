@@ -55,6 +55,7 @@
         <span>管理中心</span>
         <img src="@/assets/right1.png" alt="">
     </div>
+    <Toast ref="Toast"/>
   </div>
 </template>
 
@@ -79,7 +80,6 @@ export default {
   methods: {
     path: function (num) {
       let _this = this
-      console.log(_this.Global.userInfo)
       switch (num) {
         case 0:
           _this.$router.push({ path: '/HisFollow', query: {source: 'my'} })
@@ -143,11 +143,25 @@ export default {
     init: function () {
       let _this = this
       _this.api.getMine(function (res) {
-        console.log(res)
         _this.msg = res.data
       }, function (err) {
-        console.log(err)
+        _this.errMotl(err)
       })
+    },
+    errMotl (errData) {
+      let errStr = ''
+      let tit = this.Global.HTTPStatusCode[errData.status]
+      for (let i in errData.data) {
+        errStr += i +' : '
+        errStr += errData.data[i]
+      }
+      let obj = {
+        Title: tit,
+        Content: errStr||'无错误内容提示',
+        type: 1,
+        btn: 0
+      }
+      this.$refs.Toast.on_display(obj)
     }
   },
   mounted () {

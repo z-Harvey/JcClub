@@ -24,6 +24,7 @@
             <button v-if="upz" @click="btn">下一步</button>
             <button v-else disabled class="dis">下一步</button>
         </div>
+        <Toast ref="Toast"/>
     </div>
 </template>
 
@@ -46,7 +47,6 @@ export default {
     putFile (e) {
       let obj = new FormData()
       let _this = this
-      this.upz = true
       this.uptext = '上传中'
       this.complete = 0
       obj.append('file', e.target.files[0])
@@ -56,21 +56,30 @@ export default {
           _this.complete = complete
         }
       }
-      http.post('/api/markFile/', obj, config).then((res) => {
+      http.post('/markFile/', obj, config).then((res) => {
         this.uptext = '完成'
+        this.upz = true
       }, (err) => {
-        alert(err)
-        console.log(err)
+        this.errMotl(err)
       })
     },
     getFile () {
       window.location.href = '/static/批量新增客户模板.xlsx'
-    //   http.defaults.headers.Authorization = 'JWT ' + this.Global.userInfo.token
-    //   http.get('/api/markFile/').then((res) => {
-    //     console.log(res)
-    //   }, (err) => {
-    //     console.log(err)
-    //   })
+    },
+    errMotl (errData) {
+      let errStr = ''
+      let tit = this.Global.HTTPStatusCode[errData.status]
+      for (let i in errData.data) {
+        errStr += i +' : '
+        errStr += errData.data[i]
+      }
+      let obj = {
+        Title: tit,
+        Content: errStr||'无错误内容提示',
+        type: 1,
+        btn: 0
+      }
+      this.$refs.Toast.on_display(obj)
     }
   },
   mounted (options) {

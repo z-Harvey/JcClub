@@ -3,7 +3,7 @@
     <div class="srceach">
         <div class="inpBox">
             <img src="@/assets/srceach.png">
-            <input type="text" v-model="src" placeholder="输入关键字进行搜索">
+            <input type="text" v-model="src" @blur="blurs()" placeholder="输入关键字进行搜索">
         </div>
         <button class="srceBtn" @click="srceach">搜索</button>
     </div>
@@ -25,23 +25,23 @@
         </div>
     </div>
     <div class="content">
-        <div class="contFor" v-for="(item, index) in dataList" :key="index" @click="path(item)">
+        <div class="contFor" v-for="(item, index) in dataList" :key="index">
             <div class="forIner">
-                <div class="userImg">
+                <div class="userImg" @click="pathCard(item)">
                     <img :src="item.avatarurl" alt="">
                 </div>
-                <div class="userInfo">
+                <div class="userInfo" @click="pathCard(item)">
                     <div class="info">
                         <div class="name" v-text="item.nickname || '--'"></div>
                         <div class="nickName" v-text="item.position || '--' + '/' +item.company_name || '--'">CEO/北京聚牛天下网络科技有限公司</div>
                     </div>
                 </div>
-                <div class="tap">
-                    <div v-if="item.company_name" v-text="'#' + (item.company_name || '--') + '#'"></div>
-                    <div v-for="(items, index) in item.product" :key="index" v-if="index < 3" v-text="'#' + (items.key || '--') + '#'"></div>
+                <div class="tap" @click="path(item)">
+                    <div v-if="item.simple_name" v-text="'#' + item.simple_name + '#'"></div>
+                    <div v-for="(items, index) in item.product" :key="index" v-if="index < 3 && items.key" v-text="'#' + items.key + '#'"></div>
                 </div>
-                <div class="innerText" v-text="item.desc"></div>
-                <div class="tag">
+                <div class="innerText" v-text="item.desc" @click="path(item)"></div>
+                <div class="tag" @click="path(item)">
                     <div v-if="item.industry[0]" v-text="item.industry[0]">IT互联网</div>
                     <div v-if="item.type" v-text="item.type">中小企业</div>
                     <div v-if="item.department" v-text="item.department">技术部门</div>
@@ -50,7 +50,7 @@
             <div class="forFoot">
                 <div class="footLef">
                     <img src="@/assets/timeg.png" alt="">
-                    <span v-text="'剩余' + (item.residue_time || '--') + '天'"></span>
+                    <span v-text="'剩余' + item.residue_time + '天'"></span>
                 </div>
                 <div class="footRig">
                     <img src="@/assets/eyeg.png" alt="">
@@ -59,6 +59,11 @@
             </div>
         </div>
     </div>
+    <div class="blank" v-if="dataList.length === 0">
+        <img src="@/assets/blank.png" alt="">
+        <div class="blankDi">空空如也~~</div>
+    </div>
+    <Toast ref="Toast"/>
   </div>
 </template>
 
@@ -73,11 +78,18 @@ export default {
     }
   },
   methods: {
+    blurs (e) {
+      document.documentElement.scrollTop = document.documentElement.scrollTop
+      document.body.scrollTop = document.body.scrollTop
+    },
     /**
      * 搜索
      */
     srceach () {
       console.log(1)
+    },
+    pathCard (item) {
+      this.$router.push({name: 'cardInfo', query: {user_id: item.user}})
     },
     sorts (num) {
       let arr = [false, false, false]
@@ -101,21 +113,34 @@ export default {
           id: item.id
         }
       })
+    },
+    errMotl (errData) {
+      let errStr = ''
+      let tit = this.Global.HTTPStatusCode[errData.status]
+      for (let i in errData.data) {
+        errStr += i +' : '
+        errStr += errData.data[i]
+      }
+      let obj = {
+        Title: tit,
+        Content: errStr||'无错误内容提示',
+        type: 1,
+        btn: 0
+      }
+      this.$refs.Toast.on_display(obj)
     }
   },
   mounted () {
     document.title = '商机'
     let str = ''
     this.api.getBusinessSea(str, (res) => {
-      console.log(res.data)
       res.data.results.map((p1) => {
-        console.log(p1)
         p1.product = JSON.parse(p1.product)
         p1.industry = p1.industry.split('、')
       })
       this.dataList = res.data.results
     }, (err) => {
-      console.log(err)
+      this.errMotl(err)
     })
   }
 }
@@ -344,5 +369,19 @@ export default {
     border-radius: 2rem;
     background:#fff;
     text-align: center;
+}
+.blank{
+    position: fixed;
+    width:100%;
+    height:calc(100% - 6.66rem);
+    top:6.66rem;
+}
+.blank>img{
+  width:6.66rem;
+  height:6.66rem;
+}
+.blankDi{
+    font-size: .7rem;
+    line-height: 1.5rem;
 }
 </style>

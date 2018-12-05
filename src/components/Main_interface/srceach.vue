@@ -3,7 +3,7 @@
         <div class="srcInp">
             <div>
                 <img src="@/assets/srceach_1.png" alt="">
-                <input type="text" v-model="inpVal" placeholder="输入客户名称关键字">
+                <input type="text" v-model="inpVal" @blur="blurs($event)" placeholder="输入客户名称关键字">
             </div>
             <button @click="srceach">搜索</button>
         </div>
@@ -17,6 +17,7 @@
                 <div class="cikename" v-text="item.name">阿里巴巴（中国）网络技术有限公司</div>
             </div>
         </div>
+        <Toast ref="Toast"/>
         <!-- <div class="or">没搜到？试试看输入更全的客户名称or<span>点此进行深度搜索</span></div> -->
     </div>
 </template>
@@ -32,6 +33,10 @@ export default {
     }
   },
   methods: {
+    blurs (e) {
+      document.documentElement.scrollTop = document.documentElement.scrollTop
+      document.body.scrollTop = document.body.scrollTop
+    },
     srceach: function () {
       let _this = this
       let str = 'search=' + _this.inpVal
@@ -43,7 +48,7 @@ export default {
           _this.meiyou = false
         }
       }, function (err) {
-        console.log(err)
+        _this.errMotl(err)
       })
     },
     path: function (data) {
@@ -52,10 +57,24 @@ export default {
         name: 'MarkupCu',
         query: data
       })
+    },
+    errMotl (errData) {
+      let errStr = ''
+      let tit = this.Global.HTTPStatusCode[errData.status]
+      for (let i in errData.data) {
+        errStr += i +' : '
+        errStr += errData.data[i]
+      }
+      let obj = {
+        Title: tit,
+        Content: errStr||'无错误内容提示',
+        type: 1,
+        btn: 0
+      }
+      this.$refs.Toast.on_display(obj)
     }
   },
   mounted (options) {
-    console.log(this.$route)
     document.title = '搜索客户'
   }
 }

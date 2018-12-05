@@ -1,5 +1,5 @@
 <template>
-    <div class="saleFootprint" v-if="show">
+    <div class="saleFootprint">
         <div class="content">
             <div class="contTexts" v-for="(item, index) in msgList" :key="index" v-if="item.type > 0">
                 <div class="yuans"></div>
@@ -19,6 +19,7 @@
                 <div class="con">首次标记</div>
             </div>
         </div>
+        <Toast ref="Toast"/>
     </div>
 </template>
 
@@ -36,7 +37,6 @@ export default {
       let _this = this
       let str = 'company=' + id
       _this.api.getFootPrint(str, function (res) {
-        console.log(res)
         _this.msgList = res.data.results
         _this.msgList.map(function (p1, p2) {
           if (p1.type === 0) {
@@ -44,13 +44,27 @@ export default {
           }
         })
       }, function (err) {
-        console.log(err)
+        this.errMotl(err)
       })
+    },
+    errMotl (errData) {
+      let errStr = ''
+      let tit = this.Global.HTTPStatusCode[errData.status]
+      for (let i in errData.data) {
+        errStr += i +' : '
+        errStr += errData.data[i]
+      }
+      let obj = {
+        Title: tit,
+        Content: errStr||'无错误内容提示',
+        type: 1,
+        btn: 0
+      }
+      this.$refs.Toast.on_display(obj)
     }
   },
-  mounted (options) {
-  },
-  props: ['show']
+  mounted () {
+  }
 }
 </script>
 

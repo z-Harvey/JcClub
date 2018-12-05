@@ -50,9 +50,9 @@
                 <span>成交佣金<span class="redSp">*</span><span class="hui">(仅展示)</span></span>
             </div>
             <div class="AreachB">
-                <input type="number" v-model="obj.min_money" placeholder="￥0.00">
+                <input type="number" pattern="[0-9]*" v-model="obj.min_money" @blur="blurs($event)" placeholder="￥0.00">
                 <span> - </span>
-                <input type="number" v-model="obj.max_money" placeholder="￥0.00">
+                <input type="number" pattern="[0-9]*" v-model="obj.max_money" @blur="blurs($event)" placeholder="￥0.00">
             </div>
         </div>
         <div class="btnList" v-if="!que.id">
@@ -105,6 +105,10 @@ export default {
     search
   },
   methods: {
+    blurs (e) {
+      document.documentElement.scrollTop = document.documentElement.scrollTop
+      document.body.scrollTop = document.body.scrollTop
+    },
     path (num) {
       switch (num) {
         case 0:
@@ -130,7 +134,6 @@ export default {
           type: 2,
           Pattern: 1,
           success: (res) => {
-            console.log(res)
             _this.obj.type = res
           }
         })
@@ -154,7 +157,6 @@ export default {
       this.obj.term = num
     },
     subMit () {
-      console.log(this.obj)
       let _this = this
       if (_this.obj.desc === null || _this.obj.desc === '') {
         let obj = {
@@ -203,13 +205,12 @@ export default {
                 })
               }
             }, (err) => {
-              console.log(err)
+              _this.errMotl(err)
             })
           }
         }
         this.$refs.Toast.on_display(obj)
       } else {
-        console.log(_this.obj.max_money)
         let obj = {
           Title: '提示',
           Content: '是否确认发布需求？',
@@ -218,7 +219,6 @@ export default {
           success () {
             let data = JSON.parse(JSON.stringify(_this.obj))
             _this.api.postDemand(data, (res) => {
-              console.log(res)
               if (res.status === 201) {
                 _this.noSubs = false
                 let obj = {
@@ -241,7 +241,7 @@ export default {
                 }, 3000)
               }
             }, (err) => {
-              console.log(err)
+              _this.errMotl(err)
             })
           }
         }
@@ -250,12 +250,25 @@ export default {
     },
     editInit () {
       this.api.getDemand(this.que.id, (res) => {
-        console.log(res)
-        // res.data.product = JSON.parse(res.data.product)
         this.obj = res.data
       }, (err) => {
-        console.log(err)
+        this.errMotl(err)
       })
+    },
+    errMotl (errData) {
+      let errStr = ''
+      let tit = this.Global.HTTPStatusCode[errData.status]
+      for (let i in errData.data) {
+        errStr += i +' : '
+        errStr += errData.data[i]
+      }
+      let obj = {
+        Title: tit,
+        Content: errStr||'无错误内容提示',
+        type: 1,
+        btn: 0
+      }
+      this.$refs.Toast.on_display(obj)
     }
   },
   mounted () {

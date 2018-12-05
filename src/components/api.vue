@@ -6,7 +6,6 @@ const path = ''
 let headerToken = (token) => {
   axios.defaults.headers.Authorization = 'JWT ' + token
 }
-
 /**
  * 用户进入界面  用code换取token  同时查看是不是用户  与当前状态
  */
@@ -280,7 +279,6 @@ let getUserCustomer = function (data, success, error) {
     error(err.response)
   })
 }
-
 /**
  * 关注Ta   ( puser:id )
  */
@@ -634,7 +632,6 @@ let upImg = function (data, success, error) {
     error(err.response)
   })
 }
-
 /**
  * 编辑工作经验  提交
  */
@@ -755,7 +752,6 @@ let myAndYouOppoList = function (data, success, error) {
     error(err.response)
   })
 }
-
 /**
  * 获取商机详情
  */

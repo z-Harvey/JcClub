@@ -14,7 +14,7 @@
             <p>您的酷牛仔编号为：</p>
             <p v-text="msg.club_num">KAA001</p>
         </div>
-        <input class="inviCode" v-model="nickname" type="text" placeholder="给自己取一个酷酷的江湖称号吧~">
+        <input class="inviCode" v-model="nickname" type="text" @blur="blurs" placeholder="给自己取一个酷酷的江湖称号吧~">
     </div>
     <div class="meContent" v-if="msg.status === 2||msg.status === '2'">
         <div class="mCtit">
@@ -29,6 +29,7 @@
     <div class="flxBtn" v-if="msg.status === 2||msg.status === '2'">
         <button class="sqBtn" @click="sqBtn(1)">重新申请</button>
     </div>
+    <Toast ref="Toast"/>
   </div>
 </template>
 
@@ -71,6 +72,25 @@ export default {
           _this.$router.push('/NoMember')
           break
       }
+    },
+    blurs () {
+      document.documentElement.scrollTop = document.documentElement.scrollTop
+      document.body.scrollTop = document.body.scrollTop
+    },
+    errMotl (errData) {
+      let errStr = ''
+      let tit = this.Global.HTTPStatusCode[errData.status]
+      for (let i in errData.data) {
+        errStr += i +' : '
+        errStr += errData.data[i]
+      }
+      let obj = {
+        Title: tit,
+        Content: errStr||'无错误内容提示',
+        type: 1,
+        btn: 0
+      }
+      this.$refs.Toast.on_display(obj)
     }
   },
   mounted () {

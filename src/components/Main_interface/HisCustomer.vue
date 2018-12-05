@@ -109,7 +109,7 @@ export default {
               _this.path(0, obj)
             }
           }, function (err) {
-            console.log(err)
+            _this.errMotl(err)
           })
         } else {
           let obj = {
@@ -129,7 +129,6 @@ export default {
     init () {
       let str = 'user=' + this.user_id + '&p=' + this.p + '&page_size=' + this.page_size
       this.api.getUserCustomer(str, (res) => {
-        console.log(res)
         res.data.results.map((p1, p2) => {
           p1.add_time = Math.floor(Math.abs(Date.now() - new Date(p1.add_time).getTime()) / (3600 * 24 * 1e3))
         })
@@ -138,7 +137,7 @@ export default {
           this.ps = false
         }
       }, (err) => {
-        console.log(err)
+        this.errMotl(err)
       })
     },
     initScroll () {
@@ -148,10 +147,8 @@ export default {
           p1.add_time = Math.floor(Math.abs(Date.now() - new Date(p1.add_time).getTime()) / (3600 * 24 * 1e3))
         })
         this.dataList = this.dataList.concat(res.data.results)
-        console.log(res)
-        // if (res.data)
       }, (err) => {
-        console.log(err)
+        this.errMotl(err)
       })
     },
     onScroll (e) {
@@ -163,6 +160,21 @@ export default {
         this.p++
         this.initScroll()
       }
+    },
+    errMotl (errData) {
+      let errStr = ''
+      let tit = this.Global.HTTPStatusCode[errData.status]
+      for (let i in errData.data) {
+        errStr += i +' : '
+        errStr += errData.data[i]
+      }
+      let obj = {
+        Title: tit,
+        Content: errStr||'无错误内容提示',
+        type: 1,
+        btn: 0
+      }
+      this.$refs.Toast.on_display(obj)
     }
   },
   mounted (options) {

@@ -3,7 +3,7 @@
         <div class="srcInp">
             <div>
                 <img src="@/assets/srceach_1.png" alt="">
-                <input type="text" v-model="inpVal" placeholder="输入客户名称关键字，例：聚牛天下">
+                <input type="text" v-model="inpVal" @blur="blurs" placeholder="输入客户名称关键字，例：聚牛天下">
             </div>
             <button @click="srceach">搜索</button>
         </div>
@@ -58,6 +58,10 @@ export default {
     path: function (data) {
       let _this = this
       _this.$router.push()
+    },
+    blurs () {
+      document.documentElement.scrollTop = document.documentElement.scrollTop
+      document.body.scrollTop = document.body.scrollTop
     }
   },
   mounted (options) {

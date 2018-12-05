@@ -4,7 +4,7 @@
     <div class="srceach">
         <div class="inpBox">
             <img src="@/assets/srceach.png" alt="">
-            <input type="text" v-model="src" placeholder="输入会员名称进行搜索">
+            <input type="text" v-model="src" @blur="blurs($event)" placeholder="输入会员名称进行搜索">
         </div>
         <button class="srceBtn" @click="srceach">搜索</button>
     </div>
@@ -59,6 +59,7 @@
     </div>
     <div style="height:3rem;"></div>
     <sort ref="sort" :styles="'top:4.75rem;'"/>
+    <Toast ref="Toast"/>
   </div>
 </template>
 
@@ -78,14 +79,17 @@ export default {
     }
   },
   methods: {
+    blurs (e) {
+      document.documentElement.scrollTop = document.documentElement.scrollTop
+      document.body.scrollTop = document.body.scrollTop
+    },
     srceach () {
       let str = 'search=' + this.src
       this.srceachText = this.src
       this.api.getClubUser(str, (res) => {
-        console.log(res)
         this.dataList = res.data.results
       }, (err) => {
-        console.log(err)
+        this.errMotl(err)
       })
     },
     MyCollect: function (num, data) {
@@ -100,7 +104,7 @@ export default {
             data.is_collect = 1
           }
         }, function (err) {
-          console.log(err)
+          _this.errMotl(err)
         })
       } else if (num === 1) {
         _this.api.delMyCollect(data.collect_id, function (res) {
@@ -108,7 +112,7 @@ export default {
             data.is_collect = 0
           }
         }, function (err) {
-          console.log(err)
+          _this.errMotl(err)
         })
       }
     },
@@ -131,11 +135,10 @@ export default {
               _this.srceachText = data
               let str = 'search=' + data + '&p=' + _this.p + '&page_size=' + _this.page_size
               _this.api.getClubUser(str, (res) => {
-                console.log(res)
                 _this.sort = [false, false, false]
                 _this.dataList = res.data.results
               }, (err) => {
-                console.log(err)
+                _this.errMotl(err)
               })
             }
           }
@@ -148,11 +151,10 @@ export default {
               _this.srceachText = data
               let str = 'search=' + data + '&p=' + _this.p + '&page_size=' + _this.page_size
               _this.api.getClubUser(str, (res) => {
-                console.log(res)
                 _this.sort = [false, false, false]
                 _this.dataList = res.data.results
               }, (err) => {
-                console.log(err)
+                _this.errMotl(err)
               })
             }
           }
@@ -166,11 +168,10 @@ export default {
               _this.ordering = retArr[data]
               let str = 'search=' + _this.srceachText + '&p=' + _this.p + '&page_size=' + _this.page_size + '&ordering=' + _this.ordering
               _this.api.getClubUser(str, (res) => {
-                console.log(res)
                 _this.sort = [false, false, false]
                 _this.dataList = res.data.results
               }, (err) => {
-                console.log(err)
+                _this.errMotl(err)
               })
               sortDom.on_display(obj)
             }
@@ -193,7 +194,6 @@ export default {
           })
           break
       }
-    //   this.$router.push('/cardInfo')
     },
     init () {
       let _this = this
@@ -202,7 +202,7 @@ export default {
         _this.myId = _this.Global.userInfo.myId
         _this.dataList = res.data.results
       }, function (err) {
-        console.log(err)
+        _this.errMotl(err)
       })
     },
     scll () {
@@ -217,7 +217,7 @@ export default {
           this.ps = false
         }
       }, function (err) {
-        console.log(err)
+        _this.errMotl(err)
       })
     },
     touchStart (e) {
@@ -230,12 +230,26 @@ export default {
         this.p++
         this.scll()
       }
+    },
+    errMotl (errData) {
+      let errStr = ''
+      let tit = this.Global.HTTPStatusCode[errData.status]
+      for (let i in errData.data) {
+        errStr += i +' : '
+        errStr += errData.data[i]
+      }
+      let obj = {
+        Title: tit,
+        Content: errStr||'无错误内容提示',
+        type: 1,
+        btn: 0
+      }
+      this.$refs.Toast.on_display(obj)
     }
   },
   mounted () {
     document.title = '会员'
     this.init()
-    console.log('color:res;', this.$el)
   }
 }
 </script>

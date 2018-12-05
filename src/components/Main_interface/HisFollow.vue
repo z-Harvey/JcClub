@@ -12,6 +12,7 @@
         </div>
       </div>
       <img class="blank" v-if="dataList.length <= 0" src="@/assets/blank.png" alt="">
+      <Toast ref="Toast"/>
     </div>
 </template>
 
@@ -30,9 +31,6 @@ export default {
   },
   methods: {
     path: function (data) {
-      console.log(data.user)
-      console.log(data)
-      // return
       let _this = this
       _this.$router.push({
         name: 'cardInfo',
@@ -46,7 +44,7 @@ export default {
       this.api.getMyCollect(str, (res) => {
         this.dataList = res.data.results
       }, (err) => {
-        console.log(err)
+        this.errMotl(err)
       })
     },
     myscll () {
@@ -57,7 +55,7 @@ export default {
           this.ps = false
         }
       }, (err) => {
-        console.log(err)
+        this.errMotl(err)
       })
     },
     youInit () {
@@ -65,7 +63,7 @@ export default {
       this.api.getUserCollect(str, (res) => {
         this.dataList = res.data.results
       }, (err) => {
-        console.log(err)
+        this.errMotl(err)
       })
     },
     youscll () {
@@ -76,7 +74,7 @@ export default {
           this.ps = false
         }
       }, (err) => {
-        console.log(err)
+        this.errMotl(err)
       })
     },
     onScroll (e) {
@@ -92,6 +90,21 @@ export default {
           this.youscll()
         }
       }
+    },
+    errMotl (errData) {
+      let errStr = ''
+      let tit = this.Global.HTTPStatusCode[errData.status]
+      for (let i in errData.data) {
+        errStr += i +' : '
+        errStr += errData.data[i]
+      }
+      let obj = {
+        Title: tit,
+        Content: errStr||'无错误内容提示',
+        type: 1,
+        btn: 0
+      }
+      this.$refs.Toast.on_display(obj)
     }
   },
   mounted (options) {

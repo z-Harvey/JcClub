@@ -78,7 +78,9 @@ export default {
             }
             _this.$refs.Toast.on_display(obj)
           }
-        }, function (err) {
+        }, (err) => {
+          this.errMotl(err)
+          return
           if (err.status === 400) {
             _this.$router.push({
               path: '/home'
@@ -90,6 +92,21 @@ export default {
       } else if (num === 3) {
         _this.$router.push('/batchNew')
       }
+    },
+    errMotl (errData) {
+      let errStr = ''
+      let tit = this.Global.HTTPStatusCode[errData.status]
+      for (let i in errData.data) {
+        errStr += i +' : '
+        errStr += errData.data[i]
+      }
+      let obj = {
+        Title: tit,
+        Content: errStr||'无错误内容提示',
+        type: 1,
+        btn: 0
+      }
+      this.$refs.Toast.on_display(obj)
     }
   },
   mounted () {

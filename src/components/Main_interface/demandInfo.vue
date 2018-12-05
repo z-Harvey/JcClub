@@ -2,11 +2,11 @@
   <div class="demandInfo">
     <div class="title">
         <div class="titUserInfo">
-            <div class="userImg">
+            <div class="userImg" @click="pathCard()">
                 <img :src="msg.avatarurl" alt="">
             </div>
             <div class="userInfo">
-                <div class="userName">
+                <div class="userName" @click="pathCard()">
                     <div class="name" v-text="msg.nickname || '--'">袁邦阳（云端飞扬）</div>
                     <div class="nickName" v-text="(msg.position || '--') + '/' + (msg.company_name || '--')"></div>
                 </div>
@@ -22,7 +22,7 @@
             </div>
             <div class="time">
                 <img src="@/assets/timeg.png" alt="">
-                <div v-text="'剩余' + msg.residue_time || '--' + '天'"></div>
+                <div v-text="'剩余' + msg.residue_time + '天'"></div>
             </div>
             <div class="footRig">
                 <span class="fR1">成交佣金</span>
@@ -48,6 +48,7 @@
             <div class="rig" v-text="msg.department || '--'"></div>
         </div>
     </div>
+    <Toast ref="Toast"/>
   </div>
 </template>
 
@@ -67,14 +68,14 @@ export default {
             puser: this.msg.user
         }
         this.api.MyCollect(obj, (res) => {
-            if (res.status === 201) {
+          if (res.status === 201) {
             this.msg.is_collect = 1
             this.msg.collect_id = res.data.collect_id
-            } else {
+          } else {
             alert(res.status)
-            }
+          }
         }, (err) => {
-            console.log(err)
+          this.errMotl(err)
         })
       } else if (num === 1) {
         this.api.delMyCollect(this.msg.collect_id, (res) => {
@@ -84,10 +85,27 @@ export default {
             alert(res.status)
           }
         }, (err) => {
-          console.log(err)
-          alert(err.status)
+          this.errMotl(err)
         })
       }
+    },
+    pathCard (item) {
+      this.$router.push({name: 'cardInfo', query: {user_id: this.msg.user}})
+    },
+    errMotl (errData) {
+      let errStr = ''
+      let tit = this.Global.HTTPStatusCode[errData.status]
+      for (let i in errData.data) {
+        errStr += i +' : '
+        errStr += errData.data[i]
+      }
+      let obj = {
+        Title: tit,
+        Content: errStr||'无错误内容提示',
+        type: 1,
+        btn: 0
+      }
+      this.$refs.Toast.on_display(obj)
     }
   },
   mounted () {
@@ -96,7 +114,7 @@ export default {
     this.api.getDemand(this.que.id, (res) => {
       this.msg = res.data
     }, (err) => {
-      console.log(err)
+      this.errMotl(err)
     })
   }
 }

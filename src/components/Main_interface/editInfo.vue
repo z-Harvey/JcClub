@@ -7,16 +7,16 @@
                 <img :src="dataList.avatarurl" alt="">
                 <div class="portMold">
                     <img src="@/assets/camera.png" alt="">
-                    <input type="file" @change="upPort($event)" accept="image/*">
+                    <input type="file" @change="upPort($event)" @blur="blurs($event)" accept="image/*">
                 </div>
             </div>
             <div class="contList">
                 <span>称号<span class="red">*</span></span>
-                <input type="text" v-model="dataList.nickname" placeholder="请输入称号">
+                <input type="text" v-model="dataList.nickname" @blur="blurs($event)" placeholder="请输入称号">
             </div>
             <div class="contList">
                 <span>姓名<span class="red">*</span></span>
-                <input type="text" v-model="dataList.name" placeholder="请输入姓名" disabled>
+                <input type="text" v-model="dataList.name" @blur="blurs($event)" placeholder="请输入姓名" disabled>
             </div>
             <div class="contList sex">
                 <span>性别<span class="red">*</span></span>
@@ -27,38 +27,38 @@
             </div>
             <div class="contList">
                 <span>电话<span class="red">*</span></span>
-                <input type="text" v-model="dataList.mobile" placeholder="请输入电话" disabled>
+                <input type="text" v-model="dataList.mobile" @blur="blurs($event)" placeholder="请输入电话" disabled>
             </div>
             <div class="contList">
                 <span>所在地<span class="red">*</span></span>
-                <select v-model="pid.a1" @change="areaFn1()">
+                <select v-model="pid.a1" @change="areaFn1()" @blur="blurs($event)">
                     <option value="0" v-text="ara[0]">请选择</option>
                     <option v-for="(item, index) in pid1" :key="index" v-text="item.name" :value="item.id"></option>
                 </select>
-                <select v-model="pid.a2" @change="areaFn2()">
+                <select v-model="pid.a2" @change="areaFn2()" @blur="blurs($event)">
                     <option value="0" v-text="ara[1]">请选择</option>
                     <option v-for="(item, index) in pid2" :key="index" v-text="item.name" :value="item.id"></option>
                 </select>
-                <select v-model="pid.a3">
+                <select v-model="pid.a3" @blur="blurs($event)">
                     <option value="0" v-text="ara[2]">请选择</option>
                     <option v-for="(item, index) in pid3" :key="index" v-text="item.name" :value="item.id"></option>
                 </select>
             </div>
             <div class="contList">
                 <span>邮件</span>
-                <input type="text" v-model="dataList.email" placeholder="请输入邮件">
+                <input type="text" v-model="dataList.email" @blur="blurs($event)" placeholder="请输入邮件">
             </div>
             <div class="contList">
                 <span>微信号<span class="red">*</span></span>
-                <input type="text" v-model="dataList.wx_no" placeholder="请输入微信号">
+                <input type="text" v-model="dataList.wx_no" @blur="blurs($event)" placeholder="请输入微信号">
             </div>
             <div class="contList">
                 <span>生日</span>
-                <input type="date" v-model="dataList.birthday" value="'0000-00-00'">
+                <input type="date" v-model="dataList.birthday" @blur="blurs($event)" value="'0000-00-00'">
             </div>
             <div class="contList">
                 <span>学历<span class="red">*</span></span>
-                <select v-model="dataList.edu_background">
+                <select v-model="dataList.edu_background" @blur="blurs($event)">
                     <option value="null">请选择</option>
                     <option value="小学">小学</option>
                     <option value="初中">初中</option>
@@ -86,7 +86,7 @@
             </div>
             <div class="contList">
                 <span>职业<span class="red">*</span></span>
-                <input type="text" v-model="dataList.position" placeholder="当前的职位" disabled>
+                <input type="text" v-model="dataList.position" @blur="blurs($event)" placeholder="当前的职位" disabled>
             </div>
             <div class="contList">
                 <span>对接部门<span class="red">*</span></span>
@@ -94,15 +94,15 @@
             </div>
             <div class="contList">
                 <span>工作年限<span class="red">*</span></span>
-                <input type="date" v-model="dataList.workyears" placeholder="参加工作的年限">
+                <input type="date" v-model="dataList.workyears" @blur="blurs($event)" placeholder="参加工作的年限">
             </div>
             <div class="contList">
                 <span>销售年限<span class="red">*</span></span>
-                <input type="date" v-model="dataList.salesyears" placeholder="做销售的工作年限">
+                <input type="date" v-model="dataList.salesyears" @blur="blurs($event)" placeholder="做销售的工作年限">
             </div>
             <div class="contList">
                 <span>行业年限<span class="red">*</span></span>
-                <input type="date" v-model="dataList.industryyears" placeholder="目前所在行业的工作年限">
+                <input type="date" v-model="dataList.industryyears" @blur="blurs($event)" placeholder="目前所在行业的工作年限">
             </div>
           </div>
           <div class="subContent">
@@ -116,14 +116,14 @@
             </div>
             <div class="subcontList">
                 <span>标杆客户<span class="red">*</span></span><span class="rightTex">至少一个</span>
-                <input class="width_100inp" v-for="(item,index) in bg_customer" :key="index" v-model="item.key" type="text" placeholder="请输入标杆客户">
+                <input class="width_100inp" v-for="(item,index) in bg_customer" :key="index" v-model="item.key" @blur="blurs($event)" type="text" placeholder="请输入标杆客户">
                 <img class="plus" @click="plus(2)" src="@/assets/plus.png" alt="">
             </div>
           </div>
           <div class="subContent">
             <div class="subcontList">
                 <span>销售产品<span class="red">*</span></span><span class="rightTex">至少一个</span>
-                <input class="width_100inp" v-for="(item, index) in product" :key="index" v-model="item.key" type="text" placeholder="请输入产品名称">
+                <input class="width_100inp" v-for="(item, index) in product" :key="index" v-model="item.key" @blur="blurs($event)" type="text" placeholder="请输入产品名称">
                 <img class="plus" @click="plus(0)" src="@/assets/plus.png" alt="">
             </div>
           </div>
@@ -131,11 +131,11 @@
             <div class="subcontList">
                 <span>业绩荣誉</span>
                 <div v-for="(item, index) in honors" :key="index">
-                    <input class="width_100inp" v-model="item.key" type="text" placeholder="请输入荣誉名称">
+                    <input class="width_100inp" v-model="item.key" type="text" @blur="blurs($event)" placeholder="请输入荣誉名称">
                     <div>
                         <img v-if="item.img" :src="item.img" alt="">
                         <button  v-else>上传图片</button>
-                        <input @change="upimg($event, item)" type="file" accept="image/*">
+                        <input @change="upimg($event, item)" type="file" @blur="blurs($event)" accept="image/*">
                     </div>
                 </div>
                 <img class="plus" @click="plus(1)" src="@/assets/plus.png" alt="">
@@ -201,13 +201,16 @@ export default {
     search
   },
   methods: {
+    blurs (e) {
+      document.documentElement.scrollTop = document.documentElement.scrollTop
+      document.body.scrollTop = document.body.scrollTop
+    },
     upimg (file, item) {
       let files = new FormData()
       files.append('file', file.target.files[0])
       files.append('type', 1)
       this.isImg = false
       this.api.upImg(files, (res) => {
-        console.log(res.data.url)
         if (res.status === 200) {
           this.porBtnText = '图像上传成功'
           setTimeout(() => {
@@ -217,18 +220,15 @@ export default {
           item.img = res.data.url
         }
       }, (err) => {
-        console.log(err)
-        alert('上传失败')
+        _this.errMotl(err)
       })
     },
     upPort (file) {
-      console.log(file)
       let files = new FormData()
       files.append('file', file.target.files[0])
       files.append('type', 1)
       this.isImg = false
       this.api.upImg(files, (res) => {
-        console.log(res.data.url)
         if (res.status === 200) {
           this.porBtnText = '图像上传成功'
           setTimeout(() => {
@@ -236,15 +236,15 @@ export default {
             this.porBtnText = '正在上传图像...'
           }, 500)
           this.dataList.avatarurl = res.data.url
+        } else {
+          _this.errMotl(err)
         }
       }, (err) => {
-        console.log(err)
-        alert('上传失败')
+        _this.errMotl(err)
       })
     },
     plus (num) {
       let obj = null
-      console.log(num)
       switch (num) {
         case 0:
           obj = {
@@ -377,12 +377,11 @@ export default {
       obj.product = JSON.stringify(_this.product)
       obj.bg_customer = JSON.stringify(_this.bg_customer)
       _this.api.putWorkInfo(obj, function (res) {
-        console.log(res)
         if (res.status === 200) {
           _this.$router.go(-1)
         }
       }, function (err) {
-        console.log(err)
+        _this.errMotl(err)
       })
     },
     // 选择公司后的回调
@@ -429,7 +428,7 @@ export default {
       _this.api.getAreaList(str, function (res) {
         _this.pid1 = res.data
       }, function (err) {
-        console.log(err)
+        _this.errMotl(err)
       })
     },
     gencli: function () {
@@ -445,10 +444,9 @@ export default {
       let _this = this
       str = 'pid=' + _this.pid.a1
       _this.api.getAreaList(str, function (res) {
-        console.log(res.data)
         _this.pid2 = res.data
       }, function (err) {
-        console.log(err)
+        _this.errMotl(err)
       })
     },
     areaFn2: function (num) {
@@ -458,7 +456,7 @@ export default {
       _this.api.getAreaList(str, function (res) {
         _this.pid3 = res.data
       }, function (err) {
-        console.log(err)
+        _this.errMotl(err)
       })
     },
     submit: function () {
@@ -488,8 +486,23 @@ export default {
           _this.$router.go(-1)
         }
       }, function (err) {
-        console.log(err)
+        _this.errMotl(err)
       })
+    },
+    errMotl (errData) {
+      let errStr = ''
+      let tit = this.Global.HTTPStatusCode[errData.status]
+      for (let i in errData.data) {
+        errStr += i +' : '
+        errStr += errData.data[i]
+      }
+      let obj = {
+        Title: tit,
+        Content: errStr||'无错误内容提示',
+        type: 1,
+        btn: 0
+      }
+      this.$refs.Toast.on_display(obj)
     }
   },
   mounted () {
@@ -502,7 +515,7 @@ export default {
         _this.dataList = res.data
         _this.ara = _this.dataList.area.split('|')
       }, (err) => {
-        console.log(err)
+        _this.errMotl(err)
       })
     } else {
       document.title = '编辑工作经验'
@@ -517,7 +530,7 @@ export default {
           _this.bg_customer = [{key: ''}]
         }
       }, function (err) {
-        console.log(err)
+        _this.errMotl(err)
       })
     }
   }

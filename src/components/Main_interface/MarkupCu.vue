@@ -20,7 +20,7 @@
             <div class="contcon">
                 <div>
                     <div>简称<span class="red">*</span></div>
-                    <input type="text" v-model="upData.simple_name" v-on:change="scoreFn" placeholder="输入客户简称">
+                    <input type="text" v-model="upData.simple_name" v-on:change="scoreFn" @blur="blurs" placeholder="输入客户简称">
                 </div>
                 <div>
                     <div class="cheLeft">客户行业<span class="red">*</span></div>
@@ -32,20 +32,20 @@
                 </div>
                 <div>
                     <div>网址</div>
-                    <input type="text" v-model="upData.net_url" v-on:change="scoreFn" placeholder="输入客户企业网址">
+                    <input type="text" v-model="upData.net_url" v-on:change="scoreFn" @blur="blurs" placeholder="输入客户企业网址">
                 </div>
                 <div>
                     <div>所在地<span class="red">*</span></div>
                     <div class="xexBox">
-                        <select v-model="area.a1" @change="areaClick(0)">
+                        <select v-model="area.a1" @change="areaClick(0)" @blur="blurs">
                             <option value="0" v-text="upData.province||'选择省'"></option>
                             <option v-for="(item, index) in pid1" :key="index" :value="item.id" v-text="item.name"></option>
                         </select>
-                        <select v-model="area.a2" @change="areaClick(1)">
+                        <select v-model="area.a2" @change="areaClick(1)" @blur="blurs">
                             <option value="0" v-text="upData.city||'选择市'"></option>
                             <option v-for="(item, index) in pid2" :key="index" :value="item.id" v-text="item.name">市</option>
                         </select>
-                        <select v-model="area.a3" @change="areaClick(2)">
+                        <select v-model="area.a3" @change="areaClick(2)" @blur="blurs">
                             <option value="0" v-text="upData.area||'选择区'"></option>
                             <option v-for="(item, index) in pid3" :key="index" :value="item.id" v-text="item.name">区</option>
                         </select>
@@ -53,7 +53,7 @@
                 </div>
                 <div>
                     <div>详细地址</div>
-                    <input type="text" v-model="upData.address" v-on:change="scoreFn" placeholder="填写详细地址">
+                    <input type="text" v-model="upData.address" v-on:change="scoreFn" @blur="blurs" placeholder="填写详细地址">
                 </div>
             </div>
         </div>
@@ -65,15 +65,15 @@
             <div class="contcon">
                 <div>
                     <div>人数</div>
-                    <input type="text" v-model="upData.people_num" v-on:change="scoreFn" placeholder="输入客户企业人数">
+                    <input type="text" v-model="upData.people_num" v-on:change="scoreFn" @blur="blurs" placeholder="输入客户企业人数">
                 </div>
                 <div>
                     <div>分支机构数</div>
-                    <input type="text" v-model="upData.fzjg_num" v-on:change="scoreFn" placeholder="输入分支机构数">
+                    <input type="text" v-model="upData.fzjg_num" v-on:change="scoreFn" @blur="blurs" placeholder="输入分支机构数">
                 </div>
                 <div>
                     <div>营业额</div>
-                    <input type="text" v-model="upData.turnover" v-on:change="scoreFn" placeholder="输入客户营业额">
+                    <input type="text" v-model="upData.turnover" v-on:change="scoreFn" @blur="blurs" placeholder="输入客户营业额">
                 </div>
             </div>
         </div>
@@ -99,7 +99,7 @@
                         <span @click="nav2(1)" :class="navList2[1]?'atrCli':''">否</span>
                     </div>
                 </div>
-                <div>
+                <div v-if="navList2[0]">
                     <div class="cheLeft">线索部门<span class="red">*</span></div>
                     <div @click="linkClick('xiansuo')" v-text="upData.department || '选择线索部门（最多三个）'" class="checkBox"></div>
                 </div>
@@ -113,19 +113,19 @@
             <div class="contcon" v-for="(item, index) in contact_list" :key="index">
                 <div>
                     <div>姓名<span class="red">*</span></div>
-                    <input type="text" v-model="item.name" v-on:change="scoreFn" placeholder="输入联系人姓名">
+                    <input type="text" v-model="item.name" v-on:change="scoreFn" @blur="blurs" placeholder="输入联系人姓名">
                 </div>
                 <div>
                     <div>职务<span class="red">*</span></div>
-                    <input type="text" v-model="item.position" v-on:change="scoreFn" placeholder="输入联系人当前职务">
+                    <input type="text" v-model="item.position" v-on:change="scoreFn" @blur="blurs" placeholder="输入联系人当前职务">
                 </div>
                 <div>
                     <div>电话<span class="red">*</span></div>
-                    <input type="number" v-model="item.phone" v-on:change="scoreFn" placeholder="输入联系人联系电话">
+                    <input type="number" v-model="item.phone" v-on:change="scoreFn" @blur="blurs" pattern="[0-9]*" placeholder="输入联系人联系电话">
                 </div>
                 <div>
                     <div>邮件</div>
-                    <input type="email" v-model="item.email" placeholder="点此输入联系人邮件">
+                    <input type="email" v-model="item.email" @blur="blurs" placeholder="点此输入联系人邮件">
                 </div>
             </div>
             <div class="plus">
@@ -202,6 +202,10 @@ export default {
   methods: {
     cllSrceach (call) {
       this.comCont = call
+    },
+    blurs () {
+      document.documentElement.scrollTop = document.documentElement.scrollTop
+      document.body.scrollTop = document.body.scrollTop
     },
     scoreFn () {
       let scores = 0
@@ -313,7 +317,6 @@ export default {
         return
       } else if (_this.upData.net_url !== '') {
         let reg = RegExp(/:\/\//)
-        console.log(reg.test(_this.upData.net_url))
         if (!(reg.test(_this.upData.net_url))) {
           _this.upData.net_url = 'http://' + _this.upData.net_url
         }
@@ -328,6 +331,20 @@ export default {
           this.$refs.Toast.on_display(obj)
           return
         }
+      }
+      if (_this.navList2[0]) {
+        if (_this.upData.department === '') {
+          let obj = {
+            Title: '提示',
+            Content: '未选择线索部门',
+            type: 1,
+            btn: 0
+          }
+          this.$refs.Toast.on_display(obj)
+          return
+        }
+      } else {
+        _this.upData.department = ''
       }
       if (_this.upData.province === '') {
         let obj = {
@@ -436,19 +453,11 @@ export default {
             _this.$router.go(-1)
           }
         }, function (err) {
-          let obj = err.data
-          let str = ''
-          for (let ij in obj) {
-            str += ij + ':'
-            str += obj[ij]
-          }
-          alert(str)
-          console.log(err)
+          _this.errMotl(err)
         })
         return
       }
       _this.api.PostMyCustomer(_this.upData, function (res) {
-        console.log(res)
         if (res.status === 201) {
           let obj = {
             Title: '解锁成功',
@@ -458,7 +467,6 @@ export default {
             No: '我的客户',
             Yes: '继续新增',
             success: function (res) {
-              console.log(res)
               _this.$router.go(-1)
             },
             fail: function () {
@@ -471,7 +479,6 @@ export default {
           _this.$refs.Toast.on_display(obj)
         }
       }, function (err) {
-        console.log(err)
         if (err.data.net_url) {
           let obj = {
             Title: '提示',
@@ -489,25 +496,7 @@ export default {
           }
           _this.$refs.Toast.on_display(obj)
         } else {
-          let obj = {
-            Title: '解锁成功',
-            Content: '新增成功',
-            type: 1,
-            btn: 2,
-            No: '我的客户',
-            Yes: '继续新增',
-            success: function (res) {
-              console.log(res)
-              _this.$router.go(-1)
-            },
-            fail: function () {
-              _this.Global.navListType = [false, false, true, false]
-              _this.$router.push({
-                path: '/home'
-              })
-            }
-          }
-          _this.$refs.Toast.on_display(obj)
+          _this.errMotl(err)
         }
       })
     },
@@ -586,8 +575,23 @@ export default {
       _this.api.getAreaList(str, function (res) {
         _this[el] = res.data
       }, function (err) {
-        console.log(err)
+        _this.errMotl(err)
       })
+    },
+    errMotl (errData) {
+      let errStr = ''
+      let tit = this.Global.HTTPStatusCode[errData.status]
+      for (let i in errData.data) {
+        errStr += i +' : '
+        errStr += errData.data[i]
+      }
+      let obj = {
+        Title: tit,
+        Content: errStr||'无错误内容提示',
+        type: 1,
+        btn: 0
+      }
+      this.$refs.Toast.on_display(obj)
     }
   },
   mounted (options) {
@@ -598,16 +602,17 @@ export default {
       _this.api.getCompany(_this.$route.query.com_id, function (res) {
         _this.comCont = res.data
       }, function (err) {
-        console.log(err)
+        _this.errMotl(err)
       })
       _this.api.getMyCustomers(_this.$route.query.com_id, function (res) {
         _this.upData = res.data
+        _this.score = res.data.completion
         _this.upData.contact_list = JSON.parse(_this.upData.contact_list)
         if (_this.upData.contact_list !== null) {
           _this.contact_list = _this.upData.contact_list
         }
       }, function (err) {
-        console.log(err)
+        _this.errMotl(err)
       })
     } else {
       document.title = '新增客户'

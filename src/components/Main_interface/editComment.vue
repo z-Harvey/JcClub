@@ -60,13 +60,28 @@ export default {
       let data = {
         reviews: arr.join('|')
       }
-      this.api.patchMyCustomers(_this.que.com_id, data, function (res) {
+      this.api.patchMyCustomers(_this.que.com_id, data, (res) => {
         if (res.status === 200) {
           _this.$router.go(-1)
         }
-      }, function (err) {
-        console.log(err)
+      }, (err) => {
+        this.errMotl(err)
       })
+    },
+    errMotl (errData) {
+      let errStr = ''
+      let tit = this.Global.HTTPStatusCode[errData.status]
+      for (let i in errData.data) {
+        errStr += i +' : '
+        errStr += errData.data[i]
+      }
+      let obj = {
+        Title: tit,
+        Content: errStr||'无错误内容提示',
+        type: 1,
+        btn: 0
+      }
+      this.$refs.Toast.on_display(obj)
     }
   },
   mounted (options) {
@@ -76,9 +91,9 @@ export default {
     this.api.getCompany(this.que.com_id, (res) => {
       this.comName = res.data.name
     }, (err) => {
-      console.log(err)
+      this.errMotl(err)
     })
-    _this.api.getReviews(function (res) {
+    _this.api.getReviews((res) => {
       for (let i = 0; i < res.data.length; i++) {
         let obj = {
           name: res.data[i],
@@ -86,8 +101,8 @@ export default {
         }
         _this.msg.push(obj)
       }
-    }, function (err) {
-      console.log(err)
+    }, (err) => {
+      this.errMotl(err)
     })
   }
 }

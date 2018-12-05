@@ -5,10 +5,10 @@
         <img src="@/assets/logo.png" alt="">
     </div>
     <div class="inpList">
-        <input type="number" placeholder="请输入手机号" v-model="phone" @blur="zhengze">
+        <input type="number" placeholder="请输入手机号" v-model="phone" pattern="[0-9]*" @blur="zhengze">
         <div class="asc pohone_ts" :class="ph_ts?'hei1':''">请输入正确手机号</div>
         <div class="inpListInp3Box">
-            <input type="number" maxlength="6" v-model="hehe" placeholder="请输入短信验证码">
+            <input type="number" maxlength="6" v-model="hehe" pattern="[0-9]*" @blur="blurs" placeholder="请输入短信验证码">
             <button v-if="yzBtn" @click="getyzm" v-text="btnText">获取验证码</button>
             <button v-else disabled v-text="btnText" class="bukedianji">获取验证码</button>
         </div>
@@ -17,6 +17,7 @@
     <div class="Go_register">
         <img @click="loginBtn" src="@/assets/log_btn.png" alt="">
     </div>
+    <Toast ref="Toast"/>
   </div>
 </template>
 
@@ -36,17 +37,16 @@ export default {
     }
   },
   methods: {
-    getyzm: function () {
+    getyzm () {
       let _this = this
       let obj = {
         mobile: _this.phone
       }
-      _this.api.getVerifyCode(obj, function (res) {
-        console.log(res)
+      _this.api.getVerifyCode(obj, (res) => {
         _this.yzBtn = false
         let s = 60
         _this.btnText = '正在发送'
-        let index = setInterval(function () {
+        let index = setInterval((res) => {
           if (s === 0) {
             _this.btnText = '获取验证码'
             clearInterval(index)
@@ -57,22 +57,23 @@ export default {
           s--
         }, 1000)
         _this.yzm = res.data.code
-      }, function (err) {
-        console.log(err)
+      }, (res) => {
+        this.errMotl(err)
       })
     },
-    zhengze: function () {
+    zhengze () {
       let _this = this
       if (!(/^1(3|4|5|7|8)\d{9}$/.test(_this.phone))) {
         _this.ph_ts = true
       } else {
         _this.ph_ts = false
       }
+      this.blurs()
     },
     /**
      * 登录按钮 触发 的事件
      */
-    loginBtn: function () {
+    loginBtn () {
       let _this = this
       // _this.$router.push('/NoMember')
       if (_this.hehe === null || _this.phone === null) {
@@ -84,17 +85,35 @@ export default {
         token: _this.token,
         verify_code: _this.hehe
       }
-      _this.api.login(obj, function (res) {
-        console.log(res)
+      _this.api.login(obj, (res) => {
         _this.Global.userInfo['avatarurl'] = res.data.avatarurl
         _this.Global.userInfo['nickname'] = res.data.nickname
         _this.Global.userInfo['token'] = res.data.token
         _this.api.headerToken(res.data.token)
         _this.Global.userInfo['userSig'] = res.data.userSig
         _this.$router.push('/NoMember')
-      }, function (err) {
-        console.log(err)
+      }, (err) => {
+        this.errMotl(err)
       })
+    },
+    blurs () {
+      document.documentElement.scrollTop = document.documentElement.scrollTop
+      document.body.scrollTop = document.body.scrollTop
+    },
+    errMotl (errData) {
+      let errStr = ''
+      let tit = this.Global.HTTPStatusCode[errData.status]
+      for (let i in errData.data) {
+        errStr += i +' : '
+        errStr += errData.data[i]
+      }
+      let obj = {
+        Title: tit,
+        Content: errStr||'无错误内容提示',
+        type: 1,
+        btn: 0
+      }
+      this.$refs.Toast.on_display(obj)
     }
   },
   mounted () {

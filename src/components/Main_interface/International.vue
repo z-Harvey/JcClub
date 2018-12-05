@@ -4,7 +4,7 @@
     <div class="srceach">
         <div class="inpBox">
             <img src="@/assets/srceach.png">
-            <input type="text" v-model="src" placeholder="输入客户名称关键字">
+            <input type="text" v-model="src" @blur="blurs($event)" placeholder="输入客户名称关键字">
         </div>
         <button class="srceBtn" @click="srceach">搜索</button>
     </div>
@@ -83,13 +83,16 @@ export default {
     }
   },
   methods: {
+    blurs (e) {
+      document.documentElement.scrollTop = document.documentElement.scrollTop
+      document.body.scrollTop = document.body.scrollTop
+    },
     srceach () {
       let str = 'search=' + this.src
       this.api.getCompanySeaList(str, (res) => {
-        console.log(res)
         this.dataList = res.data.results
       }, (err) => {
-        console.log(err)
+        this.errMotl(err)
       })
     },
     /**
@@ -221,7 +224,7 @@ export default {
               _this.path(0, data)
             }
           }, (err) => {
-            console.log(err)
+            _this.errMotl(err)
           })
         } else {
           let obj = {
@@ -242,9 +245,7 @@ export default {
      * 审核失败情况下跳转到我的客户
      */
     fail () {
-      this.$refs.Toast.show = false
-      this.Global.navListType = [false, false, true, false]
-      this.$parent.navClick(2)
+      this.$router.push('myCustomer')
     },
     init () {
       let _this = this
@@ -252,7 +253,7 @@ export default {
       _this.api.getCompanySeaList(str, function (res) {
         _this.dataList = res.data.results
       }, function (err) {
-        console.log(err)
+        _this.errMotl(err)
       })
       _this.api.CompanySeaStatus('', function (res) {
         let obj = {}
@@ -296,7 +297,7 @@ export default {
             break
         }
       }, function (err) {
-        console.log(err)
+        _this.errMotl(err)
       })
     },
     scll () {
@@ -311,7 +312,7 @@ export default {
           this.ps = false
         }
       }, function (err) {
-        console.log(err)
+        _this.errMotl(err)
       })
     },
     onScroll (e) {
@@ -330,8 +331,23 @@ export default {
           this.ps = false
         }
       }, function (err) {
-        console.log(err)
+        _this.errMotl(err)
       })
+    },
+    errMotl (errData) {
+      let errStr = ''
+      let tit = this.Global.HTTPStatusCode[errData.status]
+      for (let i in errData.data) {
+        errStr += i +' : '
+        errStr += errData.data[i]
+      }
+      let obj = {
+        Title: tit,
+        Content: errStr||'无错误内容提示',
+        type: 1,
+        btn: 0
+      }
+      this.$refs.Toast.on_display(obj)
     }
   },
   mounted () {

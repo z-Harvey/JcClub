@@ -38,12 +38,12 @@
                 <img :src="userInfo.avatarurl" alt="">
                 <div class="contImgmol">
                     <img src="@/assets/camera.png" alt="">
-                    <input type="file" @change="upPort($event)" accept="image/*">
+                    <input type="file" @change="upPort($event)" @blur="blurs($event)" accept="image/*">
                 </div>
             </div>
             <div class="contList">
                 <span>姓名<span class="red">*</span></span>
-                <input type="text" v-model="userInfo.name" placeholder="请输入真实姓名">
+                <input type="text" v-model="userInfo.name" @blur="blurs($event)" maxlength="10" placeholder="请输入真实姓名">
             </div>
             <div class="contList sex">
                 <span>性别<span class="red">*</span></span>
@@ -54,22 +54,22 @@
             </div>
             <div class="contList">
                 <span>电话<span class="red">*</span></span>
-                <input type="text" disabled v-model="userInfo.mobile" placeholder="请输入电话">
+                <input type="text" disabled v-model="userInfo.mobile" @blur="blurs($event)" placeholder="请输入电话">
             </div>
             <div class="contLists">
                 <span>所在地<span class="red">*</span></span>
                 <div class="xexBox">
-                    <select v-model="city.sel1" @change="selText('0')" >
+                    <select v-model="city.sel1" @change="selText('0')" @blur="blurs($event)">
                         <option value="0" v-text="sel3text[0]||'省'"></option>
                         <option v-for="(item, index) in sList" :key="index" :value="item.id" v-text="item.name">省</option>
                     </select>
                     <!-- <span>/</span> -->
-                    <select v-model="city.sel2" @change="selText('1')">
+                    <select v-model="city.sel2" @change="selText('1')" @blur="blurs($event)">
                         <option value="0" v-text="sel3text[1]||'市'"></option>
                         <option v-for="(item, index) in sList1" :key="index" :value="item.id" v-text="item.name">市</option>
                     </select>
                     <!-- <span>/</span> -->
-                    <select v-model="city.sel3" @change="selText('2')">
+                    <select v-model="city.sel3" @change="selText('2')" @blur="blurs($event)">
                         <option value="0" v-text="sel3text[2]||'区'"></option>
                         <option v-for="(item, index) in sList2" :key="index" :value="item.id" v-text="item.name">区</option>
                     </select>
@@ -77,20 +77,20 @@
             </div>
             <div class="contList">
                 <span>邮件</span>
-                <input type="email" v-model="userInfo.email" placeholder="请输入邮箱">
+                <input type="email" v-model="userInfo.email" @blur="blurs($event)" placeholder="请输入邮箱">
             </div>
             <div class="contList">
                 <span>微信号<span class="red">*</span></span>
-                <input type="text" v-model="userInfo.wx_no" placeholder="请输入微信号">
+                <input type="text" v-model="userInfo.wx_no" @blur="blurs($event)" placeholder="请输入微信号">
             </div>
             <div class="contList">
                 <span>生日</span>
-                <input type="date" v-model="userInfo.birthday"/>
+                <input type="date" v-model="userInfo.birthday" @blur="blurs($event)"/>
             </div>
             <div class="contLists">
                 <span>学历<span class="red">*</span></span>
                 <div class="xexBox">
-                    <select v-model="userInfo.edu_background" @change="selText">
+                    <select v-model="userInfo.edu_background" @change="selText" @blur="blurs($event)">
                         <option value="null">请选择</option>
                         <option value="小学">小学</option>
                         <option value="初中">初中</option>
@@ -114,27 +114,27 @@
             </div>
             <div class="contList">
                 <span>职业<span class="red">*</span></span>
-                <input type="text" v-model="workInfo.position" placeholder="当前的职位">
+                <input type="text" v-model="workInfo.position" @blur="blurs($event)" placeholder="当前的职位">
             </div>
             <div class="contList">
-                <span>行业<span class="red">*</span></span>
-                <div @click="check" v-text="workInfo.industry||'当前所在行业'" class="checkBox"></div>
+                <span>销售产品行业<span class="red">*</span></span>
+                <div @click="check" v-text="workInfo.industry||'产品相关的行业 (多选)'" class="checkBox"></div>
             </div>
             <div class="contList">
                 <span>对接部门<span class="red">*</span></span>
-                <div @click="check('xuanze')" v-text="workInfo.department||'开发客户的对接部门（多选）'" class="checkBox"></div>
+                <div @click="check('xuanze')" v-text="workInfo.department||'开发客户的对接部门 (多选)'" class="checkBox"></div>
             </div>
             <div class="contList">
                 <span>工作年限<span class="red">*</span></span>
-                <input type="date" v-model="workInfo.workyears" placeholder="参加工作的年限"/>
+                <input type="date" v-model="workInfo.workyears" @blur="blurs($event)" placeholder="什么时候参加工作"/>
             </div>
             <div class="contList">
                 <span>销售年限<span class="red">*</span></span>
-                <input type="date" v-model="workInfo.salesyears" placeholder="做销售的工作年限"/>
+                <input type="date" v-model="workInfo.salesyears" @blur="blurs($event)" placeholder="什么时候开始做销售"/>
             </div>
             <div class="contList">
                 <span>行业年限<span class="red">*</span></span>
-                <input type="date" v-model="workInfo.industryyears" placeholder="目前所在行业的工作年限"/>
+                <input type="date" v-model="workInfo.industryyears" @blur="blurs($event)" placeholder="什么时候接触到现在的行业"/>
             </div>
           </div>
           <div class="subContent">
@@ -144,18 +144,18 @@
             </div>
             <div class="contList">
                 <span>擅长领域<span class="red">*</span></span>
-                <div @click="check('duo')" v-text="workInfo.scArea||'擅长的行业领域（多选）'" class="checkBox" style="overflow: hidden;"></div>
+                <div @click="check('duo')" v-text="workInfo.scArea||'擅长的行业领域 (多选)'" class="checkBox" style="overflow: hidden;"></div>
             </div>
             <div class="subcontList">
                 <span>标杆客户<span class="red">*</span></span><span class="rightTex">以下至少填写一项</span>
-                <input class="width_100inp" v-for="(item,index) in bg_customer" :key="index" v-model="item.key" type="text" placeholder="请输入产品名称">
+                <input class="width_100inp" v-for="(item,index) in bg_customer" :key="index" v-model="item.key" type="text" @blur="blurs($event)" placeholder="请输入标杆客户的简称">
                 <img class="plus" @click="subjia(3)" src="@/assets/plus.png" alt="">
             </div>
           </div>
           <div class="subContent">
             <div class="subcontList">
                 <span>销售产品<span class="red">*</span></span><span class="rightTex">以下至少填写一项</span>
-                <input class="width_100inp" v-for="(item,index) in product" :key="index" v-model="item.key" type="text" placeholder="请输入产品名称">
+                <input class="width_100inp" v-for="(item,index) in product" :key="index" v-model="item.key" type="text" @blur="blurs($event)" placeholder="请输入目前销售的产品名称">
                 <img class="plus" @click="subjia(1)" src="@/assets/plus.png" alt="">
             </div>
           </div>
@@ -163,13 +163,12 @@
             <div class="subcontList">
                 <span>销售荣誉</span>
                 <div v-for="(item, index) in honors" :key="index">
-                    <input class="width_100inp" v-model="item.key" type="text" placeholder="请输入荣誉名称">
+                    <input class="width_100inp" v-model="item.key" type="text" @blur="blurs($event)" placeholder="请输入荣誉名称">
                     <div>
                       <img v-if="item.img" :src="item.img" alt="">
                       <button v-else>上传图片</button>
-                      <input type="file" @change="upimg($event, item)" accept="image/*">
+                      <input type="file" @change="upimg($event, item)" @blur="blurs($event)" accept="image/*">
                     </div>
-                    <!-- <input type="file" accept="image/*"> -->
                 </div>
                 <img class="plus" @click="subjia(2)" src="@/assets/plus.png" alt="">
             </div>
@@ -242,6 +241,25 @@ export default {
     search
   },
   methods: {
+    blurs (e) {
+      document.documentElement.scrollTop = document.documentElement.scrollTop
+      document.body.scrollTop = document.body.scrollTop
+    },
+    errMotl (errData) {
+      let errStr = ''
+      let tit = this.Global.HTTPStatusCode[errData.status]
+      for (let i in errData.data) {
+        errStr += i +' : '
+        errStr += errData.data[i]
+      }
+      let obj = {
+        Title: tit,
+        Content: errStr||'无错误内容提示',
+        type: 1,
+        btn: 0
+      }
+      this.$refs.Toast.on_display(obj)
+    },
     upPort (file) {
       let files = new FormData()
       files.append('file', file.target.files[0])
@@ -257,8 +275,7 @@ export default {
           this.userInfo.avatarurl = res.data.url
         }
       }, (err) => {
-        console.log(err)
-        alert('上传失败')
+        this.errMotl(err)
       })
     },
     upimg (file, item) {
@@ -276,11 +293,10 @@ export default {
           item.img = res.data.url
         }
       }, (err) => {
-        console.log(err)
-        alert('上传失败')
+        this.errMotl(err)
       })
     },
-    subjia: function (num) {
+    subjia (num) {
       let _this = this
       if (num === 1) {
         _this.product.push({key: ''})
@@ -293,14 +309,14 @@ export default {
     /**
      * 男女按钮
      */
-    sex: function (num) {
+    sex (num) {
       let _this = this
       _this.userInfo.gender = num
     },
     /**
      * 提交 基本信息
      */
-    userInfoPush: function () {
+    userInfoPush () {
       let _this = this
       let areaArr = []
       if (_this.city.sel1 === 0) {
@@ -316,7 +332,7 @@ export default {
           return
         }
       } else if (_this.city.sel1 > 0) {
-        _this.sList.map(function (p1, p2) {
+        _this.sList.map((p1, p2) => {
           if (p1.id === _this.city.sel1) {
             areaArr.push(p1.name)
           }
@@ -335,7 +351,7 @@ export default {
           return
         }
       } else if (_this.city.sel2 > 0) {
-        _this.sList1.map(function (p1, p2) {
+        _this.sList1.map((p1, p2) => {
           if (p1.id === _this.city.sel2) {
             areaArr.push(p1.name)
           }
@@ -354,7 +370,7 @@ export default {
           return
         }
       } else if (_this.city.sel3 > 0) {
-        _this.sList2.map(function (p1, p2) {
+        _this.sList2.map((p1, p2) => {
           if (p1.id === _this.city.sel3) {
             areaArr.push(p1.name)
           }
@@ -423,17 +439,17 @@ export default {
       }
       let datas = JSON.parse(JSON.stringify(_this.userInfo))
       delete datas.club
-      _this.api.postUserInfo(datas, function (res) {
+      _this.api.postUserInfo(datas, (res) => {
         if (res.data.step === 2) {
           document.documentElement.scrollTop = 0
           document.body.scrollTop = 0
           _this.cont_one = !_this.cont_one
         }
-      }, function (err) {
-        console.log(err)
+      }, (err) => {
+        this.errMotl(err)
       })
     },
-    selText: function (str, data) {
+    selText (str, data) {
       let _this = this
       let num = null
       if (str === '0') {
@@ -446,7 +462,7 @@ export default {
         num = _this.city.sel2
         _this.city.sel3 = 0
       }
-      _this.api.getAreaList('pid=' + num, function (res) {
+      _this.api.getAreaList('pid=' + num, (res) => {
         switch (str) {
           case '0':
             _this.sList1 = res.data
@@ -455,11 +471,11 @@ export default {
             _this.sList2 = res.data
             break
         }
-      }, function (err) {
-        console.log(err)
+      }, (err) => {
+        this.errMotl(err)
       })
     },
-    check: function (typ) {
+    check (typ) {
       let _this = this
       if (typ === 'sea') {
         _this.$refs.search.on_display()
@@ -497,7 +513,7 @@ export default {
     /**
      * 点击 '上一步' 时界面切换
      */
-    next_step: function (res) {
+    next_step (res) {
       document.documentElement.scrollTop = 0
       document.body.scrollTop = 0
       this.cont_one = !this.cont_one
@@ -505,27 +521,27 @@ export default {
     /**
      * 提交经验信息
      */
-    test: function () {
+    test () {
       let _this = this
       this.$refs.Toast.close()
       let data = JSON.parse(JSON.stringify(_this.workInfo))
       data.product = JSON.stringify(_this.product)
       data.honors = JSON.stringify(_this.honors)
       data.bg_customer = JSON.stringify(_this.bg_customer)
-      _this.api.postWorkInfo(data, function (res) {
+      _this.api.postWorkInfo(data, (res) => {
         console.log(res)
         _this.$router.push({
           path: '/applySuccess',
           query: res.data
         })
-      }, function (err) {
-        console.log(err)
+      }, (err) => {
+        this.errMotl(err)
       })
     },
     /**
      * 点击提交
      */
-    submit: function () {
+    submit () {
       let _this = this
       if (_this.workInfo.comname === null || _this.workInfo.comname === '') {
         let obj = {
@@ -646,40 +662,40 @@ export default {
       }
       this.$refs.Toast.on_display(obj)
     },
-    cllSrceach: function (data) {
+    cllSrceach (data) {
       let _this = this
       _this.workInfo.comname = data.name
     },
-    cllChe: function (res) {
+    cllChe (res) {
       let _this = this
       _this.workInfo.department = res
     },
-    genghuan: function () {
+    genghuan () {
       this.$router.push('/membershipApp')
     }
   },
   mounted () {
     document.title = '入会申请'
     let _this = this
-    _this.api.getUserNum(function (res) { // 未完成的基本信息
+    _this.api.getUserNum((res) => { // 未完成的基本信息
       console.log(res.data)
       _this.sel3text = res.data.area ? res.data.area.split('|') : ['', '', '']
       _this.userInfo = res.data
-    }, function (err) {
-      console.log(err)
+    }, (err) => {
+      this.errMotl(err)
     })
     _this.api.getWorkNum((res) => { // 未完成的经验信息
       this.workInfo = res.data
       this.honors = JSON.parse(res.data.honors)
       this.product = JSON.parse(res.data.product)
       this.bg_customer = JSON.parse(res.data.bg_customer)
-    }, function (err) {
-      console.log(err)
+    }, (err) => {
+      this.errMotl(err)
     })
-    _this.api.getAreaList('pid=0', function (res) {
+    _this.api.getAreaList('pid=0', (res) => {
       _this.sList = res.data
-    }, function (err) {
-      console.log(err)
+    }, (err) => {
+      this.errMotl(err)
     })
     if (_this.$route.query.step === '2' || _this.$route.query.step === 2) {
       _this.cont_one = false
@@ -777,28 +793,36 @@ div>span>.red{
     align-self: center;
 }
 .subContent>.contList{
-    height:2rem;
+    min-height:2rem;
     text-align: left;
     padding:0rem .5rem;
     font-size: .7rem;
     line-height: 2rem;
+    position: relative;
+}
+.contList>span{
+  float: left;
+  position: absolute;
+  top:0;
+  left:.5rem;
 }
 .contList>input{
     height:1.5rem;
     width:10.7rem;
-    float: right;
     margin-top:.3rem;
     text-align: right;
     border: none;
     font-size: .7rem;
     background:#fff;
     -webkit-appearance: none;
+    float: right;
 }
 .contList>.checkBox{
-    height:1.5rem;
-    width:10.7rem;
-    float: right;
+    min-height:1.5rem;
+    width:calc(100% - 35%);
+    padding-left:35%;
     margin-top:.3rem;
+    padding-top:.25rem;
     text-align: right;
     border: none;
     font-size: .7rem;

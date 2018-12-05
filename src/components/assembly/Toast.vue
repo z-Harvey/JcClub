@@ -8,7 +8,7 @@
                 <div @click="rioC('ri1')" :class="rio.ri1?'chaRio': 'rio'"><div></div></div>
                 <div class="tioTex">
                     <div><span v-text="mat.club_unlock_niuz"></span>牛钻</div>
-                    <div>查看<span>俱乐部内部</span><span v-text="mat.club_mark_count"></span> 位会员标记的数据</div>
+                    <div>查看<span>俱乐部内部</span><span v-text="mat.club_mark_count"></span>位会员标记的数据</div>
                 </div>
             </div>
             <div class="xuanze">
@@ -18,14 +18,15 @@
                     <div>查看<span>俱乐部外部</span><span v-text="mat.out_mark_count"></span>位会员标记的数据</div>
                 </div>
             </div>
-            <div class="shengyu">剩余牛钻 <span><span v-text="mat.user_niuz"></span>颗</span></div>
+            <div class="shengyu"><div class="zongji" v-text="'总计：' + zongj">ssssss</div> 剩余牛钻 <span><span v-text="mat.user_niuz"></span> 颗</span></div>
         </div>
         <div class="contents" v-if="content.type === 3">
             <div class="t3_content_title">足迹内容为您的隐私，我们不会在任何地方进行展示，请放心填写~</div>
             <div class="t3_content_cont">
                 <span>类型</span>
                 <div class="cc1">
-                    <select v-model="typ2.type">
+                    <select v-model="typ2.type" @blur="blurs">
+                        <option value="0">请选择</option>
                         <option value="1">电话拜访</option>
                         <option value="2">上门拜访</option>
                         <option value="3">回复</option>
@@ -46,10 +47,10 @@
             </div>
         </div>
         <div class="content" v-if="content.type === 5">
-            <input type="text" v-model="t4">
+            <input type="text" @blur="blurs" v-model="t4">
         </div>
         <div class="content" v-if="content.type === 6">
-            <textarea class="typ6Text" v-model="t4" placeholder="请填写拒绝的原因"></textarea>
+            <textarea class="typ6Text" v-model="t4" @blur="blurs" placeholder="请填写拒绝的原因"></textarea>
         </div>
         <div style="height:2.5rem;"></div>
         <div class="butList" v-if="content.btn === 0">
@@ -79,9 +80,10 @@ export default {
       t4: null,
       content: {},
       mat: {},
+      zongj: 0,
       datas: null,
       typ2: {
-        type: null,
+        type: 0,
         time: null,
         experience: null
       }
@@ -93,6 +95,14 @@ export default {
     rioC: function (re) {
       let _this = this
       _this.rio[re] = !_this.rio[re]
+      let z = 0
+      if (_this.rio.ri1) {
+        z+= this.mat.club_unlock_niuz
+      }
+      if (_this.rio.ri2) {
+        z += this.mat.out_unlock_niuz
+      }
+      this.zongj = z
     },
     close: function () {
       try {
@@ -147,12 +157,15 @@ export default {
       let str = 'company=' + data.id
       _this.comId = data.id
       _this.api.getCompanyUnlock(str, function (res) {
-        console.log(res)
         _this.mat = res.data
       }, function (err) {
         console.log(err)
       })
       this.show = true
+    },
+    blurs () {
+      document.documentElement.scrollTop = document.documentElement.scrollTop
+      document.body.scrollTop = document.body.scrollTop
     }
   }
 }
@@ -199,6 +212,8 @@ export default {
     line-height: 1.05rem;
     font-size: .75rem;
     color:#888;
+    max-height:6.66rem;
+    overflow: auto;
 }
 .content>input{
     width:100%;
@@ -293,7 +308,11 @@ export default {
     text-align: right;
     margin:0 auto;
     font-size: .7rem;
-    line-height: 2rem
+    line-height: 2rem;
+}
+.shengyu>.zongji{
+    float: left;
+    color:rgba(255, 152, 0, 1);
 }
 .shengyu>span{
     color:rgba(255, 152, 0, 1);
@@ -310,6 +329,9 @@ export default {
 }
 .t3_content_cont>span{
     color:rgba(255, 152, 0, 1);
+}
+.t3_content_cont>select{
+    -webkit-background: #fff;
 }
 .cc1{
     font-size: .7rem;color:#888;

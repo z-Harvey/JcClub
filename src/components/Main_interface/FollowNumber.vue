@@ -76,7 +76,7 @@ export default {
               data.collect_id = res.data.collect_id
             }
           }, function (err) {
-            console.log(err)
+            _this.errMotl(err)
           })
           break
         case 1:
@@ -85,7 +85,7 @@ export default {
               data.is_collect = 0
             }
           }, function (err) {
-            console.log(err)
+            _this.errMotl(err)
           })
           break
       }
@@ -122,7 +122,6 @@ export default {
       }
     },
     qrJieSuo: function (data) {
-      console.log(data)
       let _this = this
       let obj = {
         company: data.comId,
@@ -134,7 +133,7 @@ export default {
           _this.is_deepunlock = res.data.is_deepunlock
         }
       }, function (err) {
-        console.log(err)
+        _this.errMotl(err)
       })
     },
     path: function (num, item) {
@@ -165,11 +164,10 @@ export default {
             _this.jsxy = res.data.club_unlock_niuz
           }
         }, function (err) {
-          console.log(err)
+          _this.errMotl(err)
         })
       }
       _this.api.getCompanyMark(str, function (res) {
-        console.log(res)
         _this.dataList = res.data.results
         _this.dataList.map(function (p1, p2) {
           if (p1.user === _this.Global.userInfo.myId) {
@@ -178,7 +176,7 @@ export default {
           p1.add_time = Math.floor(Math.abs(Date.now() - new Date(p1.add_time).getTime()) / (3600 * 24 * 1e3))
         })
       }, function (err) {
-        console.log(err)
+        _this.errMotl(err)
       })
     },
     ScrollInit: function (id) {
@@ -196,8 +194,23 @@ export default {
           _this.ps = false
         }
       }, function (err) {
-        console.log(err)
+        _this.errMotl(err)
       })
+    },
+    errMotl (errData) {
+      let errStr = ''
+      let tit = this.Global.HTTPStatusCode[errData.status]
+      for (let i in errData.data) {
+        errStr += i +' : '
+        errStr += errData.data[i]
+      }
+      let obj = {
+        Title: tit,
+        Content: errStr||'无错误内容提示',
+        type: 1,
+        btn: 0
+      }
+      this.$refs.Toast.on_display(obj)
     }
   },
   mounted () {

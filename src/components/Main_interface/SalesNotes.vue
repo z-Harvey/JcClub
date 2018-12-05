@@ -25,8 +25,8 @@
             <button @click="navPath(1)" :class="!navBtn?'navBtn':''">销售足迹 <span v-text="msgData.footPrint_count"></span></button>
         </nav>
         <!-- <router-view :type="'SalesNotes'"></router-view> -->
-        <CuInfo ref="cuinfo" :type="'SalesNotes'" :show="navBtn"/>
-        <saleFootprint ref="saleFoot" :type="'SalesNotes'" :show="!navBtn"/>
+        <CuInfo ref="cuinfo" :type="'SalesNotes'" v-show="navBtn"/>
+        <saleFootprint ref="saleFoot" :type="'SalesNotes'" v-show="!navBtn"/>
         <div style="height:2.25rem;"></div>
         <div class="footer" v-if="navBtn">
             <button @click="paths(3)">编辑客户信息</button>
@@ -115,11 +115,9 @@ export default {
             }
           })
         }, function (err) {
-          console.log(err)
+          _this.errMotl(err)
         })
       } else if (num === 1) {
-        console.log(item)
-        // this.$router.push('/CuHome')
         let obj = {
           Title: '解锁客户主页',
           type: 2,
@@ -132,7 +130,6 @@ export default {
       }
     },
     clltoa (data) {
-      console.log(data)
       let _this = this
       let x = 0
       if (data.is_deepunlock) {
@@ -157,7 +154,7 @@ export default {
               _this.path(0, data)
             }
           }, function (err) {
-            console.log(err)
+            _this.errMotl(err)
           })
         } else {
           let obj = {
@@ -184,10 +181,8 @@ export default {
         case 1:
           _this.$refs.saleFoot.init(_this.que.com_id)
           _this.navBtn = false
-          // _this.$refs.CuInfo.close()
           break
       }
-      console.log(_this.navBtn)
     },
     paths (num) {
       switch (num) {
@@ -220,10 +215,26 @@ export default {
       let _this = this
       data['company'] = _this.que.com_id
       _this.api.postFootPrint(data, function (res) {
-        console.log(res)
+        _this.$refs.saleFoot.init(_this.que.com_id)
       }, function (err) {
         console.log(err)
+        // _this.errMotl(err)
       })
+    },
+    errMotl (errData) {
+      let errStr = ''
+      let tit = this.Global.HTTPStatusCode[errData.status]
+      for (let i in errData.data) {
+        errStr += i +' : '
+        errStr += errData.data[i]
+      }
+      let obj = {
+        Title: tit,
+        Content: errStr||'无错误内容提示',
+        type: 1,
+        btn: 0
+      }
+      this.$refs.Toast.on_display(obj)
     }
   },
   mounted () {
@@ -237,7 +248,7 @@ export default {
         _this.msgData = res.data[0]
         _this.msgData.reviews = _this.msgData.reviews.split('|')
       }, function (err) {
-        console.log(err)
+        _this.errMotl(err)
       })
     } catch (err) {
       console.log(err)

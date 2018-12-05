@@ -12,6 +12,7 @@
         </div>
       </div>
       <img class="blank" v-if="dataList.length <= 0" src="@/assets/blank.png" alt="">
+      <Toast ref="Toast"/>
     </div>
 </template>
 
@@ -41,10 +42,9 @@ export default {
     myInit () {
       let str = 'p=' + this.p + '&page_size=' + this.page_size
       this.api.getMyFans(str, (res) => {
-        console.log(res.data)
         this.dataList = res.data.results
       }, (err) => {
-        console.log(err)
+        this.errMotl(err)
       })
     },
     myScroll () {
@@ -55,16 +55,15 @@ export default {
           this.ps = false
         }
       }, (err) => {
-        console.log(err)
+        this.errMotl(err)
       })
     },
     youInit () {
       let str = 'puser=' + this.user_id + '&p=' + this.p + '&page_size=' + this.page_size
       this.api.getUserFans(str, (res) => {
-        console.log(res.data)
         this.dataList = res.data.results
       }, (err) => {
-        console.log(err)
+        this.errMotl(err)
       })
     },
     youScroll () {
@@ -75,7 +74,7 @@ export default {
           this.ps = false
         }
       }, (err) => {
-        console.log(err)
+        this.errMotl(err)
       })
     },
     onScroll (e) {
@@ -91,6 +90,21 @@ export default {
           this.youscll()
         }
       }
+    },
+    errMotl (errData) {
+      let errStr = ''
+      let tit = this.Global.HTTPStatusCode[errData.status]
+      for (let i in errData.data) {
+        errStr += i +' : '
+        errStr += errData.data[i]
+      }
+      let obj = {
+        Title: tit,
+        Content: errStr||'无错误内容提示',
+        type: 1,
+        btn: 0
+      }
+      this.$refs.Toast.on_display(obj)
     }
   },
   mounted (options) {

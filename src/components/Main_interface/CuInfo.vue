@@ -323,6 +323,7 @@
                 </div>
             </div>
         </div>
+        <Toast ref="Toast"/>
     </div>
 </template>
 
@@ -344,7 +345,7 @@ export default {
       this.api.getUserCard(data, (res) => {
         this.msg = res.data
       }, (err) => {
-        console.log(err)
+        this.errMotl(err)
       })
     },
     cuHomeInit (id) {
@@ -353,7 +354,7 @@ export default {
         this.msg = res.data
         this.msg.contact_list = JSON.parse(res.data.contact_list)
       }, (err) => {
-        console.log(err)
+        this.errMotl(err)
       })
     },
     SalesNotesInit (id) {
@@ -366,15 +367,29 @@ export default {
         this.msg.relation = arr[this.msg.relation]
         this.msg.has_decision = arr1[this.msg.has_decision]
       }, (err) => {
-        console.log(err)
+        this.errMotl(err)
       })
     },
     close () {
       this.show = false
+    },
+    errMotl (errData) {
+      let errStr = ''
+      let tit = this.Global.HTTPStatusCode[errData.status]
+      for (let i in errData.data) {
+        errStr += i +' : '
+        errStr += errData.data[i]
+      }
+      let obj = {
+        Title: tit,
+        Content: errStr||'无错误内容提示',
+        type: 1,
+        btn: 0
+      }
+      this.$refs.Toast.on_display(obj)
     }
   },
   mounted (options) {
-    console.log(this.type)
     document.title = '酷牛仔'
   },
   props: ['type']

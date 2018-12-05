@@ -38,14 +38,14 @@ export default {
     }
   },
   methods: {
-    sqBtn: function () {
+    sqBtn () {
       let _this = this
       let obj = {
-        mobile: _this.phone
+        mobile: this.phone
       }
-      _this.api.getApplyClub(obj, function (res) {
-        _this.$router.push('/membershipApp')
-      }, function (err) {
+      this.api.getApplyClub(obj, (res) => {
+        this.$router.push('/membershipApp')
+      }, (err) => {
         if (err.data.mobile[0] === '邀请者未加入俱乐部') {
           let obj = {
             Title: '提示',
@@ -79,23 +79,34 @@ export default {
           }
           _this.$refs.Toast.on_display(obj)
         } else {
-          let ss = ''
-          for (let i in err.data) {
-            ss += i + ':'
-            ss += err.data[i]
-          }
-          alert(ss)
-          _this.errData = ss
+          this.errMotl(err)
         }
-        _this.api.errTest(JSON.stringify(err), (res) => {
-          console.log(res)
-        }, (err) => {
-          console.log(err)
-        })
+        // _this.api.errTest(JSON.stringify(err), (res) => {
+        //   console.log(res)
+        // }, (err) => {
+        //   console.log(err)
+        // })
       })
     },
     phonezz: function () {
       this.btn = true
+      document.documentElement.scrollTop = document.documentElement.scrollTop
+      document.body.scrollTop = document.body.scrollTop
+    },
+    errMotl (errData) {
+      let errStr = ''
+      let tit = this.Global.HTTPStatusCode[errData.status]
+      for (let i in errData.data) {
+        errStr += i +' : '
+        errStr += errData.data[i]
+      }
+      let obj = {
+        Title: tit,
+        Content: errStr||'无错误内容提示',
+        type: 1,
+        btn: 0
+      }
+      this.$refs.Toast.on_display(obj)
     }
   },
   mounted () {

@@ -4,7 +4,7 @@
           <div class="srcInp">
             <div>
                 <img src="@/assets/srceach_1.png" alt="">
-                <input type="text" placeholder="输入会员名称进行搜索">
+                <input type="text" placeholder="输入会员名称进行搜索" @blur="blurs">
             </div>
             <button>搜索</button>
         </div>
@@ -69,6 +69,10 @@ export default {
   methods: {
     path: function () {
       this.$router.push('/memberInfo')
+    },
+    blurs () {
+      document.documentElement.scrollTop = document.documentElement.scrollTop
+      document.body.scrollTop = document.documentElement.scrollTop
     }
   },
   mounted () {

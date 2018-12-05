@@ -3,7 +3,7 @@
         <div class="srcInp">
             <div>
                 <img src="@/assets/srceach_1.png" alt="">
-                <input type="text" v-model="inpText" placeholder="输入公司名称关键字">
+                <input type="text" v-model="inpText" @blur="blurs" placeholder="输入公司名称关键字">
             </div>
             <button @click="sear">搜索</button>
         </div>
@@ -17,8 +17,13 @@
                     <div class="cikename" v-text="item.name">阿里巴巴（中国）网络技术有限公司</div>
                 </div>
             </div>
+            <div style="height:2.5rem;"></div>
         </div>
         <!-- <div class="or">没搜到？试试看输入更全的客户名称or<span>点此进行深度搜索</span></div> -->
+        <div class="footBtn">
+            <button @click="close">返回</button>
+        </div>
+        <Toast ref="Toast"/>
     </div>
 </template>
 
@@ -50,16 +55,35 @@ export default {
     sear: function () {
       let _this = this
       let str = 'p=1&page_size=1000&search=' + _this.inpText
-      _this.api.getSearchCompany(str, function (res) {
+      _this.api.getSearchCompany(str, (res) => {
         _this.DataList = res.data.results
         if (res.data.count === 0) {
           _this.youme = true
         } else {
           _this.youme = false
         }
-      }, function (err) {
-        console.log(err)
+      }, (err) => {
+        this.errMotl(err)
       })
+    },
+    blurs () {
+      document.documentElement.scrollTop = document.documentElement.scrollTop
+      document.body.scrollTop = document.body.scrollTop
+    },
+    errMotl (errData) {
+      let errStr = ''
+      let tit = this.Global.HTTPStatusCode[errData.status]
+      for (let i in errData.data) {
+        errStr += i + ' : '
+        errStr += errData.data[i]
+      }
+      let obj = {
+        Title: tit,
+        Content: errStr||'无错误内容提示',
+        type: 1,
+        btn: 0
+      }
+      this.$refs.Toast.on_display(obj)
     }
   },
   mounted (options) {
@@ -168,5 +192,23 @@ export default {
 }
 .or>span{
     color:rgba(255, 152, 0, 1);
+}
+.footBtn{
+    position: fixed;
+    width:100%;
+    height:2.25rem;
+    bottom: 0;
+    left:0;
+    background: #fff;
+}
+.footBtn>button{
+    width:10rem;
+    height:1.75rem;
+    margin-top:.25rem;
+    border-radius: 1rem;
+    border:1px solid rgba(255, 152, 0, 1);
+    color:rgba(255, 152, 0, 1);
+    background:#fff;
+    font-size: .7rem;
 }
 </style>

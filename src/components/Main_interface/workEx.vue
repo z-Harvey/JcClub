@@ -76,6 +76,7 @@
             </div>
         </div>
         <imgMask ref="imgMask"/>
+        <Toast ref="Toast"/>
     </div>
 </template>
 
@@ -98,7 +99,6 @@ export default {
     workInfoInit: function (data) {
       let _this = this
       _this.api.getUserCardWork(data, function (res) {
-        console.log(res)
         _this.dataList = res.data
         _this.dataList.honors = JSON.parse(res.data.honors)
         _this.dataList.product = JSON.parse(res.data.product)
@@ -109,12 +109,26 @@ export default {
         })
         _this.bg_customer = arr.join('、')
       }, function (err) {
-        console.log(err)
+        _this.errMotl(err)
       })
+    },
+    errMotl (errData) {
+      let errStr = ''
+      let tit = this.Global.HTTPStatusCode[errData.status]
+      for (let i in errData.data) {
+        errStr += i +' : '
+        errStr += errData.data[i]
+      }
+      let obj = {
+        Title: tit,
+        Content: errStr||'无错误内容提示',
+        type: 1,
+        btn: 0
+      }
+      this.$refs.Toast.on_display(obj)
     }
   },
   mounted (options) {
-    console.log(this.type)
     document.title = '酷牛仔'
   },
   props: ['type', 'show']

@@ -21,6 +21,7 @@
         <p>加客服微信：<span class="font-col">niumoumou</span></p>
         <p>拨打我们的电话：<span class="font-col">18888888888</span></p>
     </div>
+    <Toast ref="Toast"/>
   </div>
 </template>
 
@@ -36,17 +37,31 @@ export default {
   },
   methods: {
     sqBtn: function () {
-      console.log('开始 入会申请')
       this.$router.push('membershipApp')
+    },
+    errMotl (errData) {
+      let errStr = ''
+      let tit = this.Global.HTTPStatusCode[errData.status]
+      for (let i in errData.data) {
+        errStr += i +' : '
+        errStr += errData.data[i]
+      }
+      let obj = {
+        Title: tit,
+        Content: errStr||'无错误内容提示',
+        type: 1,
+        btn: 0
+      }
+      this.$refs.Toast.on_display(obj)
     }
   },
   mounted () {
     document.title = '酷牛仔'
     let _this = this
-    _this.api.getApplyStatus(function (res) {
+    _this.api.getApplyStatus((res) => {
       _this.msg = res.data[0]
-    }, function (err) {
-      console.log(err)
+    }, (err) => {
+      this.errMotl(err)
     })
   }
 }

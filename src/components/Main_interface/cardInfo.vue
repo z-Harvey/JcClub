@@ -31,8 +31,8 @@
         </div>
         <nav>
             <button @click="navPath(0)" :class="navBtn[0]?'navBtn':''">会员信息</button>
-            <button @click="navPath(7)" :class="navBtn[1]?'navBtn':''" v-text="source === 'my'? '我的商机': 'Ta的商机'"></button>
-            <button @click="navPath(8)" :class="navBtn[2]?'navBtn':''" v-text="source === 'my'? '我的需求': 'Ta的需求'"></button>
+            <button @click="navPath(7)" :class="navBtn[1]?'navBtn':''" v-text="source === 'my'? '我的商机 ' + listData.business_count: 'Ta的商机 ' + listData.business_count"></button>
+            <button @click="navPath(8)" :class="navBtn[2]?'navBtn':''" v-text="source === 'my'? '我的需求 ' + listData.demand_count: 'Ta的需求 ' + listData.demand_count"></button>
         </nav>
         <CuInfo ref="CuInfo" v-show="navBtn[0]" :type="'cardInfo'"/>
         <workEx ref="workEx" v-show="navBtn[0]" :type="'cardInfo'"/>
@@ -51,6 +51,7 @@
             <button v-else @click="MyCollect(1)">取消关注</button>
         </div>
     </div>
+    <Toast ref="Toast"/>
   </div>
 </template>
 
@@ -90,20 +91,20 @@ export default {
         _this.api.MyCollect(obj, function (res) {
           if (res.status === 201) {
             _this.listData.collect_id = res.data.collect_id
-            // _this.listData.fans_count += 1
             _this.listData.is_collect = 1
           }
         }, function (err) {
-          console.log(err)
+          _this.errMotl(err)
         })
       } else if (num === 1) {
         _this.api.delMyCollect(_this.listData.collect_id, function (res) {
           if (res.status === 204) {
-            // _this.listData.fans_count -= 1
             _this.listData.is_collect = 0
+          } else {
+            _this.errMotl(res)
           }
         }, function (err) {
-          console.log(err)
+          _this.errMotl(err)
         })
       }
     },
@@ -183,7 +184,7 @@ export default {
     /**
      * 从他人名片切换到我的名片
      */
-    myCard: function () {
+    myCard () {
       let _this = this
       _this.source = 'my'
       _this.$router.push({
@@ -195,11 +196,26 @@ export default {
       _this.user_id = _this.Global.userInfo.myId
       _this.$refs.workEx.workInfoInit(_this.user_id)
       _this.$refs.CuInfo.cardInfoInit(_this.user_id)
-      _this.api.getUserHeader(_this.user_id, function (res) {
+      _this.api.getUserHeader(_this.user_id, (res) => {
         _this.listData = res.data
-      }, function (err) {
-        console.log(err)
+      }, (err) => {
+        _this.errMotl(err)
       })
+    },
+    errMotl (errData) {
+      let errStr = ''
+      let tit = this.Global.HTTPStatusCode[errData.status]
+      for (let i in errData.data) {
+        errStr += i +' : '
+        errStr += errData.data[i]
+      }
+      let obj = {
+        Title: tit,
+        Content: errStr||'无错误内容提示',
+        type: 1,
+        btn: 0
+      }
+      this.$refs.Toast.on_display(obj)
     }
   },
   mounted () {
@@ -224,7 +240,7 @@ export default {
     _this.api.getUserHeader(_this.user_id, function (res) {
       _this.listData = res.data
     }, function (err) {
-      console.log(err)
+      _this.errMotl(err)
     })
   }
 }
@@ -370,6 +386,7 @@ nav>button::after{
 .footer>button{
   background:#f1f1f1;
   color:#888;
+  font-size: .7rem;
 }
 .footer>.myCards{
     background: rgba(255, 152, 0, 1);

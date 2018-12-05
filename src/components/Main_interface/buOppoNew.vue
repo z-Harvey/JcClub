@@ -44,7 +44,7 @@
                 <span>相关产品<span class="redSp">*</span></span><span class="titRig">至少一个</span>
             </div>
             <div class="inpForListBox">
-                <input type="text" v-for="(item, index) in obj.product" :key="index" v-model="item.key" placeholder="请输入产品名称">
+                <input type="text" v-for="(item, index) in obj.product" :key="index" @blur="blurs($event)" v-model="item.key" placeholder="请输入产品名称">
                 <div class="inpForimgBox">
                     <img @click="plus" src="@/assets/plus.png" alt="">
                 </div>
@@ -98,8 +98,11 @@ export default {
     search
   },
   methods: {
+    blurs (e) {
+      document.documentElement.scrollTop = document.documentElement.scrollTop
+      document.body.scrollTop = document.body.scrollTop
+    },
     checkCall (res) {
-      console.log(res)
       this.obj.type = res
     },
     path (num) {
@@ -136,7 +139,6 @@ export default {
       this.obj.term = num
     },
     subMit () {
-      console.log(this.obj)
       let _this = this
       let arrStr = []
       _this.obj.product.map((p1) => {
@@ -167,7 +169,6 @@ export default {
         }
         this.$refs.Toast.on_display(obj)
       } else if (this.que.id) {
-        
         let obj = {
           Title: '提示',
           Content: '是否确认发布商机？',
@@ -181,7 +182,7 @@ export default {
                 _this.$router.go(-1)
               }
             }, (err) => {
-              console.log(err)
+              _this.errMotl(err)
             })
           }
         }
@@ -196,7 +197,6 @@ export default {
             let data = JSON.parse(JSON.stringify(_this.obj))
             data.product = JSON.stringify(data.product)
             _this.api.postBusinessOpportunity(data, (res) => {
-              console.log(res)
               if (res.status === 201) {
                 _this.noSubs = false
                 let obj = {
@@ -219,7 +219,7 @@ export default {
                 }, 3000)
               }
             }, (err) => {
-              console.log(err)
+              _this.errMotl(err)
             })
           }
         }
@@ -228,12 +228,26 @@ export default {
     },
     editInit () {
       this.api.getBusinessOpportunity(this.que.id, (res) => {
-        console.log(res)
         res.data.product = JSON.parse(res.data.product)
         this.obj = res.data
       }, (err) => {
-        console.log(err)
+        this.errMotl(err)
       })
+    },
+    errMotl (errData) {
+      let errStr = ''
+      let tit = this.Global.HTTPStatusCode[errData.status]
+      for (let i in errData.data) {
+        errStr += i +' : '
+        errStr += errData.data[i]
+      }
+      let obj = {
+        Title: tit,
+        Content: errStr||'无错误内容提示',
+        type: 1,
+        btn: 0
+      }
+      this.$refs.Toast.on_display(obj)
     }
   },
   mounted () {
@@ -376,6 +390,7 @@ export default {
     border:none;
     align-self: center;
     margin: 0 auto;
+    font-size: .7rem;
 }
 .subBtn>button::after{
     border:none;

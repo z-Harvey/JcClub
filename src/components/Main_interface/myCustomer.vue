@@ -3,7 +3,7 @@
     <div class="srceach">
         <div class="inpBox">
             <img src="@/assets/srceach.png" alt="">
-            <input type="text" v-model="src" placeholder="输入客户名称关键字">
+            <input type="text" v-model="src" @blur="blurs($event)" placeholder="输入客户名称关键字">
         </div>
         <button class="srceBtn" @click="srceach">搜索</button>
     </div>
@@ -106,12 +106,16 @@ export default {
     }
   },
   methods: {
+    blurs (e) {
+      document.documentElement.scrollTop = document.documentElement.scrollTop
+      document.body.scrollTop = document.body.scrollTop
+    },
     srceach () {
       let str = 'search=' + this.src
       this.api.srchMyCompany(str, (res) => {
         this.dataList = res.data.results
       }, (err) => {
-        console.log(err)
+        this.errMotl(err)
       })
     },
     onScroll (e) {
@@ -128,23 +132,21 @@ export default {
       let _this = this
       let str = 'p=' + this.p + '&page_size=' + this.page_size
       _this.api.getMyCustomer(str, function (res) {
-        console.log(res)
         _this.dataList = _this.dataList.concat(res.data.results)
         if (res.data.count === _this.dataList.length) {
           _this.ps = false
         }
       }, function (err) {
-        console.log(err)
+        _this.errMotl(err)
       })
     },
     init: function () {
       let _this = this
       let str = 'p=' + this.p + '&page_size=' + this.page_size
       _this.api.getMyCustomer(str, function (res) {
-        console.log(res)
         _this.dataList = res.data.results
       }, function (err) {
-        console.log(err)
+        _this.errMotl(err)
       })
     },
     path: function (num, item) {
@@ -220,7 +222,7 @@ export default {
               })
             }
           }, function (err) {
-            console.log(err)
+            _this.errMotl(err)
           })
         } else {
           let obj = {
@@ -236,6 +238,21 @@ export default {
           }, 200)
         }
       }
+    },
+    errMotl (errData) {
+      let errStr = ''
+      let tit = this.Global.HTTPStatusCode[errData.status]
+      for (let i in errData.data) {
+        errStr += i +' : '
+        errStr += errData.data[i]
+      }
+      let obj = {
+        Title: tit,
+        Content: errStr||'无错误内容提示',
+        type: 1,
+        btn: 0
+      }
+      this.$refs.Toast.on_display(obj)
     }
   },
   mounted () {
