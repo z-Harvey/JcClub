@@ -67,6 +67,10 @@ export default {
   },
   methods: {
     qrs () {
+      if (this.msg2.length === 0) {
+        this.qr()
+        return
+      }
       let obj = {
         Title: '提示',
         Content: '忽略后匹配失败的数据将不进行上传，是否继续？',
@@ -129,12 +133,12 @@ export default {
       let errStr = ''
       let tit = this.Global.HTTPStatusCode[errData.status]
       for (let i in errData.data) {
-        errStr += i +' : '
+        errStr += i + ' : '
         errStr += errData.data[i]
       }
       let obj = {
         Title: tit,
-        Content: errStr||'无错误内容提示',
+        Content: errStr || '无错误内容提示',
         type: 1,
         btn: 0
       }
@@ -144,7 +148,6 @@ export default {
   mounted (options) {
     document.title = '数据确认'
     this.api.markFileCheck((res) => {
-      console.log(res)
       this.msg = res.data
       if (res.data.error_count === 0 && res.data.error_data.length > 0) {
         this.$refs.dataStatis.on_display()
@@ -153,7 +156,6 @@ export default {
       }
       this.api.getFileRepeat((res) => {
         console.log('重复数据')
-        console.log(res)
         this.msg2 = res.data
       }, (err) => {
         this.errMotl(err)

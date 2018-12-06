@@ -79,7 +79,7 @@ export default {
       }
       let obj = {
         Title: tit,
-        Content: errStr||'无错误内容提示',
+        Content: errStr || '无错误内容提示',
         type: 1,
         btn: 0
       }

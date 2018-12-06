@@ -52,7 +52,7 @@ export default {
         }
       })
       try {
-        _this.que.success(arr.join('、'))        
+        _this.que.success(arr.join('、'))
       } catch (err) {
         _this.$emit('ok', arr.join('、'))
       }

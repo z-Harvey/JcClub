@@ -67,7 +67,7 @@ export default {
     guanzhu (num) {
       if (num === 0) {
         let obj = {
-            puser: this.msg.user
+          puser: this.msg.user
         }
         this.api.MyCollect(obj, (res) => {
           if (res.status === 201) {
@@ -98,12 +98,12 @@ export default {
       let errStr = ''
       let tit = this.Global.HTTPStatusCode[errData.status]
       for (let i in errData.data) {
-        errStr += i +' : '
+        errStr += i + ' : '
         errStr += errData.data[i]
       }
       let obj = {
         Title: tit,
-        Content: errStr||'无错误内容提示',
+        Content: errStr || '无错误内容提示',
         type: 1,
         btn: 0
       }

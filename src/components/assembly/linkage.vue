@@ -166,17 +166,6 @@ export default {
     lingess: function (str) {
       let _this = this
       let arr = []
-      let jishu = 0
-      console.log(str)
-      if (!str.show) {
-        _this.dataList.map(function (p1, p2) {
-          p1.cont.map(function (n1, n2) {
-            if (n1.show) {
-              jishu += 1
-            }
-          })
-        })
-      }
       _this.listDatas.map(function (p1, p2) {
         if (p1.id === str.id) {
           p1.show = !str.show

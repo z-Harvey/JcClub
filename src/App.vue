@@ -41,8 +41,6 @@ export default {
     _this.api.getToken(obj, (res) => {
       _this.api.headerToken(res.data.token)
       _this.Global.userInfo['token'] = res.data.token
-      // _this.$router.push('/buOppoNew')
-      // return
       if (res.data.is_user === 1) {
         switch (res.data.step) {
           case 0:
@@ -82,15 +80,13 @@ export default {
               _this.$router.push({ path: '/applySuccess' })
               break
             case '1': // 公海
-              _this.Global.navListType = [false, true, false, false]
-              _this.$router.push({ path: '/home' })
+              _this.$router.push({ path: '/International' })
               break
             case '2': // 我的客户
-              _this.Global.navListType = [false, false, true, false]
-              _this.$router.push({ path: '/home' })
+              _this.$router.push({ path: '/myCustomer' })
               break
-            case '3': // 我的客户
-              _this.Global.navListType = [false, false, false, true]
+            case '3': // 我
+              _this.Global.navListType = [false, true]
               _this.$router.push({ path: '/home' })
               break
             case '4': // 我的关注
@@ -98,6 +94,15 @@ export default {
               break
             case '5': // 新增客户
               _this.$router.push({ path: '/MarkupCu' })
+              break
+            case '6': // 会员
+              _this.$router.push({ path: '/homeContent' })
+              break
+            case '7': // 商机池
+              _this.$router.push({ path: '/buOppo' })
+              break
+            case '8': // 需求池
+              _this.$router.push({ path: '/demand' })
               break
             default:
               _this.$router.push({ path: '/home' })

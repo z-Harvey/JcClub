@@ -97,7 +97,7 @@ export default {
       _this.rio[re] = !_this.rio[re]
       let z = 0
       if (_this.rio.ri1) {
-        z+= this.mat.club_unlock_niuz
+        z += this.mat.club_unlock_niuz
       }
       if (_this.rio.ri2) {
         z += this.mat.out_unlock_niuz

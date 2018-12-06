@@ -81,7 +81,7 @@ export default {
   data () {
     return {
       nickName: null,
-        noSubs: true,
+      noSubs: true,
       obj: {
         desc: null, // 商机描述 str
         customer: null, // 客户名称 str
@@ -211,9 +211,9 @@ export default {
                   _this.$router.push({
                     path: '/cardInfo',
                     query: {
-                    source: 'my',
-                    user_id: _this.Global.userInfo.myId,
-                    typ: 1
+                      source: 'my',
+                      user_id: _this.Global.userInfo.myId,
+                      typ: 1
                     }
                   })
                 }, 3000)
@@ -238,12 +238,12 @@ export default {
       let errStr = ''
       let tit = this.Global.HTTPStatusCode[errData.status]
       for (let i in errData.data) {
-        errStr += i +' : '
+        errStr += i + ' : '
         errStr += errData.data[i]
       }
       let obj = {
         Title: tit,
-        Content: errStr||'无错误内容提示',
+        Content: errStr || '无错误内容提示',
         type: 1,
         btn: 0
       }

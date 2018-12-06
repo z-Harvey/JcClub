@@ -10,7 +10,7 @@
     </div>
     <div class="sort">
         <div @click="sorts(0)">
-            <span>行业</span>
+            <span>产品行业</span>
             <img v-if="sort[0]" src="@/assets/bot1.png" alt="">
             <img v-else src="@/assets/bot2.png" alt="">
         </div>
@@ -130,22 +130,6 @@ export default {
       switch (num) {
         case 0:
           obj = {
-            type: 3,
-            success (data) {
-              _this.srceachText = data
-              let str = 'search=' + data + '&p=' + _this.p + '&page_size=' + _this.page_size
-              _this.api.getClubUser(str, (res) => {
-                _this.sort = [false, false, false]
-                _this.dataList = res.data.results
-              }, (err) => {
-                _this.errMotl(err)
-              })
-            }
-          }
-          sortDom.on_display(obj)
-          break
-        case 1:
-          obj = {
             type: 32,
             success (data) {
               _this.srceachText = data
@@ -156,6 +140,28 @@ export default {
               }, (err) => {
                 _this.errMotl(err)
               })
+            },
+            fail () {
+              _this.sort = [false, false, false]
+            }
+          }
+          sortDom.on_display(obj)
+          break
+        case 1:
+          obj = {
+            type: 3,
+            success (data) {
+              _this.srceachText = data
+              let str = 'search=' + data + '&p=' + _this.p + '&page_size=' + _this.page_size
+              _this.api.getClubUser(str, (res) => {
+                _this.sort = [false, false, false]
+                _this.dataList = res.data.results
+              }, (err) => {
+                _this.errMotl(err)
+              })
+            },
+            fail () {
+              _this.sort = [false, false, false]
             }
           }
           sortDom.on_display(obj)
@@ -174,6 +180,9 @@ export default {
                 _this.errMotl(err)
               })
               sortDom.on_display(obj)
+            },
+            fail () {
+              _this.sort = [false, false, false]
             }
           }
           sortDom.on_display(obj)
@@ -217,7 +226,7 @@ export default {
           this.ps = false
         }
       }, function (err) {
-        _this.errMotl(err)
+        console.log(err)
       })
     },
     touchStart (e) {
@@ -235,12 +244,12 @@ export default {
       let errStr = ''
       let tit = this.Global.HTTPStatusCode[errData.status]
       for (let i in errData.data) {
-        errStr += i +' : '
+        errStr += i + ' : '
         errStr += errData.data[i]
       }
       let obj = {
         Title: tit,
-        Content: errStr||'无错误内容提示',
+        Content: errStr || '无错误内容提示',
         type: 1,
         btn: 0
       }

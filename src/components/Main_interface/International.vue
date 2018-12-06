@@ -117,12 +117,12 @@ export default {
           obj = {
             type: 31,
             success (data) {
-              arr = [false, false, false, false]
-              console.log(data)
               _this.p = 1
               _this.province = data
               _this.sortInit()
-              _this.sort = arr
+            },
+            fail () {
+              _this.sort = [false, false, false, false]
             }
           }
           this.$refs.sort.on_display(obj)
@@ -131,12 +131,12 @@ export default {
           obj = {
             type: 3,
             success (data) {
-              arr = [false, false, false, false]
-              console.log(data)
               _this.p = 1
               _this.industry = data
               _this.sortInit()
-              _this.sort = arr
+            },
+            fail () {
+              _this.sort = [false, false, false, false]
             }
           }
           this.$refs.sort.on_display(obj)
@@ -145,12 +145,12 @@ export default {
           obj = {
             type: 21,
             success (data) {
-              arr = [false, false, false, false]
-              console.log(data)
               _this.p = 1
               _this.type = data
               _this.sortInit()
-              _this.sort = arr
+            },
+            fail () {
+              _this.sort = [false, false, false, false]
             }
           }
           this.$refs.sort.on_display(obj)
@@ -159,13 +159,13 @@ export default {
           obj = {
             type: 22,
             success (data) {
-              arr = [false, false, false, false]
               let as = ['-company__mate_num', 'company__mate_num']
               _this.p = 1
               _this.ordering = as[data]
               _this.sortInit()
-              console.log(data)
-              _this.sort = arr
+            },
+            fail () {
+              _this.sort = [false, false, false, false]
             }
           }
           this.$refs.sort.on_display(obj)
@@ -312,7 +312,7 @@ export default {
           this.ps = false
         }
       }, function (err) {
-        _this.errMotl(err)
+        console.log(err)
       })
     },
     onScroll (e) {
@@ -338,12 +338,12 @@ export default {
       let errStr = ''
       let tit = this.Global.HTTPStatusCode[errData.status]
       for (let i in errData.data) {
-        errStr += i +' : '
+        errStr += i + ' : '
         errStr += errData.data[i]
       }
       let obj = {
         Title: tit,
-        Content: errStr||'无错误内容提示',
+        Content: errStr || '无错误内容提示',
         type: 1,
         btn: 0
       }

@@ -1,13 +1,15 @@
 <template>
     <div class="HisCustomer" @scroll="onScroll($event)">
         <div class="screen">
-            <div>
+            <div @click="sorts(0)">
                 <div>客户关系/线索</div>
-                <img src="@/assets/bot2.png" alt="">
+                <img v-if="sort[0]" src="@/assets/bot1.png">
+                <img v-else src="@/assets/bot2.png">
             </div>
-            <div>
+            <div @click="sorts(1)">
                 <div>默认排序</div>
-                <img src="@/assets/pai2.png" alt="">
+                <img v-if="sort[1]" src="@/assets/pai1.png">
+                <img v-else src="@/assets/pai2.png">
             </div>
         </div>
         <div class="contBox" v-for="(item, index) in dataList" :key="index">
@@ -40,7 +42,11 @@
                 <button v-else @click="path(1, item)">解锁查看</button>
             </div>
         </div>
+        <div class="blank" v-if="dataList.length === 0">
+            <img src="@/assets/blank.png" alt="">
+        </div>
         <Toast ref="Toast"/>
+        <sort ref="sort" :styles="'top:2.25rem;'"/>
     </div>
 </template>
 
@@ -53,10 +59,58 @@ export default {
       dataList: [],
       page_size: 12,
       p: 1,
-      ps: true
+      ps: true,
+      sort: [false, false],
+      relation: '',
+      has_decision: '',
+      ordering: '-add_time'
     }
   },
   methods: {
+    sorts (num) {
+      let arr = [false, false]
+      let _this = this
+      if (this.sort[num]) {
+        this.sort = arr
+        this.$refs.sort.close()
+        return
+      }
+      let obj = null
+      switch (num) {
+        case 0:
+          obj = {
+            type: 100,
+            success (data, data2) {
+              _this.p = 1
+              _this.relation = data
+              _this.has_decision = data2
+              _this.init()
+            },
+            fail () {
+              _this.sort = [false, false]
+            }
+          }
+          this.$refs.sort.on_display(obj)
+          break
+        case 1:
+          obj = {
+            type: 23,
+            success (data) {
+              _this.p = 1
+              let arrs = ['add_time', '-add_time']
+              _this.ordering = arrs[data]
+              _this.init()
+            },
+            fail () {
+              _this.sort = [false, false]
+            }
+          }
+          this.$refs.sort.on_display(obj)
+          break
+      }
+      arr[num] = true
+      this.sort = arr
+    },
     path: function (num, data) {
       let _this = this
       switch (num) {
@@ -127,7 +181,7 @@ export default {
       }
     },
     init () {
-      let str = 'user=' + this.user_id + '&p=' + this.p + '&page_size=' + this.page_size
+      let str = 'user=' + this.user_id + '&p=' + this.p + '&page_size=' + this.page_size + '&relation=' + this.relation + '&has_decision=' + this.has_decision + '&ordering=' + this.ordering
       this.api.getUserCustomer(str, (res) => {
         res.data.results.map((p1, p2) => {
           p1.add_time = Math.floor(Math.abs(Date.now() - new Date(p1.add_time).getTime()) / (3600 * 24 * 1e3))
@@ -135,20 +189,27 @@ export default {
         this.dataList = res.data.results
         if (this.dataList.length === res.data.count) {
           this.ps = false
+        } else {
+          this.ps = true
         }
       }, (err) => {
         this.errMotl(err)
       })
     },
     initScroll () {
-      let str = 'user=' + this.user_id + '&p=' + this.p + '&page_size=' + this.page_size
+      let str = 'user=' + this.user_id + '&p=' + this.p + '&page_size=' + this.page_size + '&relation=' + this.relation + '&has_decision=' + this.has_decision + '&ordering=' + this.ordering
       this.api.getUserCustomer(str, (res) => {
         res.data.results.map(function (p1, p2) {
           p1.add_time = Math.floor(Math.abs(Date.now() - new Date(p1.add_time).getTime()) / (3600 * 24 * 1e3))
         })
         this.dataList = this.dataList.concat(res.data.results)
+        if (this.dataList.length === res.data.count) {
+          this.ps = false
+        } else {
+          this.ps = true
+        }
       }, (err) => {
-        this.errMotl(err)
+        console.log(err)
       })
     },
     onScroll (e) {
@@ -165,12 +226,12 @@ export default {
       let errStr = ''
       let tit = this.Global.HTTPStatusCode[errData.status]
       for (let i in errData.data) {
-        errStr += i +' : '
+        errStr += i + ' : '
         errStr += errData.data[i]
       }
       let obj = {
         Title: tit,
-        Content: errStr||'无错误内容提示',
+        Content: errStr || '无错误内容提示',
         type: 1,
         btn: 0
       }
@@ -302,13 +363,22 @@ export default {
     border:0;
 }
 .footer>button{
-    width: 4rem;
-    height:1.5rem;
     border-radius: .75rem;
     background: rgba(255, 152, 0, 0.1);
     color:rgba(255, 152, 0, 1);
-    line-height: 1.5rem;
     border:0;
     float: right;
+    font-size: .6rem;
+    padding:.3rem .6rem;
+}
+.blank{
+    position: fixed;
+    width:100%;
+    height:calc(100% - 6.66rem);
+    top:6.66rem;
+}
+.blank>img{
+  width:6.66rem;
+  height:6.66rem;
 }
 </style>

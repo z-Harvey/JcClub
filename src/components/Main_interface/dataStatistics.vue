@@ -19,7 +19,7 @@
         <div class="btnBox" v-else>
             <button class="qx" @click="qx">重新上传</button>
             <button class="qr" v-if="btnfal" @click="qr">提交</button>
-            <button class="qrs" v-else @click="qr">提交</button>
+            <button class="qrs" v-else>提交</button>
         </div>
         <editNewCustomer ref="edit"/>
         <Toast ref="Toast"/>
@@ -105,12 +105,12 @@ export default {
       let errStr = ''
       let tit = this.Global.HTTPStatusCode[errData.status]
       for (let i in errData.data) {
-        errStr += i +' : '
+        errStr += i + ' : '
         errStr += errData.data[i]
       }
       let obj = {
         Title: tit,
-        Content: errStr||'无错误内容提示',
+        Content: errStr || '无错误内容提示',
         type: 1,
         btn: 0
       }
