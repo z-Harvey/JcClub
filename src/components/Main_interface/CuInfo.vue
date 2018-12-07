@@ -8,7 +8,7 @@
                 </div>
                 <div class="contcon">
                     <div>
-                        <div>行业</div>
+                        <div>企业行业</div>
                         <div v-text="msg.industry || '--'">人力资源</div>
                     </div>
                     <div>

@@ -3,6 +3,7 @@
     <homePage v-if="navList[0]"/>
     <Member v-if="navList[1]"/>
     <examine v-if="navList[2]"/>
+    <adminPers v-if="navList[3]"/>
     <div class="newClub">
       <img src="@/assets/home_navImg.png" @click="navPath(5)" alt="">
     </div>
@@ -20,13 +21,15 @@
 import homePage from '@/components/Admin/homePage' // 俱乐部
 import examine from '@/components/Admin/examine' // 审核
 import Member from '@/components/Admin/Member' // 会员
+import adminPers from '@/components/Admin/adminPers' // 会员
 
 export default {
   name: 'adminNav',
   components: {
     homePage,
     examine,
-    Member
+    Member,
+    adminPers
   },
   data () {
     return {

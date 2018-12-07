@@ -18,6 +18,8 @@ export default {
     }
   },
   mounted () {
+    // this.$router.push('adminNav')
+    // return
     let r = decodeURI(window.location.search.substr(1))
     let arr = r.split('&')
     let urlCode = null
@@ -36,7 +38,7 @@ export default {
     }
     let _this = this
     let obj = {
-      code: urlCode
+      code: '1'
     }
     _this.api.getToken(obj, (res) => {
       _this.api.headerToken(res.data.token)

@@ -32,7 +32,7 @@
             <div class="rig" v-text="msg.customer || '--'"></div>
         </div>
         <div>
-            <div class="lef">行业</div>
+            <div class="lef">客户行业</div>
             <div class="rig" v-text="msg.industry || '--'"></div>
         </div>
         <div>

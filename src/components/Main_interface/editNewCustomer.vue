@@ -1,5 +1,5 @@
 <template>
-    <div class="MarkupCu" v-if="show">
+    <div class="editNewCustomer" v-if="show">
         <div class="contBox">
             <div class="contTitle">
                 <div>基本信息</div>
@@ -135,7 +135,7 @@
 import search from '@/components/Logon_process/srceach'
 
 export default {
-  name: 'MarkupCu',
+  name: 'editNewCustomer',
   data () {
     return {
       show: false,
@@ -498,7 +498,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.MarkupCu{
+.editNewCustomer{
     position: fixed;
     width:100%;
     height:100%;

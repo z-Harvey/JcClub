@@ -9,7 +9,7 @@
     </div>
     <div class="sort" style="display:none;">
         <div @click="sorts(0)">
-            <span>行业</span>
+            <span>客户行业</span>
             <img v-if="sort[0]" src="@/assets/bot1.png">
             <img v-else src="@/assets/bot2.png">
         </div>

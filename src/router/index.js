@@ -60,6 +60,7 @@ import memberInfo from '@/components/Admin/memberInfo' //  会员信息
 import memberJournal from '@/components/Admin/memberJournal' //  会员日志
 import CustomerInfo from '@/components/Admin/CustomerInfo' //  客户信息
 import memberCustomer from '@/components/Admin/memberCustomer' //  会员客户
+import adminPers from '@/components/Admin/adminPers' //  会员客户
 
 Vue.use(Router)
 
@@ -112,6 +113,7 @@ export default new Router({
     { path: '/memberInfo', name: 'memberInfo', component: memberInfo },
     { path: '/memberJournal', name: 'memberJournal', component: memberJournal },
     { path: '/CustomerInfo', name: 'CustomerInfo', component: CustomerInfo },
-    { path: '/memberCustomer', name: 'memberCustomer', component: memberCustomer }
+    { path: '/memberCustomer', name: 'memberCustomer', component: memberCustomer },
+    { path: '/adminPers', name: 'adminPers', component: adminPers }
   ]
 })
