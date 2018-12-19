@@ -6,7 +6,7 @@
                 <div class="for" v-for="(item, index) in dataList" :key="index">
                     <div class="list">
                         <div>
-                            <span>行业</span>
+                            <span>企业行业</span>
                             <span v-text="item.industry"></span>
                         </div>
                         <div>

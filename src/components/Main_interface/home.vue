@@ -126,11 +126,6 @@ export default {
         this.navClick(p2)
       }
     })
-    this.api.getMine((res) => {
-      this.Global.userInfo.myId = res.data.id
-    }, (err) => {
-      this.errMotl(err)
-    })
   }
 }
 </script>

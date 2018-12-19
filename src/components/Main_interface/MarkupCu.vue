@@ -20,7 +20,7 @@
             <div class="contcon">
                 <div>
                     <div>简称<span class="red">*</span></div>
-                    <input type="text" v-model="upData.simple_name" v-on:change="scoreFn" @blur="blurs" placeholder="输入客户简称">
+                    <input type="text" v-model="upData.simple_name" v-on:change="scoreFn" @blur="blurs" maxlength="50" placeholder="输入客户简称">
                 </div>
                 <div>
                     <div class="cheLeft">客户行业<span class="red">*</span></div>
@@ -65,15 +65,15 @@
             <div class="contcon">
                 <div>
                     <div>人数</div>
-                    <input type="text" v-model="upData.people_num" v-on:change="scoreFn" @blur="blurs" placeholder="输入客户企业人数">
+                    <input type="text" v-model="upData.people_num" v-on:change="scoreFn" @blur="blurs" maxlength="11" placeholder="输入客户企业人数">
                 </div>
                 <div>
                     <div>分支机构数</div>
-                    <input type="text" v-model="upData.fzjg_num" v-on:change="scoreFn" @blur="blurs" placeholder="输入分支机构数">
+                    <input type="text" v-model="upData.fzjg_num" v-on:change="scoreFn" @blur="blurs" maxlength="11" placeholder="输入分支机构数">
                 </div>
                 <div>
                     <div>营业额</div>
-                    <input type="text" v-model="upData.turnover" v-on:change="scoreFn" @blur="blurs" placeholder="输入客户营业额">
+                    <input type="text" v-model="upData.turnover" v-on:change="scoreFn" @blur="blurs" maxlength="30" placeholder="输入客户营业额">
                 </div>
             </div>
         </div>
@@ -607,6 +607,10 @@ export default {
       _this.api.getMyCustomers(_this.$route.query.com_id, function (res) {
         _this.upData = res.data
         _this.score = res.data.completion
+        _this.navList1 = [false, false, false, false]
+        _this.navList2 = [false, false, false, false]
+        _this.navList1[_this.upData.relation] = true
+        _this.navList2[_this.upData.has_decision] = true
         _this.upData.contact_list = JSON.parse(_this.upData.contact_list)
         if (_this.upData.contact_list !== null) {
           _this.contact_list = _this.upData.contact_list

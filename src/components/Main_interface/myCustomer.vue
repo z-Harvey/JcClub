@@ -511,6 +511,7 @@ export default {
     width:100%;
     height:100%;
     background:rgba(15, 15, 15, .55);
+    z-index: 12
 }
 .motCont{
     width:14rem;

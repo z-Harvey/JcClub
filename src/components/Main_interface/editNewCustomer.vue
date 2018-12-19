@@ -8,7 +8,7 @@
             <div class="contcon">
                 <div>
                     <div>简称</div>
-                    <input type="text" v-model="upData.simple_name" @blur="blurs($event)" placeholder="输入客户简称（必填）">
+                    <input type="text" v-model="upData.simple_name" @blur="blurs($event)" maxlength="50" placeholder="输入客户简称（必填）">
                 </div>
                 <div>
                     <div class="cheLeft">行业</div>
@@ -53,15 +53,15 @@
             <div class="contcon">
                 <div>
                     <div>人数</div>
-                    <input type="text" v-model="upData.people_num" @blur="blurs($event)" placeholder="输入客户企业人数">
+                    <input type="text" v-model="upData.people_num" @blur="blurs($event)" maxlength="11" placeholder="输入客户企业人数">
                 </div>
                 <div>
                     <div>分支机构数</div>
-                    <input type="text" v-model="upData.fzjg_num" @blur="blurs($event)" placeholder="输入客户">
+                    <input type="text" v-model="upData.fzjg_num" @blur="blurs($event)" maxlength="11" placeholder="输入客户">
                 </div>
                 <div>
                     <div>营业额</div>
-                    <input type="text" v-model="upData.turnover" @blur="blurs($event)" placeholder="输入客户营业额">
+                    <input type="text" v-model="upData.turnover" @blur="blurs($event)" maxlength="30" placeholder="输入客户营业额">
                 </div>
             </div>
         </div>
@@ -392,7 +392,7 @@ export default {
       this.upData.industry = res.name
     },
     nav1: function (num) {
-      let arr = [false, false, false, false]
+      let arr = [false, false]
       if (num === 1) {
         this.navList2 = [true, false]
       }
@@ -443,7 +443,6 @@ export default {
       let _this = this
       if (num === 0) {
         _this.area.a2 = 0
-        console.log(_this.area.a1)
         _this.area.a3 = 0
         _this.areaList('pid2', _this.area.a1)
       } else if (num === 1) {
@@ -463,7 +462,6 @@ export default {
     init (id) {
       this.fileId = id
       this.api.qSubFile(id, (res) => {
-        console.log(res)
         this.show = true
         this.upData = res.data
         this.upData.contact_list = JSON.parse(this.upData.contact_list)

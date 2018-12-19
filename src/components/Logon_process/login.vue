@@ -63,7 +63,7 @@ export default {
     },
     zhengze () {
       let _this = this
-      if (!(/^1(3|4|5|7|8)\d{9}$/.test(_this.phone))) {
+      if (!(/^1(3|4|5|6|7|8|9)\d{9}$/.test(_this.phone))) {
         _this.ph_ts = true
       } else {
         _this.ph_ts = false
